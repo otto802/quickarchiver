@@ -1,0 +1,4 @@
+<!ENTITY prefwindow.title "QuickArchiver Einstellungen">
+<!ENTITY pane1.title "QuickArchiver Einstellungen">
+<!ENTITY resetDatabase.label "gespeicherte Ordner-Zuordnungen löschen">
+<!ENTITY resetDatabase.accesskey "R">

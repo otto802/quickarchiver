@@ -1,0 +1,6 @@
+content   quickarchiver                 chrome/content/
+skin      quickarchiver   classic/1.0   chrome/skin/
+locale    quickarchiver   en-US         chrome/locale/en-US/
+locale    quickarchiver   de-DE         chrome/locale/de-DE/
+
+overlay	chrome://messenger/content/messenger.xul	chrome://quickarchiver/content/quickarchiver_overlay.xul

@@ -1,0 +1,4 @@
+<!ENTITY prefwindow.title "QuickArchiver preferences">
+<!ENTITY pane1.title "QuickArchiver preferences">
+<!ENTITY resetDatabase.label "Reset remembered folders">
+<!ENTITY resetDatabase.accesskey "R">
