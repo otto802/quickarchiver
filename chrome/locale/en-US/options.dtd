@@ -2,3 +2,9 @@
 <!ENTITY pane1.title "QuickArchiver preferences">
 <!ENTITY resetDatabase.label "Reset remembered folders">
 <!ENTITY resetDatabase.accesskey "R">
+<!ENTITY helptext1 "QuickArchiver helps to keep your inbox clean.
+If you move a mail into a folder QuickArchiver remebers the destination (by sender address) and
+ provides a extra column with the name of the last used folder (after installation you must enable
+ the extra column once). Afterwards you can just click on the link in the column to move mails of the
+ same sender. Alternatively you can also use SHIFT+A to move the actual selected items.
+ ">

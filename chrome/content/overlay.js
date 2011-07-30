@@ -18,44 +18,55 @@ var quickarchiver_newMailListener = {
     }
 }
 
-var columnHandler = {
-    getCellText:         function(row, col) {
-
-        var key = gDBView.getKeyAt(row);
-        var hdr = gDBView.db.GetMsgHdrForKey(key);
-
-        var address = quickarchiver.getEmailAddress(hdr.author);
-        var path = quickarchiver_sqlite.dbGetPath(address);
-
-        if (path) {
-            return quickarchiver.getFullPathForList(GetMsgFolderFromUri(path, false));
+var quickarchiverColumn = {
+    CreateDbObserver : {
+        // Components.interfaces.nsIObserver
+        observe: function(aMsgFolder, aTopic, aData) {
+            quickarchiverColumn.addCustomColumnHandler();
         }
-        return '';
-
     },
-    getSortStringForRow: function(hdr) {
+    addCustomColumnHandler: function() {
+        gDBView.addColumnHandler("colQuickArchiver", quickarchiverColumn.columnHandler);
+    },
+    columnHandler : {
+        getCellText:         function(row, col) {
 
-        var address = quickarchiver.getEmailAddress(hdr.author);
-        var path = quickarchiver_sqlite.dbGetPath(address);
+            var key = gDBView.getKeyAt(row);
+            var hdr = gDBView.db.GetMsgHdrForKey(key);
 
-        if (path) {
-            return quickarchiver.getFullPathForList(GetMsgFolderFromUri(path, false));
+            var address = quickarchiver.getEmailAddress(hdr.author);
+            var path = quickarchiver_sqlite.dbGetPath(address);
+
+            if (path) {
+                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(path, false));
+            }
+            return '';
+
+        },
+        getSortStringForRow: function(hdr) {
+
+            var address = quickarchiver.getEmailAddress(hdr.author);
+            var path = quickarchiver_sqlite.dbGetPath(address);
+
+            if (path) {
+                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(path, false));
+            }
+            return '';
+        },
+        isString:            function() {
+            return true;
+        },
+
+        getCellProperties:   function(row, col, props) {
+        },
+        getRowProperties:    function(row, props) {
+        },
+        getImageSrc:         function(row, col) {
+            return null;
+        },
+        getSortLongForRow:   function(hdr) {
+            return 0;
         }
-        return '';
-    },
-    isString:            function() {
-        return true;
-    },
-
-    getCellProperties:   function(row, col, props) {
-    },
-    getRowProperties:    function(row, props) {
-    },
-    getImageSrc:         function(row, col) {
-        return null;
-    },
-    getSortLongForRow:   function(hdr) {
-        return 0;
     }
 }
 
@@ -70,9 +81,12 @@ var quickarchiver = {
         this.strings = document.getElementById("quickarchiver-strings");
         quickarchiver_sqlite.onLoad();
 
+
+        var ObserverService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+        ObserverService.addObserver(quickarchiverColumn.CreateDbObserver, "MsgCreateDBView", false);
+
         this.tree = GetThreadTree();
         this.tree.addEventListener('click', quickarchiver.moveMailOnClickEvent, true);
-
 
         this.headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"].
                 getService(Components.interfaces.nsIMsgHeaderParser);
@@ -184,50 +198,10 @@ var quickarchiver = {
                 quickarchiver.notify(this.strings.getString("NotifyOnMoveHeadline"), address + " " + this.strings.getString("NotifyOnMoveTo") + " " + this.getFullPath(GetMsgFolderFromUri(path)));
             }
         }
-    },
-    clickResetDatabase:function() {
-
-
-        if (confirm("really?")) {
-
-
-        } else {
-
-
-        }
-    },
-
-
-    onMenuItemCommand: function(e) {
-        var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                .getService(Components.interfaces.nsIPromptService);
-        promptService.alert(window, this.strings.getString("helloMessageTitle"),
-                this.strings.getString("helloMessage"));
-    },
-
-    onToolbarButtonCommand: function(e) {
-        // just reuse the function above.  you can change this, obviously!
-        quickarchiver.onMenuItemCommand(e);
     }
 };
 
 
 window.addEventListener("load", function () {
-
-    var ObserverService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
-    ObserverService.addObserver(CreateDbObserver, "MsgCreateDBView", false);
-
     quickarchiver.onLoad();
 }, false);
-
-
-var CreateDbObserver = {
-    // Components.interfaces.nsIObserver
-    observe: function(aMsgFolder, aTopic, aData) {
-        addCustomColumnHandler();
-    }
-}
-
-function addCustomColumnHandler() {
-    gDBView.addColumnHandler("colQuickArchiver", columnHandler);
-}

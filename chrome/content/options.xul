@@ -28,7 +28,13 @@
         <preferences>
         </preferences>
 
-        <hbox align="center">
+
+        <hbox align="left" style="margin-bottom:20px;">
+        <description style="height:120px;display:block;width:350px; ">
+  &helptext1;
+  </description>
+                </hbox>
+        <hbox align="left">
             <button label="&resetDatabase.label;" oncommand="resetDatabase();"/>
         </hbox>
 

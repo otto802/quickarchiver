@@ -1,11 +1,3 @@
-<!ENTITY quickarchiver.label "Your localized menuitem">
-<!ENTITY quickarchiverContext.label "Your Menuitem">
-<!ENTITY quickarchiverContext.accesskey "Y">
-<!ENTITY quickarchiverToolbarButton.label "Your Toolbar Button">
-<!ENTITY quickarchiverToolbarButton.tooltip "This is your toolbar button!">
-<!ENTITY quickarchiverSidebar.label "Your Sidebar">
-<!ENTITY quickarchiverToolbar.name  "example">
-<!ENTITY quickarchiverToolbar.label "This is an example toolbar. You can hide it under View &gt; toolbars &gt; &quickarchiverToolbar.name;">
 <!ENTITY quickarchiverCmd.key "a">
 <!ENTITY quickarchiverFolderHeader "Folder">
 <!ENTITY quickarchiverFolderHeaderTooltip "Archive to folder">
