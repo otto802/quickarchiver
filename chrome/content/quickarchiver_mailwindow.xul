@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<overlay id="sample"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script>
+
+        function showQuickarchiverMenuitem() {
+            var deleteItem = document.getElementById("quickarchiver_edit");
+            var rule = quickarchiver.getRuleFromSelected();
+
+            if (rule.id) {
+                deleteItem.disabled = false;
+            } else {
+                deleteItem.disabled = true;
+            }
+        }
+
+        function initOverlay() {
+            var menu = document.getElementById("mailContext");
+            menu.addEventListener("popupshowing", showQuickarchiverMenuitem, false);
+        }
+
+        window.addEventListener("load", initOverlay, false);
+
+    </script>
+
+    <popup id="mailContext">
+        <menuitem
+                id="quickarchiver_edit"
+                label="Edit QuickArchiver rule"
+                oncommand="quickarchiver.showDialogFromSelected();"/>
+    </popup>
+</overlay>
