@@ -1,35 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!DOCTYPE dialog SYSTEM "chrome://quickarchiver/locale/dialog.dtd">
+
 <dialog
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        id="myDialogId"
+        id="quickarchiverDialog"
         buttons="accept,cancel,extra1"
-        title="QuickArchiver Regeleinstellung"
+        title="&dialog.title;"
         ondialogaccept="send();"
         onload="init();"
-        ondialogextra1="confirm('DD');"
-        buttonlabelextra1="Löschen"
+        ondialogextra1="deleteRule();"
+        buttonlabelextra1="&dialog.button.delete;"
         buttonaccesskeyextra1="D"
         persist="screenX screenY width"
         windowtype="myDialogWindowType">
-    <script type="application/x-javascript" src="overlay.js;version=1.7"/>
+    <stringbundleset id="stringbundleset">
+        <stringbundle id="quickarchiver-dialog-strings"
+                      src="chrome://quickarchiver/locale/dialog.properties"/>
+    </stringbundleset>
+    <script type="application/x-javascript" src="quickarchiver_db.js"/>
+    <script type="application/x-javascript" src="quickarchiver.js"/>
     <script type="application/x-javascript">
 	<![CDATA[
+
+        var params;
+
         function init() {
 
-            var params = window.arguments[0];
+            params = window.arguments[0];
 
             if (params.sent.field) {
-                document.getElementById("field").selectedItem  = document.getElementById(params.sent.field);
+                document.getElementById("field").selectedItem = document.getElementById(params.sent.field);
             }
 
             switchRadio();
         }
 
+        function deleteRule() {
+
+            strings = document.getElementById("quickarchiver-dialog-strings");
+
+            if (confirm(strings.getString('confirmDeleteRule'))) {
+
+                if (params.sent.id) {
+                    quickarchiver_sqlite.dbRemoveRule(params.sent.id);
+                }
+                window.close();
+            }
+        }
+
         function send() {
-
-
-
 
             var ret_vals = {
                 value:document.getElementById("value").value,
@@ -47,7 +67,7 @@
             if (!document.getElementById("custom").checked) {
                 document.getElementById("value").disabled = false;
                 document.getElementById("value-label").disabled = false;
-               // document.getElementById("regex").disabled = false;
+                // document.getElementById("regex").disabled = false;
             } else {
                 document.getElementById("value").disabled = true;
                 document.getElementById("value-label").disabled = true;
@@ -65,13 +85,13 @@
 
                 case "to" :
                     document.getElementById("value").value = params.sent.to;
-                break;
+                    break;
                 case "from" :
                     document.getElementById("value").value = params.sent.from;
-                break;
+                    break;
                 case "subject" :
                     document.getElementById("value").value = params.sent.subject;
-                break;
+                    break;
             }
         }
         ]]>
@@ -79,18 +99,20 @@
     <vbox>
         <radiogroup id="field" oncommand="switchRadio();">
             <hbox>
-                <radio selected="true" id="from" value="from" label="Von"/>
-                <radio id="to" value="to" label="An" />
-                <radio id="subject" value="subject" label="Betreff"/>
+                <radio selected="true" id="from" value="from"
+                       label="&dialog.field.from;"/>
+                <radio id="to" value="to" label="&dialog.field.to;"/>
+                <radio id="subject" value="subject"
+                       label="&dialog.field.subject;"/>
             </hbox>
         </radiogroup>
 
         <groupbox flex="1">
             <caption>
-                <checkbox id="custom" label="Benutzerdefiniert"
+                <checkbox id="custom" label="&dialog.field.custom;"
                           onclick="switchGroup();"/>
             </caption>
-            <grid >
+            <grid>
                 <columns>
                     <column/>
                     <column flex="1"/>
@@ -98,14 +120,14 @@
                 <rows>
                     <row align="center">
                         <label id="value-label"
-                               value="Enthält:" disabled="true"/>
+                               value="&dialog.field.contains;" disabled="true"/>
                         <textbox id="value" disabled="true"/>
                     </row>
-                    <row align="center">
+                    <!--<row align="center">
                         <spacer/>
                         <checkbox id="regex"
-                                  label="Regular expression" disabled="true"/>
-                    </row>
+                                  label="&dialog.field.regex;" disabled="true"/>
+                    </row>-->
                 </rows>
             </grid>
         </groupbox>

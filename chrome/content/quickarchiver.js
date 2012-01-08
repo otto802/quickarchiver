@@ -21,8 +21,6 @@ var quickarchiver_newMailListener = {
                             quickarchiver_sqlite.parseEmailAddress(msgHdr.author),
                             aDestFolder.URI,
                             "=");
-
-                    //quickarchiver.showDialog(msgHdr, aDestFolder.URI);
                 }
             }
         }
@@ -48,7 +46,25 @@ var quickarchiverColumn = {
             var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
             if (rule.folder) {
-                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(rule.folder, false));
+
+                folder = GetMsgFolderFromUri(rule.folder, false);
+
+                // check if destination folder exists (if not remove rule)
+
+                try {
+
+                    // try to access msgDatabase for check folder as valid
+                    // maybe there is a more elegant way to validate folder object
+
+                    var db = folder.msgDatabase;
+                    return quickarchiver.getFullPathForList(folder);
+
+                } catch (e) {
+                    // folder not valid
+
+                    quickarchiver_sqlite.dbRemoveRule(rule.id);
+                    dump("invalid rule removed.");
+                }
             }
             return '';
 
@@ -171,7 +187,8 @@ var quickarchiver = {
                 to:quickarchiver_sqlite.parseEmailAddress(hdr.recipients),
                 from:quickarchiver_sqlite.parseEmailAddress(hdr.author),
                 subject:quickarchiver_sqlite.parseEmailAddress(hdr.subject),
-                folder:folder
+                folder:folder,
+                id: rule.id
             },
             returned:null
         };
@@ -209,7 +226,7 @@ var quickarchiver = {
         if (params.returned !== null) {
 
             // if user dont clicked cancel
-            
+
             if (rule.id) {
 
                 // update
@@ -266,7 +283,6 @@ var quickarchiver = {
                     var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
                     if (rule.folder) {
-
                         quickarchiver.moveMail(hdr.folder, GetMsgFolderFromUri(rule.folder), hdr);
                     }
 

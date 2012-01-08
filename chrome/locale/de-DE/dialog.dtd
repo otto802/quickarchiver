@@ -1,11 +1,7 @@
-<!ENTITY prefwindow.title "QuickArchiver Einstellungen">
-<!ENTITY pane1.title "QuickArchiver Einstellungen">
-<!ENTITY resetDatabase.label "gespeicherte Ordner-Zuordnungen löschen">
-<!ENTITY resetDatabase.accesskey "R">
-<!ENTITY helptext1 "QuickArchiver hilft den Posteingang aufzuräumen.
-Beim verschieben einer Mail merkt sich QuickArchiver den Zielordner (pro Absender) und blendet
-diesen in einer extra Spalte ein (nach der Installation dieser Extension muss
-diese Spalte eventuell noch eingeblendet werden). Danach kann bei weiteren Mails
-einfach auf den Link in der Spalte geklickt werden um die Mail zu verschieben.
-Alternativ geht dies auch mit SHIFT+A bei den aktuell markierten Mails.
- ">
+<!ENTITY dialog.title "QuickArchiver Regel bearbeiten">
+<!ENTITY dialog.button.delete "Regel entfernen">
+<!ENTITY dialog.field.from "Von">
+<!ENTITY dialog.field.to "An">
+<!ENTITY dialog.field.subject "Betreff">
+<!ENTITY dialog.field.custom "Benutzerdefiniert">
+<!ENTITY dialog.field.contains "Enthält:">

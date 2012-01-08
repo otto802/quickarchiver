@@ -5,11 +5,11 @@
         id="quickarchiver-preferences"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         title="&prefwindow.title;">
-    <script type="application/x-javascript" src="database.js;version=1.7"/>
     <stringbundleset id="stringbundleset">
         <stringbundle id="quickarchiver-options-strings"
                       src="chrome://quickarchiver/locale/options.properties"/>
     </stringbundleset>
+    <script type="application/x-javascript" src="quickarchiver_db.js"/>
     <script type="application/x-javascript">
 	<![CDATA[
         function resetDatabase() {

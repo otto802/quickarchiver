@@ -156,6 +156,25 @@ var quickarchiver_sqlite = {
         }
     },
 
+    dbRemoveRule: function(id) {
+
+        if (!id) {
+            return false;
+        }
+
+        var sql = "DELETE FROM rules WHERE rowid = :id";
+        var statement = this.dbConnection.createStatement(sql);
+        statement.params.id = id;
+
+        try {
+            while (statement.step()) {
+                // Use the results...
+            }
+        }
+        finally {
+            statement.reset();
+        }
+    },
 
 
     dbGetPath: function(sender) {
