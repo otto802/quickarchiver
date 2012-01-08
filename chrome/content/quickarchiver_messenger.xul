@@ -2,8 +2,8 @@
 <?xml-stylesheet href="chrome://quickarchiver/skin/overlay.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://quickarchiver/locale/overlay.dtd">
 <overlay id="quickarchiver-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="database.js;version=1.7"/>
-  <script type="application/x-javascript" src="overlay.js;version=1.7"/>
+  <script type="application/x-javascript" src="database.js"/>
+  <script type="application/x-javascript" src="overlay.js"/>
   
   <stringbundleset id="stringbundleset">
     <stringbundle id="quickarchiver-strings" src="chrome://quickarchiver/locale/overlay.properties"/>

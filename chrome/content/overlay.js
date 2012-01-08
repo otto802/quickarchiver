@@ -1,5 +1,5 @@
 var quickarchiver_newMailListener = {
-    msgsMoveCopyCompleted: function(aMove, aSrcMsgs, aDestFolder, aDestMsgs) {
+    msgsMoveCopyCompleted:function (aMove, aSrcMsgs, aDestFolder, aDestMsgs) {
 
         const nsMsgFolderFlags = Components.interfaces.nsMsgFolderFlags;
         var ignoreFlags = nsMsgFolderFlags.Trash | nsMsgFolderFlags.SentMail |
@@ -10,61 +10,69 @@ var quickarchiver_newMailListener = {
         if (!(aDestFolder.flags & ignoreFlags)) { // isSpecialFlags does some strange hacks
             for each (let msgHdr in fixIterator(aSrcMsgs.enumerate(),
                     Components.interfaces.nsIMsgDBHdr)) {
-                let mailfrom = quickarchiver.getEmailAddress(msgHdr.author);
 
-                quickarchiver_sqlite.dbSetPath(mailfrom, aDestFolder.URI);
+                var rule = quickarchiver_sqlite.dbGetRuleFromHdr(msgHdr);
+
+                if (!rule.id) {
+
+                    // create default rule
+
+                    quickarchiver_sqlite.dbInsertRule('from',
+                            quickarchiver_sqlite.parseEmailAddress(msgHdr.author),
+                            aDestFolder.URI,
+                            "=");
+
+                    //quickarchiver.showDialog(msgHdr, aDestFolder.URI);
+                }
             }
         }
     }
 }
 
 var quickarchiverColumn = {
-    CreateDbObserver : {
+    CreateDbObserver:{
         // Components.interfaces.nsIObserver
-        observe: function(aMsgFolder, aTopic, aData) {
+        observe:function (aMsgFolder, aTopic, aData) {
             quickarchiverColumn.addCustomColumnHandler();
         }
     },
-    addCustomColumnHandler: function() {
+    addCustomColumnHandler:function () {
         gDBView.addColumnHandler("colQuickArchiver", quickarchiverColumn.columnHandler);
     },
-    columnHandler : {
-        getCellText:         function(row, col) {
+    columnHandler:{
+        getCellText:function (row, col) {
 
             var key = gDBView.getKeyAt(row);
             var hdr = gDBView.db.GetMsgHdrForKey(key);
 
-            var address = quickarchiver.getEmailAddress(hdr.author);
-            var path = quickarchiver_sqlite.dbGetPath(address);
+            var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
-            if (path) {
-                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(path, false));
+            if (rule.folder) {
+                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(rule.folder, false));
             }
             return '';
 
         },
-        getSortStringForRow: function(hdr) {
+        getSortStringForRow:function (hdr) {
 
-            var address = quickarchiver.getEmailAddress(hdr.author);
-            var path = quickarchiver_sqlite.dbGetPath(address);
+            var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
-            if (path) {
-                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(path, false));
+            if (rule.folder) {
+                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(rule.folder, false));
             }
             return '';
         },
-        isString:            function() {
+        isString:function () {
             return true;
         },
-
-        getCellProperties:   function(row, col, props) {
+        getCellProperties:function (row, col, props) {
         },
-        getRowProperties:    function(row, props) {
+        getRowProperties:function (row, props) {
         },
-        getImageSrc:         function(row, col) {
+        getImageSrc:function (row, col) {
             return null;
         },
-        getSortLongForRow:   function(hdr) {
+        getSortLongForRow:function (hdr) {
             return 0;
         }
     }
@@ -72,10 +80,10 @@ var quickarchiverColumn = {
 
 
 var quickarchiver = {
-    headerParser: {},
-    tree: {},
-    copyService: {},
-    onLoad: function() {
+    // headerParser: {},
+    tree:{},
+    copyService:{},
+    onLoad:function () {
 
         this.initialized = true;
         this.strings = document.getElementById("quickarchiver-strings");
@@ -88,9 +96,6 @@ var quickarchiver = {
         this.tree = GetThreadTree();
         this.tree.addEventListener('click', quickarchiver.moveMailOnClickEvent, true);
 
-        this.headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"].
-                getService(Components.interfaces.nsIMsgHeaderParser);
-
         this.copyService = Components.classes["@mozilla.org/messenger/messagecopyservice;1"]
                 .getService(Components.interfaces.nsIMsgCopyService);
 
@@ -100,7 +105,7 @@ var quickarchiver = {
         notificationService.addListener(quickarchiver_newMailListener, notificationService.msgsMoveCopyCompleted);
     },
 
-    getFullPath: function(folder) {
+    getFullPath:function (folder) {
         var ret = "";
         while (folder && folder.parent) {
             if (ret.length == 0) ret = folder.name;
@@ -109,97 +114,202 @@ var quickarchiver = {
         }
         return ret;
     },
-    getFullPathForList: function(folder) {
-        var ret = "";
-        var first_folder = false;
+    getFullPathForList:function (folder) {
 
-        while (folder && folder.parent.parent) {
+        if (folder.parent) {
 
-            if (!first_folder) {
-                first_folder = folder.name;
+            var first_folder = false;
+            var ret = "";
+
+            while (folder && (folder.parent !== null && folder.parent.parent !== null)) {
+
+                if (!first_folder) {
+                    first_folder = folder.name;
+                    folder = folder.parent;
+                }
+                if (ret.length == 0) {
+                    ret = folder.name;
+                } else {
+                    ret = folder.name + "/" + ret;
+                }
                 folder = folder.parent;
-                continue;
             }
-            if (ret.length == 0) {
-                ret = folder.name;
-            } else {
-                ret = folder.name + "/" + ret;
+
+            if (ret) {
+                return first_folder + ' (' + ret + ')';
             }
-            folder = folder.parent;
+
+        } else {
+            return folder.name;
         }
 
-        if (ret) {
-            return first_folder + ' (' + ret + ')';
-        }
-        return first_folder;
+        //return first_folder;
     },
-    notify: function(title, text) {
+    notify:function (title, text) {
         try {
             Components.classes['@mozilla.org/alerts-service;1']
                     .getService(Components.interfaces.nsIAlertsService)
                     .showAlertNotification(null, title, text, false, '', null);
-        } catch(e) {
+        } catch (e) {
             // prevents runtime error on platforms that don't implement nsIAlertsService
         }
     },
-    getEmailAddress: function(author) {
-        var aEmailAddresses = {};
-        var aNames = {};
-        var aFullNames = {};
+    showDialog:function (hdr, folder) {
 
-        let numAddress = this.headerParser.parseHeadersWithArray(author,
-                aEmailAddresses, aNames, aFullNames);
-        if (numAddress > 0) {
-            return aEmailAddresses.value[0];
+
+        var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
+
+        if (rule.id && !folder) {
+            folder = rule.folder;
+        } else if (!folder) {
+            folder = '';
         }
-        return author;
+
+
+        var params = {
+            sent:{
+                to:quickarchiver_sqlite.parseEmailAddress(hdr.recipients),
+                from:quickarchiver_sqlite.parseEmailAddress(hdr.author),
+                subject:quickarchiver_sqlite.parseEmailAddress(hdr.subject),
+                folder:folder
+            },
+            returned:null
+        };
+
+        if (rule.id) {
+
+            params.sent.update = true;
+
+            switch (rule.field) {
+
+                case "to" :
+                    params.sent.to = rule.value;
+                    params.sent.field = 'to';
+                    break;
+                case "from" :
+                    params.sent.from = rule.value;
+                    params.sent.field = 'from';
+                    break;
+                case "subject" :
+                    params.sent.subject = rule.value;
+                    params.sent.field = 'subject';
+                    break;
+            }
+        } else {
+            params.sent.update = false;
+            params.sent.field = 'from';
+        }
+
+
+        window.openDialog(
+                "chrome://quickarchiver/content/dialog.xul",
+                "", "chrome, dialog, modal, resizable=yes, height=180, width=500",
+                params).focus();
+
+        if (params.returned !== null) {
+
+            // if user dont clicked cancel
+            
+            if (rule.id) {
+
+                // update
+                quickarchiver_sqlite.dbUpdateRule(params.returned.field,
+                        params.returned.value, folder, '=', rule.id);
+            } else {
+
+                //insert
+                quickarchiver_sqlite.dbInsertRule(params.returned.field,
+                        params.returned.value, folder, '=');
+            }
+        }
+
     },
-    moveMailOnClickEvent : function(event) {
+    showDialogFromSelected:function () {
+
+        if (gFolderDisplay.selectedCount == 1) {
+            this.showDialog(gFolderDisplay.selectedMessage);
+        }
+    },
+    getRuleFromSelected:function () {
+
+        if (gFolderDisplay.selectedCount == 1) {
+            return quickarchiver_sqlite.dbGetRuleFromHdr(gFolderDisplay.selectedMessage);
+        }
+
+        return {};
+    },
+    moveMail:function (folder_src, folder_dst, hdr) {
+
+        if (folder_src && folder_dst) {
+
+            Components.utils.import("resource:///modules/iteratorUtils.jsm");
+            let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
+
+            quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
+            //  quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), address + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
+        }
+
+    },
+    moveMailOnClickEvent:function (event) {
         try {
             var row = {}, col = {}, obj = {};
             quickarchiver.tree.treeBoxObject.getCellAt(event.clientX, event.clientY, row, col, obj);
 
             if (event && event.type == "click" && event.button == 0) {
 
+
                 if (obj.value == "text" && (col.value == "colQuickArchiver" || col.value.id == "colQuickArchiver")) {
 
                     var key = gDBView.getKeyAt(row.value);
                     var hdr = gDBView.db.GetMsgHdrForKey(key);
 
-                    var address = quickarchiver.getEmailAddress(hdr.author);
-                    var path = quickarchiver_sqlite.dbGetPath(address);
+                    var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
-                    var folder_src = hdr.folder;
-                    var folder_dst = GetMsgFolderFromUri(path);
+                    if (rule.folder) {
 
-                    if (folder_src && folder_dst) {
-                        Components.utils.import("resource:///modules/iteratorUtils.jsm"); // import toXPCOMArray
-                        let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
-
-                        quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
-
-                        quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), address + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
+                        quickarchiver.moveMail(hdr.folder, GetMsgFolderFromUri(rule.folder), hdr);
                     }
+
+                    /*
+                     var address = quickarchiver.getEmailAddress(hdr.author);
+                     var path = quickarchiver_sqlite.dbGetPath(address);
+
+                     var folder_src = hdr.folder;
+                     var folder_dst = GetMsgFolderFromUri(path);
+
+                     if (folder_src && folder_dst) {
+                     Components.utils.import("resource:///modules/iteratorUtils.jsm"); // import toXPCOMArray
+                     let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
+
+                     quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
+
+                     //          quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), address + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
+                     }*/
                 }
+
             }
 
-        } catch(e) {
+        } catch (e) {
             dump(e);
         }
 
     },
-    moveSelectedMail: function() {
+    moveSelectedMail:function () {
 
         if (gFolderDisplay.selectedCount == 1) {
-            let address = this.getEmailAddress(gFolderDisplay.selectedMessage.author);
-            let path = quickarchiver_sqlite.dbGetPath(address);
-            if (path) {
-                MsgMoveMessage(GetMsgFolderFromUri(path, false));
-                quickarchiver.notify(this.strings.getString("NotifyOnMoveHeadline"), address + " " + this.strings.getString("NotifyOnMoveTo") + " " + this.getFullPath(GetMsgFolderFromUri(path)));
-            }
+
+            quickarchiver.openWind(gFolderDisplay.selectedMessage);
+
+            /*  let address = this.getEmailAddress(gFolderDisplay.selectedMessage.author);
+             let path = quickarchiver_sqlite.dbGetPath(address);
+             if (path) {
+             MsgMoveMessage(GetMsgFolderFromUri(path, false));
+             quickarchiver.notify(this.strings.getString("NotifyOnMoveHeadline"), address + " " + this.strings.getString("NotifyOnMoveTo") + " " + this.getFullPath(GetMsgFolderFromUri(path)));
+             }*/
         }
     }
-};
+}
+        ;
 
 
 window.addEventListener("load", function () {
