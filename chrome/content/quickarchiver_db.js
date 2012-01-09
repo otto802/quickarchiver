@@ -1,8 +1,8 @@
 var quickarchiver_sqlite = {
 
-    headerParser: {},
+    headerParser:{},
 
-    onLoad: function() {
+    onLoad:function () {
 
 
         this.headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"].
@@ -14,16 +14,20 @@ var quickarchiver_sqlite = {
 
     },
 
-    dbConnection: null,
+    dbConnection:null,
 
-    dbSchema: {
-        tables: {
-            senders:"address TEXT PRIMARY KEY, \
-                   uri TEXT"
+    dbSchema:{
+        tables:{
+            rules:"field TEXT, \
+                   operator TEXT, \
+                   value TEXT, \
+                   folder TEXT",
+            misc:"key TEXT, \
+                   value TEXT"
         }
     },
 
-    dbInit: function() {
+    dbInit:function () {
         var dirService = Components.classes["@mozilla.org/file/directory_service;1"].
                 getService(Components.interfaces.nsIProperties);
 
@@ -41,20 +45,96 @@ var quickarchiver_sqlite = {
             dbConnection = dbService.openDatabase(dbFile);
         }
         this.dbConnection = dbConnection;
+        this._dbCheckUpdate();
     },
 
-    _dbCreate: function(aDBService, aDBFile) {
+    _dbCreate:function (aDBService, aDBFile) {
         var dbConnection = aDBService.openDatabase(aDBFile);
         this._dbCreateTables(dbConnection);
         return dbConnection;
     },
 
-    _dbCreateTables: function(aDBConnection) {
+    _dbCreateTables:function (aDBConnection) {
         for (var name in this.dbSchema.tables)
             aDBConnection.createTable(name, this.dbSchema.tables[name]);
     },
 
-    parseEmailAddress: function(author) {
+    _dbCheckUpdate:function () {
+
+        var statement = this.dbConnection.createStatement(
+
+                "SELECT COUNT(*) as c FROM sqlite_master " +
+                        "WHERE type='table' and name='misc';");
+
+        try {
+            while (statement.step()) {
+
+                if (statement.row.c == "0") {
+
+                    // old scheme, so update
+                    this._dbCreateTables(this.dbConnection);
+
+                    // insert first version number
+
+                    var statement_ver = this.dbConnection.createStatement(
+                            "INSERT INTO misc VALUES ('version', 1)");
+
+                    try {
+                        statement_ver.step();
+                    }
+                    finally {
+                        statement_ver.reset();
+                    }
+                }
+            }
+        }
+        finally {
+            statement.reset();
+        }
+
+        var statement = this.dbConnection.createStatement(
+                "SELECT value as version FROM misc where key='version';");
+
+        var version = null;
+        try {
+            while (statement.step()) {
+                version = statement.row.version;
+            }
+        }
+        finally {
+            statement.reset();
+        }
+
+        switch (version) {
+
+            case "1":
+
+                var statement = this.dbConnection.createStatement(
+                        "INSERT INTO rules (field, operator, value, folder) " +
+                                "SELECT 'from' AS field, '=' AS operator, address AS value, uri AS folder FROM senders;");
+
+                try {
+                    statement.step();
+                }
+                finally {
+                    statement.reset();
+                }
+
+                var statement = this.dbConnection.createStatement(
+                        "UPDATE misc SET value=2 WHERE key = 'version';");
+                try {
+                    statement.step();
+                }
+                finally {
+                    statement.reset();
+                }
+
+                break;
+        }
+
+    },
+
+    parseEmailAddress:function (author) {
         var aEmailAddresses = {};
         var aNames = {};
         var aFullNames = {};
@@ -67,7 +147,7 @@ var quickarchiver_sqlite = {
         return author;
     },
 
-    dbGetRuleFromHdr: function(hdr) {
+    dbGetRuleFromHdr:function (hdr) {
 
         var sql = "SELECT rowid,* FROM rules WHERE 0 ";
 
@@ -103,7 +183,7 @@ var quickarchiver_sqlite = {
 
         return data;
     },
-    dbInsertRule: function(field, value, folder, operator) {
+    dbInsertRule:function (field, value, folder, operator) {
 
         if (!operator) {
             operator = '=';
@@ -111,7 +191,6 @@ var quickarchiver_sqlite = {
 
         var sql = "INSERT INTO rules VALUES (:field, :operator, :value, :folder)";
         var statement = this.dbConnection.createStatement(sql);
-  //      dump(sql);
 
         statement.params.field = field;
         statement.params.operator = operator;
@@ -119,15 +198,13 @@ var quickarchiver_sqlite = {
         statement.params.folder = folder;
 
         try {
-            while (statement.step()) {
-                // Use the results...
-            }
+            statement.step();
         }
         finally {
             statement.reset();
         }
     },
-    dbUpdateRule: function(field, value, folder, operator, id) {
+    dbUpdateRule:function (field, value, folder, operator, id) {
 
         if (!operator) {
             operator = '=';
@@ -139,7 +216,7 @@ var quickarchiver_sqlite = {
 
         var sql = "UPDATE rules SET field = :field, operator = :operator, value = :value, folder = :folder WHERE rowid = :id";
         var statement = this.dbConnection.createStatement(sql);
-//dump(sql);
+
         statement.params.field = field;
         statement.params.operator = operator;
         statement.params.value = value;
@@ -147,16 +224,14 @@ var quickarchiver_sqlite = {
         statement.params.id = id;
 
         try {
-            while (statement.step()) {
-                // Use the results...
-            }
+            statement.step();
         }
         finally {
             statement.reset();
         }
     },
 
-    dbRemoveRule: function(id) {
+    dbRemoveRule:function (id) {
 
         if (!id) {
             return false;
@@ -167,83 +242,18 @@ var quickarchiver_sqlite = {
         statement.params.id = id;
 
         try {
-            while (statement.step()) {
-                // Use the results...
-            }
+            statement.step();
         }
         finally {
             statement.reset();
         }
     },
 
+    resetDatabase:function () {
 
-    dbGetPath: function(sender) {
-        var statement = this.dbConnection.createStatement("SELECT * FROM senders WHERE address = :mail");
-        statement.params.mail = sender;
-        var uri = null;
+        var statement = this.dbConnection.createStatement("DELETE FROM rules");
         try {
-            while (statement.step()) {
-                uri = statement.row.uri;
-            }
-        }
-        finally {
-            statement.reset();
-        }
-        return uri;
-    },
-    dbCheckPath: function(sender, uri) {
-        var statement = this.dbConnection.createStatement("SELECT * FROM senders WHERE address = :mail AND uri = :uri");
-        statement.params.mail = sender;
-        statement.params.uri = uri;
-        var uri = null;
-        try {
-            while (statement.step()) {
-                uri = statement.row.uri;
-            }
-        }
-        finally {
-            statement.reset();
-        }
-        return uri;
-    },
-    dbSetPath: function(sender, uri) {
-        var update = false;
-        if (!this.dbGetPath(sender)) {
-            var statement = this.dbConnection.createStatement("INSERT INTO senders VALUES (:mail, :uri)");
-            statement.params.mail = sender;
-            statement.params.uri = uri;
-            try {
-                while (statement.step()) {
-                    // Use the results...
-                }
-            }
-            finally {
-                statement.reset();
-            }
-        }
-        else if (!this.dbCheckPath(sender, uri)) {
-            var statement = this.dbConnection.createStatement("UPDATE senders SET uri = :uri WHERE address = :mail");
-            statement.params.mail = sender;
-            statement.params.uri = uri;
-            update = true;
-            try {
-                while (statement.step()) {
-                    // Use the results...
-                }
-            }
-            finally {
-                statement.reset();
-            }
-        }
-        return update;
-    },
-    resetDatabase:function() {
-
-        var statement = this.dbConnection.createStatement("DELETE FROM senders");
-        try {
-            while (statement.step()) {
-                // Use the results...
-            }
+            statement.step();
         }
         finally {
             statement.reset();

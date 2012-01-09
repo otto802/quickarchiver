@@ -63,7 +63,7 @@ var quickarchiverColumn = {
                     // folder not valid
 
                     quickarchiver_sqlite.dbRemoveRule(rule.id);
-                    dump("invalid rule removed.");
+                    // dump("invalid rule removed.");
                 }
             }
             return '';
