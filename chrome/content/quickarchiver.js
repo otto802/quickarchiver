@@ -47,7 +47,7 @@ var quickarchiverColumn = {
 
             if (rule.folder) {
 
-                folder = GetMsgFolderFromUri(rule.folder, false);
+                var folder = GetMsgFolderFromUri(rule.folder, false);
 
                 // check if destination folder exists (if not remove rule)
 
@@ -264,7 +264,7 @@ var quickarchiver = {
             let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
 
             quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
-            quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), hdr.author + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
+            quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), quickarchiver_sqlite.parseEmailAddress(hdr.author) + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
         }
     },
     moveMailOnClickEvent:function (event) {

@@ -11,12 +11,11 @@
     <em:homepageURL>http://www.bergercity.de/software/quickarchiver</em:homepageURL>
     <em:aboutURL>chrome://quickarchiver/content/about.xul</em:aboutURL>
     <em:optionsURL>chrome://quickarchiver/content/options.xul</em:optionsURL>
-    <em:dialogURL>chrome://quickarchiver/content/dialog.xul</em:dialogURL>
     <em:targetApplication>
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id> <!-- Thunderbird -->
         <em:minVersion>3.0</em:minVersion>
-        <em:maxVersion>20.*</em:maxVersion>
+        <em:maxVersion>9.*</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
