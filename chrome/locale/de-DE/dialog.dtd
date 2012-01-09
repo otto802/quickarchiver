@@ -1,0 +1,9 @@
+<!ENTITY dialog.title "QuickArchiver Regel bearbeiten">
+<!ENTITY dialog.button.delete "Regel entfernen">
+<!ENTITY dialog.field.from "Von">
+<!ENTITY dialog.field.to "An">
+<!ENTITY dialog.field.subject "Betreff">
+<!ENTITY dialog.field.custom "Benutzerdefiniert">
+<!ENTITY dialog.field.contains "Enthält:">
+<!ENTITY dialog.text.prefix "Mails mit der Kennzeichnung">
+<!ENTITY dialog.text.suffix "werden in diesen Ordner verschoben:">

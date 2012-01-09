@@ -1,0 +1,9 @@
+<!ENTITY dialog.title "Edit QuickArchiver rule">
+<!ENTITY dialog.button.delete "Delete rule">
+<!ENTITY dialog.field.from "From">
+<!ENTITY dialog.field.to "To">
+<!ENTITY dialog.field.subject "Subject">
+<!ENTITY dialog.field.custom "Custom">
+<!ENTITY dialog.field.contains "Contains:">
+<!ENTITY dialog.text.prefix "Mails with the following label">
+<!ENTITY dialog.text.suffix "will be moved into the following folder:">
