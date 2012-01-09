@@ -22,7 +22,6 @@
     <script type="application/x-javascript" src="quickarchiver.js"/>
     <script type="application/x-javascript">
 	<![CDATA[
-
         var params;
 
         function init() {
@@ -32,6 +31,8 @@
             if (params.sent.field) {
                 document.getElementById("field").selectedItem = document.getElementById(params.sent.field);
             }
+
+            document.getElementById("desc-folder").value = params.sent.folderPath;
 
             switchRadio();
         }
@@ -54,7 +55,6 @@
             var ret_vals = {
                 value:document.getElementById("value").value,
                 field:document.getElementById("field").selectedItem.value
-
             }
 
             window.arguments[0].returned = ret_vals;
@@ -97,39 +97,52 @@
         ]]>
     </script>
     <vbox>
-        <radiogroup id="field" oncommand="switchRadio();">
-            <hbox>
-                <radio selected="true" id="from" value="from"
-                       label="&dialog.field.from;"/>
-                <radio id="to" value="to" label="&dialog.field.to;"/>
-                <radio id="subject" value="subject"
-                       label="&dialog.field.subject;"/>
-            </hbox>
-        </radiogroup>
+        <description>
+            &dialog.text.prefix;
+        </description>
+        <vbox style="border:1px solid #CCC;padding:3px;margin-top:5px;margin-bottom:5px;">
 
-        <groupbox flex="1">
-            <caption>
-                <checkbox id="custom" label="&dialog.field.custom;"
-                          onclick="switchGroup();"/>
-            </caption>
-            <grid>
-                <columns>
-                    <column/>
-                    <column flex="1"/>
-                </columns>
-                <rows>
-                    <row align="center">
-                        <label id="value-label"
-                               value="&dialog.field.contains;" disabled="true"/>
-                        <textbox id="value" disabled="true"/>
-                    </row>
-                    <!--<row align="center">
-                        <spacer/>
-                        <checkbox id="regex"
-                                  label="&dialog.field.regex;" disabled="true"/>
-                    </row>-->
-                </rows>
-            </grid>
-        </groupbox>
+            <radiogroup id="field" oncommand="switchRadio();">
+                <hbox>
+                    <radio selected="true" id="from" value="from"
+                           label="&dialog.field.from;"/>
+                    <radio id="to" value="to" label="&dialog.field.to;"/>
+                    <radio id="subject" value="subject"
+                           label="&dialog.field.subject;"/>
+                </hbox>
+            </radiogroup>
+
+            <groupbox flex="1">
+                <caption>
+                    <checkbox id="custom" label="&dialog.field.custom;"
+                              onclick="switchGroup();"/>
+                </caption>
+                <grid>
+                    <columns>
+                        <column/>
+                        <column flex="1"/>
+                    </columns>
+                    <rows>
+                        <row align="center">
+                            <label id="value-label"
+                                   value="&dialog.field.contains;"
+                                   disabled="true"/>
+                            <textbox id="value" disabled="true"/>
+                        </row>
+                        <!--<row align="center">
+                            <spacer/>
+                            <checkbox id="regex"
+                                      label="&dialog.field.regex;" disabled="true"/>
+                        </row>-->
+                    </rows>
+                </grid>
+            </groupbox>
+        </vbox>
+        <description>
+            &dialog.text.suffix;
+        </description>
+        <description id="desc-folder"
+                     style="font-weight: bold;">
+        </description>
     </vbox>
 </dialog>

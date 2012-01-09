@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<overlay id="sample"
+<!DOCTYPE overlay SYSTEM "chrome://quickarchiver/locale/overlay.dtd">
+<overlay id="quickarchiver-overlay-menu"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
     <script>
 
         function showQuickarchiverMenuitem() {
-            var deleteItem = document.getElementById("quickarchiver_edit");
+            var deleteItem = document.getElementById("quickarchiver-context-edit");
             var rule = quickarchiver.getRuleFromSelected();
 
             if (rule.id) {
@@ -26,8 +27,12 @@
 
     <popup id="mailContext">
         <menuitem
-                id="quickarchiver_edit"
-                label="Edit QuickArchiver rule"
+                id="quickarchiver-context-edit"
+                label="&quickarchiverContextmenuEntryDialog;"
                 oncommand="quickarchiver.showDialogFromSelected();"/>
+        <menuitem
+                id="quickarchiver-context-apply"
+                label="&quickarchiverContextmenuEntryApply;"
+                oncommand="quickarchiver.moveSelectedMail();"/>
     </popup>
 </overlay>

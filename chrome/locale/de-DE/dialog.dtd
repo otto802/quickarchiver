@@ -5,3 +5,5 @@
 <!ENTITY dialog.field.subject "Betreff">
 <!ENTITY dialog.field.custom "Benutzerdefiniert">
 <!ENTITY dialog.field.contains "Enthält:">
+<!ENTITY dialog.text.prefix "Mails mit der Kennzeichnung">
+<!ENTITY dialog.text.suffix "werden in diesen Ordner verschoben:">

@@ -121,6 +121,7 @@ var quickarchiver = {
         notificationService.addListener(quickarchiver_newMailListener, notificationService.msgsMoveCopyCompleted);
     },
 
+
     getFullPath:function (folder) {
         var ret = "";
         while (folder && folder.parent) {
@@ -188,7 +189,8 @@ var quickarchiver = {
                 from:quickarchiver_sqlite.parseEmailAddress(hdr.author),
                 subject:quickarchiver_sqlite.parseEmailAddress(hdr.subject),
                 folder:folder,
-                id: rule.id
+                folderPath:this.getFullPath(GetMsgFolderFromUri(folder)),
+                id:rule.id
             },
             returned:null
         };
@@ -217,10 +219,9 @@ var quickarchiver = {
             params.sent.field = 'from';
         }
 
-
         window.openDialog(
                 "chrome://quickarchiver/content/dialog.xul",
-                "", "chrome, dialog, modal, resizable=yes, height=180, width=500",
+                "", "chrome, dialog, modal, resizable=yes, height=220, width=500",
                 params).focus();
 
         if (params.returned !== null) {
@@ -263,11 +264,11 @@ var quickarchiver = {
             let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
 
             quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
-            //  quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), address + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
+            quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), hdr.subject + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
         }
-
     },
     moveMailOnClickEvent:function (event) {
+
         try {
             var row = {}, col = {}, obj = {};
             quickarchiver.tree.treeBoxObject.getCellAt(event.clientX, event.clientY, row, col, obj);
@@ -285,24 +286,7 @@ var quickarchiver = {
                     if (rule.folder) {
                         quickarchiver.moveMail(hdr.folder, GetMsgFolderFromUri(rule.folder), hdr);
                     }
-
-                    /*
-                     var address = quickarchiver.getEmailAddress(hdr.author);
-                     var path = quickarchiver_sqlite.dbGetPath(address);
-
-                     var folder_src = hdr.folder;
-                     var folder_dst = GetMsgFolderFromUri(path);
-
-                     if (folder_src && folder_dst) {
-                     Components.utils.import("resource:///modules/iteratorUtils.jsm"); // import toXPCOMArray
-                     let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
-
-                     quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
-
-                     //          quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), address + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
-                     }*/
                 }
-
             }
 
         } catch (e) {
@@ -312,20 +296,19 @@ var quickarchiver = {
     },
     moveSelectedMail:function () {
 
-        if (gFolderDisplay.selectedCount == 1) {
+        if (gFolderDisplay.selectedCount > 0) {
 
-            quickarchiver.openWind(gFolderDisplay.selectedMessage);
+            for each (let hdr in gFolderDisplay.selectedMessages) {
 
-            /*  let address = this.getEmailAddress(gFolderDisplay.selectedMessage.author);
-             let path = quickarchiver_sqlite.dbGetPath(address);
-             if (path) {
-             MsgMoveMessage(GetMsgFolderFromUri(path, false));
-             quickarchiver.notify(this.strings.getString("NotifyOnMoveHeadline"), address + " " + this.strings.getString("NotifyOnMoveTo") + " " + this.getFullPath(GetMsgFolderFromUri(path)));
-             }*/
+                var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
+
+                if (rule.folder) {
+                    quickarchiver.moveMail(hdr.folder, GetMsgFolderFromUri(rule.folder), hdr);
+                }
+            }
         }
     }
-}
-        ;
+};
 
 
 window.addEventListener("load", function () {
