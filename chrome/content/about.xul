@@ -8,7 +8,7 @@
   <groupbox align="center" orient="horizontal">
     <vbox>
       <text value="QuickArchiver" style="font-weight: bold; font-size: x-large;"/>
-      <text value="&version; 0.0.2"/>
+      <text value="&version; 0.2.1"/>
       <separator class="thin"/>
       <text value="&createdBy;" style="font-weight: bold;"/>
       <text value="Otto Berger"/>
