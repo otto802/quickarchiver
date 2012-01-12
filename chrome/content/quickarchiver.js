@@ -100,7 +100,6 @@ var quickarchiverColumn = {
 
 
 var quickarchiver = {
-    // headerParser: {},
     tree:{},
     copyService:{},
     onLoad:function () {
@@ -125,46 +124,92 @@ var quickarchiver = {
         notificationService.addListener(quickarchiver_newMailListener, notificationService.msgsMoveCopyCompleted);
     },
 
+    getActualTopFolder:function () {
 
-    getFullPath:function (folder) {
-        var ret = "";
-        while (folder && folder.parent) {
-            if (ret.length == 0) ret = folder.name;
-            else ret = folder.name + "/" + ret;
+        var actual_top_folder;
+        var folder = gFolderDisplay.displayedFolder;
+
+        while (folder) {
+            actual_top_folder = folder.name;
             folder = folder.parent;
         }
-        return ret;
+
+        return actual_top_folder;
+
+    },
+
+    getFullPath:function (folder) {
+
+        var string = '';
+
+        while (folder) {
+            if (string.length == 0) {
+                string = folder.name;
+            } else {
+                string = folder.name + "/" + string;
+            }
+            folder = folder.parent;
+        }
+
+        return string;
     },
     getFullPathForList:function (folder) {
 
-        if (folder.parent) {
+        var string = '';
+        var actual_top_folder = this.getActualTopFolder();
+        var actual_folder = gFolderDisplay.displayedFolder;
+        var folders = [];
 
-            var first_folder = false;
-            var ret = "";
+        while (folder) {
 
-            while (folder && (folder.parent !== null && folder.parent.parent !== null)) {
+            folders.push(folder.name);
+            folder = folder.parent;
+        }
 
-                if (!first_folder) {
-                    first_folder = folder.name;
-                    folder = folder.parent;
+        folders.reverse();
+
+        if (folders.length > 1) {
+
+            var displayFolders = [];
+
+            for (var i in folders) {
+
+                if (i == 0 && folders[i] == actual_top_folder) {
+
+                    // don't display main folder of the selected account
+                    continue;
                 }
-                if (ret.length == 0) {
-                    ret = folder.name;
-                } else {
-                    ret = folder.name + "/" + ret;
+
+                if (i == folders.length - 1) {
+
+                    // dont't display the target folder in brackets
+                    continue;
                 }
-                folder = folder.parent;
+
+                if (folders[i] == actual_folder.name) {
+
+                    // don't display actual folder in brackets
+                    // reason/example: don't show the inbox folder in brackets
+                    // if the target folder is a subfolder of inbox
+                    // todo: make this configurable
+
+                    continue;
+                }
+
+                displayFolders.push(folders[i]);
             }
 
-            if (ret) {
-                return first_folder + ' (' + ret + ')';
+            string = folders[folders.length - 1];
+
+            if (displayFolders.length) {
+                string += ' (' + displayFolders.join('/') + ')';
             }
 
         } else {
-            return folder.name;
+            string = folder.name;
         }
 
-        //return first_folder;
+        return string;
     },
     notify:function (title, text) {
         try {
@@ -177,7 +222,6 @@ var quickarchiver = {
     },
     showDialog:function (hdr, folder) {
 
-
         var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
         if (rule.id && !folder) {
@@ -185,7 +229,6 @@ var quickarchiver = {
         } else if (!folder) {
             folder = '';
         }
-
 
         var params = {
             sent:{
@@ -278,7 +321,6 @@ var quickarchiver = {
             quickarchiver.tree.treeBoxObject.getCellAt(event.clientX, event.clientY, row, col, obj);
 
             if (event && event.type == "click" && event.button == 0) {
-
 
                 if (obj.value == "text" && (col.value == "colQuickArchiver" || col.value.id == "colQuickArchiver")) {
 
