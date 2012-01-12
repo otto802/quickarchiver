@@ -40,6 +40,10 @@ var quickarchiverColumn = {
     columnHandler:{
         getCellText:function (row, col) {
 
+            if (gDBView.isContainer(row)) {
+                return '';
+            }
+
             var key = gDBView.getKeyAt(row);
             var hdr = gDBView.db.GetMsgHdrForKey(key);
 

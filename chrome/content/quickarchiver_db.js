@@ -162,9 +162,18 @@ var quickarchiver_sqlite = {
         }
 
         var statement = this.dbConnection.createStatement(sql);
-        statement.params.subject = hdr.subject;
-        statement.params.from = '%' + this.parseEmailAddress(hdr.author) + '%';
-        statement.params.to = '%' + this.parseEmailAddress(hdr.recipients) + '%';
+
+        if (hdr.subject) {
+            statement.params.subject = hdr.subject;
+        }
+
+        if (hdr.author) {
+            statement.params.from = '%' + this.parseEmailAddress(hdr.author) + '%';
+        }
+
+        if (hdr.recipients) {
+            statement.params.to = '%' + this.parseEmailAddress(hdr.recipients) + '%';
+        }
 
         var data = {};
 
