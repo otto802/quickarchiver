@@ -2,33 +2,33 @@
 <?xml-stylesheet href="chrome://quickarchiver/skin/overlay.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://quickarchiver/locale/overlay.dtd">
 <overlay id="quickarchiver-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="quickarchiver_db.js"/>
-  <script type="application/x-javascript" src="quickarchiver.js"/>
+    <script type="application/x-javascript" src="quickarchiver_db.js"/>
+    <script type="application/x-javascript" src="quickarchiver.js"/>
 
-  <script>
-    window.addEventListener("load", function () {
-    quickarchiver.onLoad();
-    }, false);
-  </script>
+    <script>
+        window.addEventListener("load", function () {
+            quickarchiver.onLoad();
+        }, false);
+    </script>
 
     <stringbundleset id="stringbundleset">
-    <stringbundle id="quickarchiver-strings" src="chrome://quickarchiver/locale/overlay.properties"/>
-  </stringbundleset>
-  <keyset id="mailKeys">
-     <key id="key_quickarchiver"
- 	   key="&quickarchiverCmd.key;"
-           modifiers="shift"
-           oncommand="quickarchiver.moveSelectedMail();"
-	 />
-   </keyset>
+        <stringbundle id="quickarchiver-strings" src="chrome://quickarchiver/locale/overlay.properties"/>
+    </stringbundleset>
+    <keyset id="mailKeys">
+        <key id="key_quickarchiver"
+             key="&quickarchiverCmd.key;"
+             modifiers="shift"
+             oncommand="quickarchiver.moveSelectedMail();"
+                />
+    </keyset>
 
     <tree id="threadTree">
-      <treecols id="threadCols">
-      <splitter class="tree-splitter" />
-      <treecol id="colQuickArchiver" inserafter="dateCol" persist="hidden ordinal width"
-             currentView="unthreaded" flex="2"
-             label="&quickarchiverFolderHeader;" tooltiptext="&quickarchiverFolderHeaderTooltip;" />
-      </treecols>
+        <treecols id="threadCols">
+            <splitter class="tree-splitter"/>
+            <treecol id="colQuickArchiver" inserafter="dateCol" persist="hidden ordinal width"
+                     currentView="unthreaded" flex="2"
+                     label="&quickarchiverFolderHeader;" tooltiptext="&quickarchiverFolderHeaderTooltip;"/>
+        </treecols>
     </tree>
 
 </overlay>

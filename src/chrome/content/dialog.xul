@@ -7,9 +7,9 @@
         id="quickarchiverDialog"
         buttons="accept,cancel,extra1"
         title="&dialog.title;"
-        ondialogaccept="send();"
-        onload="init();"
-        ondialogextra1="deleteRule();"
+        ondialogaccept="quickarchiver_dialog.send();"
+        onload="quickarchiver_dialog.onLoad()"
+        ondialogextra1="quickarchiver_dialog.deleteRule();"
         buttonlabelextra1="&dialog.button.delete;"
         buttonaccesskeyextra1="D"
         persist="screenX screenY width"
@@ -20,97 +20,14 @@
     </stringbundleset>
     <script type="application/x-javascript" src="quickarchiver_db.js"/>
     <script type="application/x-javascript" src="quickarchiver.js"/>
-    <script type="application/x-javascript">
-	<![CDATA[
-        var params;
-
-        function init() {
-
-            quickarchiver_sqlite.onLoad();
-
-            params = window.arguments[0];
-
-            if (params.sent.field) {
-                document.getElementById("field").selectedItem = document.getElementById(params.sent.field);
-            }
-
-            document.getElementById("desc-folder").value = params.sent.folderPath;
-
-            switchRadio();
-        }
-
-        function deleteRule() {
-
-            var strings = document.getElementById("quickarchiver-dialog-strings");
-
-            let prompts =
-                    Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
-                            getService(Components.interfaces.nsIPromptService);
-
-            if (prompts.confirm(window, strings.getString('confirmDeleteRuleTitle'), strings.getString('confirmDeleteRule'))) {
-
-                // if (confirm(strings.getString('confirmDeleteRule'))) {
-
-                if (params.sent.id) {
-                    quickarchiver_sqlite.dbRemoveRule(params.sent.id);
-                }
-                window.close();
-            }
-        }
-
-        function send() {
-
-            var ret_vals = {
-                value: document.getElementById("value").value,
-                field: document.getElementById("field").selectedItem.value
-            }
-
-            window.arguments[0].returned = ret_vals;
-
-            return true;
-        }
-
-        function switchGroup() {
-
-            if (!document.getElementById("custom").checked) {
-                document.getElementById("value").disabled = false;
-                document.getElementById("value-label").disabled = false;
-                // document.getElementById("regex").disabled = false;
-            } else {
-                document.getElementById("value").disabled = true;
-                document.getElementById("value-label").disabled = true;
-                //document.getElementById("regex").disabled = true;
-            }
-        }
-
-        function switchRadio() {
-
-            var field = document.getElementById("field").selectedItem.value;
-
-            var params = window.arguments[0];
-
-            switch (field) {
-
-                case "to" :
-                    document.getElementById("value").value = params.sent.to;
-                    break;
-                case "from" :
-                    document.getElementById("value").value = params.sent.from;
-                    break;
-                case "subject" :
-                    document.getElementById("value").value = params.sent.subject;
-                    break;
-            }
-        }
-        ]]>
-    </script>
+    <script type="application/x-javascript" src="quickarchiver_dialog.js"/>
     <vbox>
         <description>
             &dialog.text.prefix;
         </description>
         <vbox style="border:1px solid #CCC;padding:3px;margin-top:5px;margin-bottom:5px;">
 
-            <radiogroup id="field" oncommand="switchRadio();">
+            <radiogroup id="field" oncommand="quickarchiver_dialog.switchRadio();">
                 <hbox>
                     <radio selected="true" id="from" value="from"
                            label="&dialog.field.from;"/>
@@ -123,7 +40,7 @@
             <groupbox flex="1">
                 <caption>
                     <checkbox id="custom" label="&dialog.field.custom;"
-                              onclick="switchGroup();"/>
+                              onclick="quickarchiver_dialog.switchGroup();"/>
                 </caption>
                 <grid>
                     <columns>
