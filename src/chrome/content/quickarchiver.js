@@ -51,7 +51,7 @@ var quickarchiverColumn = {
 
             if (rule.folder) {
 
-                var folder = GetMsgFolderFromUri(rule.folder, false);
+                var folder = quickarchiver.getMsgFolderFromUri(rule.folder, false);
 
                 // check if destination folder exists (if not remove rule)
 
@@ -78,7 +78,7 @@ var quickarchiverColumn = {
             var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
             if (rule.folder) {
-                return quickarchiver.getFullPathForList(GetMsgFolderFromUri(rule.folder, false));
+                return quickarchiver.getFullPathForList(quickarchiver.getMsgFolderFromUri(rule.folder, false));
             }
             return '';
         },
@@ -102,12 +102,13 @@ var quickarchiverColumn = {
 var quickarchiver = {
     tree:{},
     copyService:{},
+    initialized:false,
+    strings:{},
     onLoad:function () {
 
         this.initialized = true;
         this.strings = document.getElementById("quickarchiver-strings");
         quickarchiver_sqlite.onLoad();
-
 
         var ObserverService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
         ObserverService.addObserver(quickarchiverColumn.CreateDbObserver, "MsgCreateDBView", false);
@@ -123,7 +124,18 @@ var quickarchiver = {
                         .getService(Components.interfaces.nsIMsgFolderNotificationService);
         notificationService.addListener(quickarchiver_newMailListener, notificationService.msgsMoveCopyCompleted);
     },
+    getMsgFolderFromUri: function(uri, checkFolderAttributes) {
 
+        Components.utils.import("resource:///modules/MailUtils.js");
+
+        if (typeof MailUtils != 'undefined') {
+            return MailUtils.getFolderForURI(uri, checkFolderAttributes);
+        } else {
+            GetMsgFolderFromUri(uri, checkFolderAttributes);
+
+        }
+
+    },
     getActualTopFolder:function () {
 
         var actual_top_folder;
@@ -236,7 +248,7 @@ var quickarchiver = {
                 from:quickarchiver_sqlite.parseEmailAddress(hdr.author),
                 subject:quickarchiver_sqlite.parseEmailAddress(hdr.subject),
                 folder:folder,
-                folderPath:this.getFullPath(GetMsgFolderFromUri(folder)),
+                folderPath:this.getFullPath(this.getMsgFolderFromUri(folder)),
                 id:rule.id
             },
             returned:null
@@ -330,7 +342,7 @@ var quickarchiver = {
                     var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
                     if (rule.folder) {
-                        quickarchiver.moveMail(hdr.folder, GetMsgFolderFromUri(rule.folder), hdr);
+                        quickarchiver.moveMail(hdr.folder, quickarchiver.getMsgFolderFromUri(rule.folder), hdr);
                     }
                 }
             }
@@ -349,14 +361,10 @@ var quickarchiver = {
                 var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
                 if (rule.folder) {
-                    quickarchiver.moveMail(hdr.folder, GetMsgFolderFromUri(rule.folder), hdr);
+                    quickarchiver.moveMail(hdr.folder, quickarchiver.getMsgFolderFromUri(rule.folder), hdr);
                 }
             }
         }
     }
 };
 
-
-window.addEventListener("load", function () {
-    quickarchiver.onLoad();
-}, false);

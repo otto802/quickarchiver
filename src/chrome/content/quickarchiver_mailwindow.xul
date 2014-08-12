@@ -18,7 +18,9 @@
 
         function initQuickarchiverMenuOverlay() {
             var menu = document.getElementById("mailContext");
-            menu.addEventListener("popupshowing", showQuickarchiverMenuitem, false);
+            if (menu) {
+                menu.addEventListener("popupshowing", showQuickarchiverMenuitem, false);
+            }
         }
 
         window.addEventListener("load", initQuickarchiverMenuOverlay, false);

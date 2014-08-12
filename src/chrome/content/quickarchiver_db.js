@@ -1,12 +1,12 @@
 var quickarchiver_sqlite = {
 
-    headerParser:{},
-
-    onLoad:function () {
+    headerParser: {},
+    initialized: false,
+    onLoad: function () {
 
 
         this.headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"].
-                getService(Components.interfaces.nsIMsgHeaderParser);
+            getService(Components.interfaces.nsIMsgHeaderParser);
 
         this.dbInit();
 
@@ -14,28 +14,28 @@ var quickarchiver_sqlite = {
 
     },
 
-    dbConnection:null,
+    dbConnection: null,
 
-    dbSchema:{
-        tables:{
-            rules:"field TEXT, \
+    dbSchema: {
+        tables: {
+            rules: "field TEXT, \
                    operator TEXT, \
                    value TEXT, \
                    folder TEXT",
-            misc:"key TEXT, \
+            misc: "key TEXT, \
                    value TEXT"
         }
     },
 
-    dbInit:function () {
+    dbInit: function () {
         var dirService = Components.classes["@mozilla.org/file/directory_service;1"].
-                getService(Components.interfaces.nsIProperties);
+            getService(Components.interfaces.nsIProperties);
 
         var dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
         dbFile.append("quickarchiver.sqlite");
 
         var dbService = Components.classes["@mozilla.org/storage/service;1"].
-                getService(Components.interfaces.mozIStorageService);
+            getService(Components.interfaces.mozIStorageService);
 
         var dbConnection;
 
@@ -48,23 +48,23 @@ var quickarchiver_sqlite = {
         this._dbCheckUpdate();
     },
 
-    _dbCreate:function (aDBService, aDBFile) {
+    _dbCreate: function (aDBService, aDBFile) {
         var dbConnection = aDBService.openDatabase(aDBFile);
         this._dbCreateTables(dbConnection);
         return dbConnection;
     },
 
-    _dbCreateTables:function (aDBConnection) {
+    _dbCreateTables: function (aDBConnection) {
         for (var name in this.dbSchema.tables)
             aDBConnection.createTable(name, this.dbSchema.tables[name]);
     },
 
-    _dbCheckUpdate:function () {
+    _dbCheckUpdate: function () {
 
         var statement = this.dbConnection.createStatement(
 
-                "SELECT COUNT(*) as c FROM sqlite_master " +
-                        "WHERE type='table' and name='misc';");
+            "SELECT COUNT(*) as c FROM sqlite_master " +
+                "WHERE type='table' and name='misc';");
 
         try {
             while (statement.step()) {
@@ -77,7 +77,7 @@ var quickarchiver_sqlite = {
                     // insert first version number
 
                     var statement_ver = this.dbConnection.createStatement(
-                            "INSERT INTO misc VALUES ('version', 1)");
+                        "INSERT INTO misc VALUES ('version', 1)");
 
                     try {
                         statement_ver.step();
@@ -93,7 +93,7 @@ var quickarchiver_sqlite = {
         }
 
         var statement = this.dbConnection.createStatement(
-                "SELECT value as version FROM misc where key='version';");
+            "SELECT value as version FROM misc where key='version';");
 
         var version = null;
         try {
@@ -110,8 +110,8 @@ var quickarchiver_sqlite = {
             case "1":
 
                 var statement = this.dbConnection.createStatement(
-                        "INSERT INTO rules (field, operator, value, folder) " +
-                                "SELECT 'from' AS field, '=' AS operator, address AS value, uri AS folder FROM senders;");
+                    "INSERT INTO rules (field, operator, value, folder) " +
+                        "SELECT 'from' AS field, '=' AS operator, address AS value, uri AS folder FROM senders;");
 
                 try {
                     statement.step();
@@ -121,7 +121,7 @@ var quickarchiver_sqlite = {
                 }
 
                 var statement = this.dbConnection.createStatement(
-                        "UPDATE misc SET value=2 WHERE key = 'version';");
+                    "UPDATE misc SET value=2 WHERE key = 'version';");
                 try {
                     statement.step();
                 }
@@ -134,20 +134,20 @@ var quickarchiver_sqlite = {
 
     },
 
-    parseEmailAddress:function (author) {
+    parseEmailAddress: function (author) {
         var aEmailAddresses = {};
         var aNames = {};
         var aFullNames = {};
 
         let numAddress = this.headerParser.parseHeadersWithArray(author,
-                aEmailAddresses, aNames, aFullNames);
+            aEmailAddresses, aNames, aFullNames);
         if (numAddress > 0) {
             return aEmailAddresses.value[0];
         }
         return author;
     },
 
-    dbGetRuleFromHdr:function (hdr) {
+    dbGetRuleFromHdr: function (hdr) {
 
         var sql = "SELECT rowid,* FROM rules WHERE 0 ";
 
@@ -192,7 +192,7 @@ var quickarchiver_sqlite = {
 
         return data;
     },
-    dbInsertRule:function (field, value, folder, operator) {
+    dbInsertRule: function (field, value, folder, operator) {
 
         if (!operator) {
             operator = '=';
@@ -213,7 +213,7 @@ var quickarchiver_sqlite = {
             statement.reset();
         }
     },
-    dbUpdateRule:function (field, value, folder, operator, id) {
+    dbUpdateRule: function (field, value, folder, operator, id) {
 
         if (!operator) {
             operator = '=';
@@ -240,7 +240,7 @@ var quickarchiver_sqlite = {
         }
     },
 
-    dbRemoveRule:function (id) {
+    dbRemoveRule: function (id) {
 
         if (!id) {
             return false;
@@ -258,7 +258,7 @@ var quickarchiver_sqlite = {
         }
     },
 
-    resetDatabase:function () {
+    resetDatabase: function () {
 
         var statement = this.dbConnection.createStatement("DELETE FROM rules");
         try {

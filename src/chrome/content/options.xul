@@ -4,6 +4,7 @@
 <prefwindow
         id="quickarchiver-preferences"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html="http://www.w3.org/1999/xhtml"
         title="&prefwindow.title;">
     <stringbundleset id="stringbundleset">
         <stringbundle id="quickarchiver-options-strings"
@@ -21,6 +22,16 @@
                 quickarchiver_sqlite.resetDatabase();
             }
         }
+
+        window.addEventListener("DOMContentLoaded", function (event) {
+            sizeToContent();
+            var vbox = document.getElementById('vbox');
+
+            vbox.width = vbox.boxObject.width;
+            sizeToContent();
+            vbox.height = vbox.boxObject.height;
+            sizeToContent();
+        }, false);
         ]]>
 	</script>
 
@@ -28,15 +39,30 @@
         <preferences>
         </preferences>
 
+        <vbox id="vbox">
+            <groupbox>
+                <caption label="&description.title;"/>
+                <hbox style="width:500px">
+                    <description style="height:auto;display:block;width:300px; margin-bottom: 10px; margin-right:10px;">
+                        &description.text;
+                    </description>
 
-        <hbox align="left" style="margin-bottom:20px;">
-            <description style="height:120px;display:block;width:350px; ">
-                &helptext1;
-            </description>
-        </hbox>
-        <hbox align="left">
-            <button label="&resetDatabase.label;" oncommand="resetDatabase();"/>
-        </hbox>
+                    <image height="250" src="chrome://quickarchiver/content/images/quickarchiver_help_01.jpg"/>
+                </hbox>
+                <hbox>
+
+                </hbox>
+            </groupbox>
+
+            <groupbox>
+                <caption label="&settings.caption;"/>
+                <description style="height:auto;display:block;width:300px; margin-bottom: 10px; ">
+                    &resetDatabase.text;
+                </description>
+                <button label="&resetDatabase.label;" oncommand="resetDatabase();"/>
+            </groupbox>
+        </vbox>
+
 
     </prefpane>
 </prefwindow>

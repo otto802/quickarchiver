@@ -1,10 +1,13 @@
-<!ENTITY prefwindow.title "QuickArchiver preferences">
-<!ENTITY pane1.title "QuickArchiver preferences">
-<!ENTITY resetDatabase.label "Reset remembered folders">
+<!ENTITY prefwindow.title "QuickArchiver">
+<!ENTITY pane1.title "QuickArchiver">
+<!ENTITY settings.caption "Options">
+<!ENTITY resetDatabase.label "Reset folder mappings">
 <!ENTITY resetDatabase.accesskey "R">
-<!ENTITY helptext1 "QuickArchiver helps to keep your inbox clean.
-If you move a mail into a folder QuickArchiver remebers the destination (by sender address) and
- provides a extra column with the name of the last used folder (after installation you must enable
- the extra column once). Afterwards you can just click on the link in the column to move mails of the
- same sender. Alternatively you can also use SHIFT+A to move the actual selected items.
- ">
+<!ENTITY resetDatabase.text "Delete all saved folder mappings">
+<!ENTITY description.title "About QuickArchiver">
+<!ENTITY description.text "After installation of this extension the extra column must be activated once (see Image).
+<html:ul>
+<html:li>While moving mails, QuickArchiver will remember the destination-folder and add an rule for it (default is by sender-address)</html:li>
+<html:li>All mails applying to that rule will get a link in the extra column to move the mail quickly</html:li>
+<html:li>Right-click on that link you can edit the rule (and also delete it)</html:li>
+</html:ul>">

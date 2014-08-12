@@ -4,8 +4,14 @@
 <overlay id="quickarchiver-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="quickarchiver_db.js"/>
   <script type="application/x-javascript" src="quickarchiver.js"/>
-  
-  <stringbundleset id="stringbundleset">
+
+  <script>
+    window.addEventListener("load", function () {
+    quickarchiver.onLoad();
+    }, false);
+  </script>
+
+    <stringbundleset id="stringbundleset">
     <stringbundle id="quickarchiver-strings" src="chrome://quickarchiver/locale/overlay.properties"/>
   </stringbundleset>
   <keyset id="mailKeys">
