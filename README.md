@@ -1,4 +1,4 @@
-quickarchiver
+QuickArchiver
 =============
 
 Thunderbird Extension 
