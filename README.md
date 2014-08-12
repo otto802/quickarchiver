@@ -8,12 +8,12 @@ Thunderbird Extension
 * Right-click on that link you can edit the rule (and also delete it)
 * Rules can be applied by Sender, Destination or Subject
 
-Development:
+Development:  
 https://github.com/otto802/quickarchiver/
 
-Website:
+Website:  
 http://www.bergercity.de/software/quickarchiver/
 
-Addon-Site at Mozilla.org:
-https://addons.mozilla.org/en-US/thunderbird/addon/quickarchiver/
+Addon-Site at Mozilla.org:  
+https://addons.mozilla.org/en-US/thunderbird/addon/quickarchiver/  
 https://addons.mozilla.org/de-DE/thunderbird/addon/quickarchiver/
