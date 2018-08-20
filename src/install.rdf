@@ -4,18 +4,18 @@
     <em:id>quickarchiver@bergerdata.de</em:id>
     <em:type>2</em:type>
     <em:name>QuickArchiver</em:name>
-    <em:version>0.2.2</em:version>
+    <em:version>0.2.3</em:version>
     <em:creator>Otto Berger</em:creator>
     <em:contributor></em:contributor>
     <em:description>Schnell den Posteingang aufräumen.</em:description>
-    <em:homepageURL>http://www.bergercity.de/software/quickarchiver</em:homepageURL>
+    <em:homepageURL>https://www.bergercity.de/software/quickarchiver</em:homepageURL>
     <em:aboutURL>chrome://quickarchiver/content/about.xul</em:aboutURL>
     <em:optionsURL>chrome://quickarchiver/content/options.xul</em:optionsURL>
     <em:targetApplication>
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id> <!-- Thunderbird -->
         <em:minVersion>3.0</em:minVersion>
-        <em:maxVersion>9.*</em:maxVersion>
+        <em:maxVersion>65.0</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
