@@ -23,9 +23,9 @@
     </keyset>
 
     <tree id="threadTree">
-        <treecols id="threadCols">
+        <treecols id="threadCols" inserafter="dateCol">
             <splitter class="tree-splitter"/>
-            <treecol id="colQuickArchiver" inserafter="dateCol" persist="hidden ordinal width"
+            <treecol id="colQuickArchiver" persist="hidden ordinal width"
                      currentView="unthreaded" flex="2"
                      label="&quickarchiverFolderHeader;" tooltiptext="&quickarchiverFolderHeaderTooltip;"/>
         </treecols>

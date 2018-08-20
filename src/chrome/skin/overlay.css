@@ -9,3 +9,8 @@ tree#threadTree treechildren::-moz-tree-column(colQuickArchiver){
 	color: #0000FF;
 	text-decoration: underline;
 }
+tree#threadTree treechildren::-moz-tree-cell-text(muted) {
+	color: #888888;
+	text-decoration: none;
+	cursor: default;
+}
