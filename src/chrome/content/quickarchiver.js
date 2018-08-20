@@ -1,6 +1,8 @@
 var quickarchiver_newMailListener = {
     msgsMoveCopyCompleted: function (aMove, aSrcMsgs, aDestFolder, aDestMsgs) {
 
+        Components.utils.import("resource:///modules/iteratorUtils.jsm");
+
         const nsMsgFolderFlags = Components.interfaces.nsMsgFolderFlags;
         var ignoreFlags = nsMsgFolderFlags.Trash | nsMsgFolderFlags.SentMail |
             nsMsgFolderFlags.Drafts | nsMsgFolderFlags.Queue |
@@ -8,10 +10,8 @@ var quickarchiver_newMailListener = {
             nsMsgFolderFlags.Inbox;
 
         if (!(aDestFolder.flags & ignoreFlags)) { // isSpecialFlags does some strange hacks
-            for each(let msgHdr in fixIterator(aSrcMsgs.enumerate(),
-                Components.interfaces.nsIMsgDBHdr)
-        )
-            {
+
+            for (let msgHdr of fixIterator(aSrcMsgs.enumerate(), Components.interfaces.nsIMsgDBHdr)) {
 
                 var rule = quickarchiver_sqlite.dbGetRuleFromHdr(msgHdr);
 
@@ -63,6 +63,11 @@ var quickarchiverColumn = {
                     // maybe there is a more elegant way to validate folder object
 
                     var db = folder.msgDatabase;
+
+                    if (hdr.folder == folder) {
+                        return quickarchiver.strings.getString("FolderIsAlreadyDestination");
+                    }
+
                     return quickarchiver.getFullPathForList(folder);
 
                 } catch (e) {
@@ -88,6 +93,32 @@ var quickarchiverColumn = {
             return true;
         },
         getCellProperties: function (row, col, props) {
+
+            if (gDBView.isContainer(row)) {
+                return '';
+            }
+
+            var key = gDBView.getKeyAt(row);
+            var hdr = gDBView.db.GetMsgHdrForKey(key);
+
+            var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
+
+            if (rule.folder) {
+
+                var folder = quickarchiver.getMsgFolderFromUri(rule.folder, false);
+
+                if (hdr.folder == folder) {
+
+                    // display a muted message if the destination folder is the same as the current folder
+
+                    if (props) {
+                        var aserv = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
+                        props.AppendElement(aserv.getAtom("muted"));
+                    } else {
+                        return "muted";
+                    }
+                }
+            }
         },
         getRowProperties: function (row, props) {
         },
@@ -99,7 +130,6 @@ var quickarchiverColumn = {
         }
     }
 }
-
 
 var quickarchiver = {
     tree: {},
@@ -321,7 +351,6 @@ var quickarchiver = {
 
         if (folder_src && folder_dst) {
 
-            Components.utils.import("resource:///modules/iteratorUtils.jsm");
             let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
 
             quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
@@ -343,7 +372,7 @@ var quickarchiver = {
 
                     var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
-                    if (rule.folder) {
+                    if (rule.folder && hdr.folder) {
                         quickarchiver.moveMail(hdr.folder, quickarchiver.getMsgFolderFromUri(rule.folder), hdr);
                     }
                 }
@@ -352,15 +381,12 @@ var quickarchiver = {
         } catch (e) {
             dump(e);
         }
-
     },
     moveSelectedMail: function () {
 
         if (gFolderDisplay.selectedCount > 0) {
 
-            for each(let hdr in gFolderDisplay.selectedMessages
-        )
-            {
+            for (let hdr of gFolderDisplay.selectedMessages) {
 
                 var rule = quickarchiver_sqlite.dbGetRuleFromHdr(hdr);
 
