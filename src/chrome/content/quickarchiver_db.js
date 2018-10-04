@@ -1,21 +1,15 @@
-var quickarchiver_sqlite = {
+let quickarchiver_sqlite = {
 
     headerParser: {},
     initialized: false,
     onLoad: function () {
 
-
-        this.headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"].
-            getService(Components.interfaces.nsIMsgHeaderParser);
-
+        this.headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"].getService(Components.interfaces.nsIMsgHeaderParser);
+        this.initLog();
         this.dbInit();
-
         this.initialized = true;
-
     },
-
     dbConnection: null,
-
     dbSchema: {
         tables: {
             rules: "field TEXT, \
@@ -26,45 +20,49 @@ var quickarchiver_sqlite = {
                    value TEXT"
         }
     },
-
     dbInit: function () {
-        var dirService = Components.classes["@mozilla.org/file/directory_service;1"].
-            getService(Components.interfaces.nsIProperties);
+        let dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
 
-        var dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
+        let dbFile = dirService.get("ProfD", Components.interfaces.nsIFile);
         dbFile.append("quickarchiver.sqlite");
 
-        var dbService = Components.classes["@mozilla.org/storage/service;1"].
-            getService(Components.interfaces.mozIStorageService);
+        let dbService = Components.classes["@mozilla.org/storage/service;1"].getService(Components.interfaces.mozIStorageService);
 
-        var dbConnection;
+        let dbConnection;
 
         if (!dbFile.exists())
-            dbConnection = this._dbCreate(dbService, dbFile);
+            dbConnection = this.dbCreate(dbService, dbFile);
         else {
             dbConnection = dbService.openDatabase(dbFile);
         }
         this.dbConnection = dbConnection;
-        this._dbCheckUpdate();
+        this.dbCheckUpdate();
+        this.cleanupDatabase();
     },
+    initLog: function () {
 
-    _dbCreate: function (aDBService, aDBFile) {
-        var dbConnection = aDBService.openDatabase(aDBFile);
-        this._dbCreateTables(dbConnection);
+        Components.utils.import("resource://gre/modules/Log.jsm");
+
+        this.log = Log.repository.getLogger("quickarchiver@bergerdata.de");
+        this.log.level = Log.Level.Debug;
+        this.log.addAppender(new Log.ConsoleAppender(new Log.BasicFormatter()));
+    },
+    dbCreate: function (aDBService, aDBFile) {
+        let dbConnection = aDBService.openDatabase(aDBFile);
+        this.dbCreateTables(dbConnection);
         return dbConnection;
     },
 
-    _dbCreateTables: function (aDBConnection) {
-        for (var name in this.dbSchema.tables)
+    dbCreateTables: function (aDBConnection) {
+        for (let name in this.dbSchema.tables)
             aDBConnection.createTable(name, this.dbSchema.tables[name]);
     },
 
-    _dbCheckUpdate: function () {
+    dbCheckUpdate: function () {
 
-        var statement = this.dbConnection.createStatement(
-
+        let statement = this.dbConnection.createStatement(
             "SELECT COUNT(*) as c FROM sqlite_master " +
-                "WHERE type='table' and name='misc';");
+            "WHERE type='table' and name='misc';");
 
         try {
             while (statement.step()) {
@@ -72,11 +70,11 @@ var quickarchiver_sqlite = {
                 if (statement.row.c == "0") {
 
                     // old scheme, so update
-                    this._dbCreateTables(this.dbConnection);
+                    this.dbCreateTables(this.dbConnection);
 
                     // insert first version number
 
-                    var statement_ver = this.dbConnection.createStatement(
+                    let statement_ver = this.dbConnection.createStatement(
                         "INSERT INTO misc VALUES ('version', 1)");
 
                     try {
@@ -92,10 +90,10 @@ var quickarchiver_sqlite = {
             statement.reset();
         }
 
-        var statement = this.dbConnection.createStatement(
+        statement = this.dbConnection.createStatement(
             "SELECT value as version FROM misc where key='version';");
 
-        var version = null;
+        let version = null;
         try {
             while (statement.step()) {
                 version = statement.row.version;
@@ -109,9 +107,9 @@ var quickarchiver_sqlite = {
 
             case "1":
 
-                var statement = this.dbConnection.createStatement(
+                statement = this.dbConnection.createStatement(
                     "INSERT INTO rules (field, operator, value, folder) " +
-                        "SELECT 'from' AS field, '=' AS operator, address AS value, uri AS folder FROM senders;");
+                    "SELECT 'from' AS field, '=' AS operator, address AS value, uri AS folder FROM senders;");
 
                 try {
                     statement.step();
@@ -120,7 +118,7 @@ var quickarchiver_sqlite = {
                     statement.reset();
                 }
 
-                var statement = this.dbConnection.createStatement(
+                let statement = this.dbConnection.createStatement(
                     "UPDATE misc SET value=2 WHERE key = 'version';");
                 try {
                     statement.step();
@@ -132,12 +130,13 @@ var quickarchiver_sqlite = {
                 break;
         }
 
+        this.log.debug("DB Update triggered");
     },
 
     parseEmailAddress: function (author) {
-        var aEmailAddresses = {};
-        var aNames = {};
-        var aFullNames = {};
+        let aEmailAddresses = {};
+        let aNames = {};
+        let aFullNames = {};
 
         let numAddress = this.headerParser.parseHeadersWithArray(author,
             aEmailAddresses, aNames, aFullNames);
@@ -149,7 +148,7 @@ var quickarchiver_sqlite = {
 
     dbGetRuleFromHdr: function (hdr) {
 
-        var sql = "SELECT rowid,* FROM rules WHERE 0 ";
+        let sql = "SELECT rowid,* FROM rules WHERE 0 ";
 
         if (hdr.subject) {
             sql += "OR (field='subject' AND :subject LIKE '%' || value || '%' ESCAPE '/') ";
@@ -161,7 +160,7 @@ var quickarchiver_sqlite = {
             sql += "OR (field='to' AND :to LIKE '%' || value || '%' ESCAPE '/') ";
         }
 
-        var statement = this.dbConnection.createStatement(sql);
+        let statement = this.dbConnection.createStatement(sql);
 
         if (hdr.subject) {
             statement.params.subject = hdr.subject;
@@ -175,7 +174,7 @@ var quickarchiver_sqlite = {
             statement.params.to = '%' + this.parseEmailAddress(hdr.recipients) + '%';
         }
 
-        var data = {};
+        let data = {};
 
         try {
             while (statement.step()) {
@@ -194,12 +193,24 @@ var quickarchiver_sqlite = {
     },
     dbInsertRule: function (field, value, folder, operator) {
 
+        if (!field) {
+            return false;
+        }
+
+        if (!value) {
+            return false;
+        }
+
+        if (!folder) {
+            return false;
+        }
+
         if (!operator) {
             operator = '=';
         }
 
-        var sql = "INSERT INTO rules VALUES (:field, :operator, :value, :folder)";
-        var statement = this.dbConnection.createStatement(sql);
+        let sql = "INSERT INTO rules VALUES (:field, :operator, :value, :folder)";
+        let statement = this.dbConnection.createStatement(sql);
 
         statement.params.field = field;
         statement.params.operator = operator;
@@ -215,6 +226,18 @@ var quickarchiver_sqlite = {
     },
     dbUpdateRule: function (field, value, folder, operator, id) {
 
+        if (!field) {
+            return false;
+        }
+
+        if (!value) {
+            return false;
+        }
+
+        if (!folder) {
+            return false;
+        }
+
         if (!operator) {
             operator = '=';
         }
@@ -223,8 +246,8 @@ var quickarchiver_sqlite = {
             return false;
         }
 
-        var sql = "UPDATE rules SET field = :field, operator = :operator, value = :value, folder = :folder WHERE rowid = :id";
-        var statement = this.dbConnection.createStatement(sql);
+        let sql = "UPDATE rules SET field = :field, operator = :operator, value = :value, folder = :folder WHERE rowid = :id";
+        let statement = this.dbConnection.createStatement(sql);
 
         statement.params.field = field;
         statement.params.operator = operator;
@@ -246,8 +269,8 @@ var quickarchiver_sqlite = {
             return false;
         }
 
-        var sql = "DELETE FROM rules WHERE rowid = :id";
-        var statement = this.dbConnection.createStatement(sql);
+        let sql = "DELETE FROM rules WHERE rowid = :id";
+        let statement = this.dbConnection.createStatement(sql);
         statement.params.id = id;
 
         try {
@@ -260,7 +283,24 @@ var quickarchiver_sqlite = {
 
     resetDatabase: function () {
 
-        var statement = this.dbConnection.createStatement("DELETE FROM rules");
+        let statement = this.dbConnection.createStatement("DELETE FROM rules");
+        try {
+            statement.step();
+        }
+        finally {
+            statement.reset();
+        }
+    },
+    cleanupDatabase: function () {
+
+        // clean up broken rules (empty values)
+        // there exists a bug where rules where created with empty value
+        // which leds to incorrect rule compiling
+        // (all mails got the same destination folder displayed)
+        // this will clean it up
+
+        let statement = this.dbConnection.createStatement(
+            "DELETE FROM rules WHERE value='';");
         try {
             statement.step();
         }
