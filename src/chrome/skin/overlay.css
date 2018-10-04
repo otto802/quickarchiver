@@ -1,12 +1,13 @@
 
 tree#threadTree treechildren::-moz-tree-cell-text(colQuickArchiver){
   	cursor: pointer;
-	color: #0000FF;
+	color: var(--deepdark-accent-color, #0000FF);
+	/* color: #00AFF4;*/
 	text-decoration: underline;
 }
 tree#threadTree treechildren::-moz-tree-column(colQuickArchiver){
   	cursor: pointer;
-	color: #0000FF;
+	color: var(--deepdark-accent-color, #0000FF);
 	text-decoration: underline;
 }
 tree#threadTree treechildren::-moz-tree-cell-text(muted) {
