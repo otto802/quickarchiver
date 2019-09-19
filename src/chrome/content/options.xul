@@ -18,8 +18,8 @@
             strings = document.getElementById("quickarchiver-options-strings");
 
             if (confirm(strings.getString("confirmResetDatabaseMessage"))) {
-                quickarchiver_sqlite.onLoad();
-                quickarchiver_sqlite.resetDatabase();
+                quickarchiverSqlite.onLoad();
+                quickarchiverSqlite.resetDatabase();
             }
         }
 

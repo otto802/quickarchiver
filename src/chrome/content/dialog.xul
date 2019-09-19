@@ -7,9 +7,7 @@
         id="quickarchiverDialog"
         buttons="accept,cancel,extra1"
         title="&dialog.title;"
-        ondialogaccept="quickarchiver_dialog.send();"
-        onload="quickarchiver_dialog.onLoad()"
-        ondialogextra1="quickarchiver_dialog.deleteRule();"
+        onload="quickarchiverDialog.onLoad();"
         buttonlabelextra1="&dialog.button.delete;"
         buttonaccesskeyextra1="D"
         persist="screenX screenY width"
@@ -27,7 +25,7 @@
         </description>
         <vbox style="border:1px solid #CCC;padding:5px;margin-top:5px;margin-bottom:5px;">
 
-            <radiogroup id="field" oncommand="quickarchiver_dialog.switchRadio();">
+            <radiogroup id="field" oncommand="quickarchiverDialog.switchRadio();">
                 <hbox>
                     <radio selected="true" id="from" value="from"
                            label="&dialog.field.from;"/>
@@ -40,7 +38,7 @@
             <groupbox flex="1">
                 <caption>
                     <checkbox id="custom" label="&dialog.field.custom;"
-                              onclick="quickarchiver_dialog.switchGroup();"/>
+                              onclick="quickarchiverDialog.switchGroup()"/>
                 </caption>
                 <grid>
                     <columns>

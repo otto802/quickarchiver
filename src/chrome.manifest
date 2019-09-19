@@ -4,4 +4,4 @@ locale    quickarchiver   en-US         chrome/locale/en-US/
 locale    quickarchiver   de-DE         chrome/locale/de-DE/
 
 overlay	chrome://messenger/content/messenger.xul	chrome://quickarchiver/content/quickarchiver_messenger.xul
-overlay chrome://messenger/content/mailWindowOverlay.xul    chrome://quickarchiver/content/quickarchiver_mailwindow.xul
+overlay chrome://messenger/content/messenger.xul    chrome://quickarchiver/content/quickarchiver_mailwindow.xul

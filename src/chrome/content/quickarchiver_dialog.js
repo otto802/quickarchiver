@@ -1,8 +1,7 @@
-var quickarchiver_dialog = {
+var quickarchiverDialog = {
     params: {},
     onLoad: function () {
-        quickarchiver_sqlite.onLoad();
-
+        quickarchiverSqlite.onLoad();
         this.params = window.arguments[0];
 
         if (this.params.sent.field) {
@@ -12,9 +11,19 @@ var quickarchiver_dialog = {
         document.getElementById("desc-folder").value = this.params.sent.folderPath;
 
         this.switchRadio();
+
+        // handle events
+
+        document.addEventListener("dialogaccept", function(event) {
+            quickarchiverDialog.send();
+        });
+        document.addEventListener("dialogextra1", function(event) {
+            quickarchiverDialog.deleteRule();
+        });
+
     },
     deleteRule: function () {
-        var strings = document.getElementById("quickarchiver-dialog-strings");
+        let strings = document.getElementById("quickarchiver-dialog-strings");
 
         let prompts =
             Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
@@ -23,7 +32,7 @@ var quickarchiver_dialog = {
         if (prompts.confirm(window, strings.getString('confirmDeleteRuleTitle'), strings.getString('confirmDeleteRule'))) {
 
             if (this.params.sent.id) {
-                quickarchiver_sqlite.dbRemoveRule(this.params.sent.id);
+                quickarchiverSqlite.dbRemoveRule(this.params.sent.id);
             }
             window.close();
         }
@@ -40,7 +49,7 @@ var quickarchiver_dialog = {
     },
     switchGroup: function () {
 
-        if (!document.getElementById("custom").checked) {
+        if (document.getElementById("custom").checked) {
             document.getElementById("value").disabled = false;
             document.getElementById("value-label").disabled = false;
             // document.getElementById("regex").disabled = false;
