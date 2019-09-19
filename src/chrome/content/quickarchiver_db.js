@@ -1,4 +1,4 @@
-let quickarchiver_sqlite = {
+let quickarchiverSqlite = {
 
     headerParser: {},
     initialized: false,

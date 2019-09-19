@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "quickarchiver@bergerdata.de",
+      "strict_min_version": "68.0"
+    }
+  },
+  "name": "QuickArchiver",
+  "author": "Otto Berger <otto@bergerdata.de>",
+  "description": "moving mails into folders quickly",
+  "version": "0.2.5",
+  "legacy": {
+    "type": "xul",
+    "options": {
+      "page": "chrome://quickarchiver/content/options.xul",
+      "open_in_tab": false
+    }
+  }
+}
