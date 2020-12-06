@@ -1,7 +1,7 @@
 var quickarchiverDialog = {
     params: {},
     onLoad: function () {
-        quickarchiverSqlite.onLoad();
+        quickarchiverStorage.init();
         this.params = window.arguments[0];
 
         if (this.params.sent.field) {
@@ -32,7 +32,7 @@ var quickarchiverDialog = {
         if (prompts.confirm(window, strings.getString('confirmDeleteRuleTitle'), strings.getString('confirmDeleteRule'))) {
 
             if (this.params.sent.id) {
-                quickarchiverSqlite.dbRemoveRule(this.params.sent.id);
+                quickarchiverStorage.dbRemoveRule(this.params.sent.id);
             }
             window.close();
         }
@@ -52,11 +52,9 @@ var quickarchiverDialog = {
         if (document.getElementById("custom").checked) {
             document.getElementById("value").disabled = false;
             document.getElementById("value-label").disabled = false;
-            // document.getElementById("regex").disabled = false;
         } else {
             document.getElementById("value").disabled = true;
             document.getElementById("value-label").disabled = true;
-            //document.getElementById("regex").disabled = true;
         }
     },
     switchRadio: function () {

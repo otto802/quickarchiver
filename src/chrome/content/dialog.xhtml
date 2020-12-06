@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://messenger/skin/input-fields.css" type="text/css"?>
+<!DOCTYPE dialog SYSTEM "chrome://quickarchiver/locale/dialog.dtd">
+
+<dialog
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        id="quickarchiverDialog"
+        buttons="accept,cancel,extra1"
+        title="&dialog.title;"
+        onload="quickarchiverDialog.onLoad();"
+        buttonlabelextra1="&dialog.button.delete;"
+        buttonaccesskeyextra1="D"
+        persist="screenX screenY width"
+        windowtype="myDialogWindowType">
+    <stringbundleset id="stringbundleset">
+        <stringbundle id="quickarchiver-dialog-strings"
+                      src="chrome://quickarchiver/locale/dialog.properties"/>
+    </stringbundleset>
+    <script type="application/x-javascript" src="quickarchiver_storage.js"/>
+    <script type="application/x-javascript" src="quickarchiver.js"/>
+    <script type="application/x-javascript" src="quickarchiver_dialog.js"/>
+    <vbox>
+        <description>
+            &dialog.text.prefix;
+        </description>
+        <vbox style="border:1px solid #CCC;padding:5px;margin-top:5px;margin-bottom:5px;">
+
+            <radiogroup id="field" oncommand="quickarchiverDialog.switchRadio();">
+                <hbox>
+                    <radio selected="true" id="from" value="from"
+                           label="&dialog.field.from;"/>
+                    <radio id="to" value="to" label="&dialog.field.to;"/>
+                    <radio id="subject" value="subject"
+                           label="&dialog.field.subject;"/>
+                </hbox>
+            </radiogroup>
+
+            <groupbox flex="1">
+                <caption>
+                    <checkbox id="custom" label="&dialog.field.custom;"
+                              onclick="quickarchiverDialog.switchGroup()"/>
+                </caption>
+                <grid>
+                    <columns>
+                        <column/>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row align="center">
+                            <label id="value-label"
+                                   value="&dialog.field.contains;"
+                                   disabled="true"/>
+                            <html:input id="value" disabled="true"/>
+                        </row>
+                    </rows>
+                </grid>
+            </groupbox>
+        </vbox>
+        <description>
+            &dialog.text.suffix;
+        </description>
+        <description id="desc-folder"
+                     style="font-weight: bold;">
+        </description>
+    </vbox>
+</dialog>

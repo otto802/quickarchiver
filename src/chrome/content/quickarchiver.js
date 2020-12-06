@@ -11,16 +11,16 @@ var quickarchiver_newMailListener = {
 
         if (!(aDestFolder.flags & ignoreFlags)) { // isSpecialFlags does some strange hacks
 
-            for (let msgHdr of fixIterator(aSrcMsgs.enumerate(), Components.interfaces.nsIMsgDBHdr)) {
+            for (let msgHdr of aDestMsgs) {
 
-                let rule = quickarchiverSqlite.dbGetRuleFromHdr(msgHdr);
+                let rule = quickarchiverStorage.dbGetRuleFromHdr(msgHdr);
 
                 if (!rule.id) {
 
                     // create default rule
 
-                    quickarchiverSqlite.dbInsertRule('from',
-                        quickarchiverSqlite.parseEmailAddress(msgHdr.author),
+                    quickarchiverStorage.dbInsertRule('from',
+                        quickarchiverStorage.parseEmailAddress(msgHdr.author),
                         aDestFolder.URI,
                         "=");
                 }
@@ -49,7 +49,9 @@ var quickarchiverColumn = {
             let key = gDBView.getKeyAt(row);
             let hdr = gDBView.db.GetMsgHdrForKey(key);
 
-            let rule = quickarchiverSqlite.dbGetRuleFromHdr(hdr);
+            let rule = quickarchiverStorage.dbGetRuleFromHdr(hdr);
+
+            //  console.debug([hdr, rule]);
 
             if (rule.folder) {
 
@@ -64,7 +66,7 @@ var quickarchiverColumn = {
 
                     let db = folder.msgDatabase;
 
-                    if (hdr.folder == folder) {
+                    if (hdr.folder === folder) {
                         return quickarchiver.strings.getString("FolderIsAlreadyDestination");
                     }
 
@@ -73,8 +75,8 @@ var quickarchiverColumn = {
                 } catch (e) {
                     // folder not valid
 
-                    quickarchiverSqlite.dbRemoveRule(rule.id);
-                    // dump("invalid rule removed.");
+                    quickarchiverStorage.dbRemoveRule(rule.id);
+                    console.debug("invalid rule removed");
                 }
             }
             return '';
@@ -82,7 +84,7 @@ var quickarchiverColumn = {
         },
         getSortStringForRow: function (hdr) {
 
-            let rule = quickarchiverSqlite.dbGetRuleFromHdr(hdr);
+            let rule = quickarchiverStorage.dbGetRuleFromHdr(hdr);
 
             if (rule.folder) {
                 return quickarchiver.getFullPathForList(quickarchiver.getMsgFolderFromUri(rule.folder, false));
@@ -101,7 +103,7 @@ var quickarchiverColumn = {
             let key = gDBView.getKeyAt(row);
             let hdr = gDBView.db.GetMsgHdrForKey(key);
 
-            let rule = quickarchiverSqlite.dbGetRuleFromHdr(hdr);
+            let rule = quickarchiverStorage.dbGetRuleFromHdr(hdr);
 
             if (rule.folder) {
 
@@ -131,17 +133,17 @@ var quickarchiverColumn = {
     }
 };
 
+
 var quickarchiver = {
     tree: {},
     copyService: {},
     initialized: false,
     strings: {},
-    log : {},
     onLoad: function () {
 
         this.initialized = true;
         this.strings = document.getElementById("quickarchiver-strings");
-        quickarchiverSqlite.onLoad();
+        quickarchiverStorage.init();
 
         let ObserverService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
         ObserverService.addObserver(quickarchiverColumn.CreateDbObserver, "MsgCreateDBView", false);
@@ -152,25 +154,9 @@ var quickarchiver = {
         this.copyService = Components.classes["@mozilla.org/messenger/messagecopyservice;1"]
             .getService(Components.interfaces.nsIMsgCopyService);
 
-        let notificationService =
-            Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]
-                .getService(Components.interfaces.nsIMsgFolderNotificationService);
+        var notificationService = Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]
+            .getService(Components.interfaces.nsIMsgFolderNotificationService);
         notificationService.addListener(quickarchiver_newMailListener, notificationService.msgsMoveCopyCompleted);
-
-        this.initLog();
-
-    },
-    initLog: function() {
-
-        Components.utils.import("resource://gre/modules/Log.jsm");
-
-        this.log = Log.repository.getLogger("quickarchiver@bergerdata.de");
-        this.log.level = Log.Level.Debug;
-        this.log.addAppender(new Log.ConsoleAppender(new Log.BasicFormatter()));
-        //this.log.error("aOh noes!! Something bad happened!");
-        //this.log.debug("aDetails about bad thing only useful during debugging", {someInfo: "nothing"});
-        //this.log.warn("aHere is an error", new Error("ouch"));
-
     },
     getMsgFolderFromUri: function (uri, checkFolderAttributes) {
 
@@ -279,7 +265,7 @@ var quickarchiver = {
     },
     showDialog: function (hdr, folder) {
 
-        let rule = quickarchiverSqlite.dbGetRuleFromHdr(hdr);
+        let rule = quickarchiverStorage.dbGetRuleFromHdr(hdr);
 
         if (rule.id && !folder) {
             folder = rule.folder;
@@ -289,9 +275,9 @@ var quickarchiver = {
 
         let params = {
             sent: {
-                to: quickarchiverSqlite.parseEmailAddress(hdr.recipients),
-                from: quickarchiverSqlite.parseEmailAddress(hdr.author),
-                subject: quickarchiverSqlite.parseEmailAddress(hdr.subject),
+                to: quickarchiverStorage.parseEmailAddress(hdr.recipients),
+                from: quickarchiverStorage.parseEmailAddress(hdr.author),
+                subject: quickarchiverStorage.parseEmailAddress(hdr.subject),
                 folder: folder,
                 folderPath: this.getFullPath(this.getMsgFolderFromUri(folder)),
                 id: rule.id
@@ -324,7 +310,7 @@ var quickarchiver = {
         }
 
         window.openDialog(
-            "chrome://quickarchiver/content/dialog.xul",
+            "chrome://quickarchiver/content/dialog.xhtml",
             "", "chrome, dialog, modal, resizable=yes, height=220, width=500",
             params).focus();
 
@@ -335,12 +321,12 @@ var quickarchiver = {
             if (rule.id) {
 
                 // update
-                quickarchiverSqlite.dbUpdateRule(params.returned.field,
+                quickarchiverStorage.dbUpdateRule(params.returned.field,
                     params.returned.value, folder, '=', rule.id);
             } else {
 
                 //insert
-                quickarchiverSqlite.dbInsertRule(params.returned.field,
+                quickarchiverStorage.dbInsertRule(params.returned.field,
                     params.returned.value, folder, '=');
             }
         }
@@ -355,7 +341,7 @@ var quickarchiver = {
     getRuleFromSelected: function () {
 
         if (gFolderDisplay.selectedCount == 1) {
-            return quickarchiverSqlite.dbGetRuleFromHdr(gFolderDisplay.selectedMessage);
+            return quickarchiverStorage.dbGetRuleFromHdr(gFolderDisplay.selectedMessage);
         }
 
         return {};
@@ -367,13 +353,13 @@ var quickarchiver = {
             let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
 
             quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
-            quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), quickarchiverSqlite.parseEmailAddress(hdr.author) + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
+            quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), quickarchiverStorage.parseEmailAddress(hdr.author) + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
         }
     },
     moveMailOnClickEvent: function (event) {
 
         try {
-            let cell  = quickarchiver.tree.getCellAt(event.clientX, event.clientY);
+            let cell = quickarchiver.tree.getCellAt(event.clientX, event.clientY);
 
             if (event && event.type == "click" && event.button == 0) {
 
@@ -382,7 +368,7 @@ var quickarchiver = {
                     let key = gDBView.getKeyAt(cell.row);
                     let hdr = gDBView.db.GetMsgHdrForKey(key);
 
-                    let rule = quickarchiverSqlite.dbGetRuleFromHdr(hdr);
+                    let rule = quickarchiverStorage.dbGetRuleFromHdr(hdr);
 
                     if (rule.folder && hdr.folder) {
                         quickarchiver.moveMail(hdr.folder, quickarchiver.getMsgFolderFromUri(rule.folder), hdr);
@@ -400,7 +386,7 @@ var quickarchiver = {
 
             for (let hdr of gFolderDisplay.selectedMessages) {
 
-                let rule = quickarchiverSqlite.dbGetRuleFromHdr(hdr);
+                let rule = quickarchiverStorage.dbGetRuleFromHdr(hdr);
 
                 if (rule.folder) {
                     quickarchiver.moveMail(hdr.folder, quickarchiver.getMsgFolderFromUri(rule.folder), hdr);
