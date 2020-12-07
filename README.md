@@ -3,6 +3,8 @@ QuickArchiver
 
 Thunderbird Extension 
 
+![Screenshot](https://github.com/otto802/quickarchiver/raw/master/docs/screenshot%402x.jpg)
+
 ## About
 
 - While moving mails, QuickArchiver will remember the destination-folder and add an rule for it (default is by sender-address)
