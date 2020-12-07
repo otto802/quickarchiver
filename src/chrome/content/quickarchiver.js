@@ -48,10 +48,7 @@ var quickarchiverColumn = {
 
             let key = gDBView.getKeyAt(row);
             let hdr = gDBView.db.GetMsgHdrForKey(key);
-
             let rule = quickarchiverStorage.dbGetRuleFromHdr(hdr);
-
-            //  console.debug([hdr, rule]);
 
             if (rule.folder) {
 
@@ -109,7 +106,7 @@ var quickarchiverColumn = {
 
                 let folder = quickarchiver.getMsgFolderFromUri(rule.folder, false);
 
-                if (hdr.folder == folder) {
+                if (hdr.folder === folder) {
 
                     // display a muted message if the destination folder is the same as the current folder
 
