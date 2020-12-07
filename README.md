@@ -3,10 +3,18 @@ QuickArchiver
 
 Thunderbird Extension 
 
-* While moving mails, QuickArchiver will remember the destination-folder and add an rule for it (default is by sender-address)
-* All mails applying to that rule will get a link in the extra column to move the mail quickly
-* Right-click on that link you can edit the rule (and also delete it)
-* Rules can be applied by Sender, Destination or Subject
+## About
+
+- While moving mails, QuickArchiver will remember the destination-folder and add an rule for it (default is by sender-address)
+- All mails applying to that rule will get a link in the extra column to move the mail quickly
+- Right-click on that link you can edit the rule (and also delete it)
+- Rules can be applied by Sender, Destination or Subject
+
+### Shortcuts
+
+- SHIFT+A: move selected E-Mails to their quickArchiver folders
+
+## Links
 
 Development:  
 https://github.com/otto802/quickarchiver/
