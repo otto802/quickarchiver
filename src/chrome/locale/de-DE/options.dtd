@@ -6,4 +6,4 @@
 <!ENTITY resetDatabase.text "Löscht alle Ordner-Zuordnungen">
 <!ENTITY description.title "Über QuickArchiver">
 <!ENTITY description.text "Nach der Installation dieser Extension muss
-die Archivspalte noch einmalig eingeblendet werden (siehe Bild). Beim Verschieben von Mails merkt sich QuickArchiver den Zielordner und legt dazu automatisch eine Regel an (nach Absender). Bei weiteren Mails entsprechend der Regel bietet QuickArchiver in der Spalte 'Archivordner' einen Link zum schnellen Verschieben an. Mit Rechtsklick auf den Ordnerlink kann die Regel bearbeitet (auch gelöscht) werden.
+die Archivspalte noch einmalig eingeblendet werden (siehe Bild). Beim Verschieben von Mails merkt sich QuickArchiver den Zielordner und legt dazu automatisch eine Regel an (nach Absender). Bei weiteren Mails entsprechend der Regel bietet QuickArchiver in der Spalte 'Archivordner' einen Link zum schnellen Verschieben an. Mit Rechtsklick auf den Ordnerlink kann die Regel bearbeitet (auch gelöscht) werden.">
