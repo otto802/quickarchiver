@@ -12,7 +12,7 @@ Thunderbird Extension
 
 ### Shortcuts
 
-- SHIFT+A: move selected E-Mails to their quickArchiver folders
+- SHIFT+A: move selected E-Mails to their QuickArchiver folders
 
 ## Links
 
