@@ -6,6 +6,7 @@
 <dialog
         id="quickarchiver-preferences"
         buttons="accept"
+        xmlns:html="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <stringbundleset id="stringbundleset">
         <stringbundle id="quickarchiver-options-strings"
@@ -23,16 +24,6 @@
                 quickarchiverStorage.resetDatabase();
             }
         }
-
-        window.addEventListener("DOMContentLoaded", function (event) {
-            sizeToContent();
-            var vbox = document.getElementById('vbox');
-
-            vbox.width = vbox.boxObject.width;
-            sizeToContent();
-            vbox.height = vbox.boxObject.height;
-            sizeToContent();
-        }, false);
         ]]>
 	</script>
         <vbox id="vbox">
