@@ -3,7 +3,7 @@ QuickArchiver
 
 Thunderbird Extension 
 
-![Screenshot](https://github.com/otto802/quickarchiver/raw/master/docs/screenshot%402x.jpg)
+![Screenshot](https://github.com/otto802/quickarchiver/raw/master/docs/screenshot%402x.png)
 
 ## About
 
