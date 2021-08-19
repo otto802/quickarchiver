@@ -1,8 +1,6 @@
 var quickarchiver_newMailListener = {
     msgsMoveCopyCompleted: function (aMove, aSrcMsgs, aDestFolder, aDestMsgs) {
 
-        Components.utils.import("resource:///modules/iteratorUtils.jsm");
-
         const nsMsgFolderFlags = Components.interfaces.nsMsgFolderFlags;
         let ignoreFlags = nsMsgFolderFlags.Trash | nsMsgFolderFlags.SentMail |
             nsMsgFolderFlags.Drafts | nsMsgFolderFlags.Queue |
@@ -130,12 +128,13 @@ var quickarchiverColumn = {
     }
 };
 
+var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
 
 var quickarchiver = {
     tree: {},
-    copyService: {},
     initialized: false,
     strings: {},
+    copyService: {},
     onLoad: function () {
 
         this.initialized = true;
@@ -148,8 +147,8 @@ var quickarchiver = {
         this.tree = GetThreadTree();
         this.tree.addEventListener('click', quickarchiver.moveMailOnClickEvent, true);
 
-        this.copyService = Components.classes["@mozilla.org/messenger/messagecopyservice;1"]
-            .getService(Components.interfaces.nsIMsgCopyService);
+        this.copyService = MailServices.copy  // Tb91
+            || Components.classes["@mozilla.org/messenger/messagecopyservice;1"].getService(Ci.nsIMsgCopyService); // older
 
         var notificationService = Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]
             .getService(Components.interfaces.nsIMsgFolderNotificationService);
@@ -347,9 +346,14 @@ var quickarchiver = {
 
         if (folder_src && folder_dst) {
 
-            let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
+            if (typeof this.copyService.copyMessages != "undefined") {
+                // Thunderbird 91
+                this.copyService.copyMessages(folder_src, [hdr], folder_dst, true, null, msgWindow, false);
+            } else {
+                let xpcomHdrArray = toXPCOMArray(new Array(hdr), Components.interfaces.nsIMutableArray);
+                this.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
+            }
 
-            quickarchiver.copyService.CopyMessages(folder_src, xpcomHdrArray, folder_dst, true, null, msgWindow, false);
             quickarchiver.notify(quickarchiver.strings.getString("NotifyOnMoveHeadline"), quickarchiverStorage.parseEmailAddress(hdr.author) + " " + quickarchiver.strings.getString("NotifyOnMoveTo") + " " + quickarchiver.getFullPath(folder_dst));
         }
     },

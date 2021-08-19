@@ -25,18 +25,11 @@ var quickarchiverDialog = {
     deleteRule: function () {
         let strings = document.getElementById("quickarchiver-dialog-strings");
 
-        let prompts =
-            Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
-                getService(Components.interfaces.nsIPromptService);
-
-        if (prompts.confirm(window, strings.getString('confirmDeleteRuleTitle'), strings.getString('confirmDeleteRule'))) {
-
-            if (this.params.sent.id) {
-                quickarchiverStorage.dbRemoveRule(this.params.sent.id);
-            }
-            window.close();
+        if (this.params.sent.id) {
+            quickarchiverStorage.dbRemoveRule(this.params.sent.id);
         }
-    },
+        window.close();
+},
     send: function () {
         var ret_vals = {
             value: document.getElementById("value").value,
