@@ -9,7 +9,7 @@
   "name": "QuickArchiver",
   "author": "Otto Berger <otto@bergerdata.de>",
   "description": "Getting things done in your inbox.",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "background": {
     "scripts": [
       "background.js"
