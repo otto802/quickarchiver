@@ -2,7 +2,7 @@
  * This file is provided by the addon-developer-support repository at
  * https://github.com/thundernest/addon-developer-support
  *
- * Version: 1.56
+ * Version: 1.57
  *
  * Author: John Bieling (john@thunderbird.net)
  *
@@ -12,13 +12,13 @@
  */
 
 // Import some things we need.
-var {ExtensionCommon} = ChromeUtils.import(
+var { ExtensionCommon } = ChromeUtils.import(
     "resource://gre/modules/ExtensionCommon.jsm"
 );
-var {ExtensionSupport} = ChromeUtils.import(
+var { ExtensionSupport } = ChromeUtils.import(
     "resource:///modules/ExtensionSupport.jsm"
 );
-var {Services} = ChromeUtils.import("resource://gre/modules/Services.jsm");
+var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
 var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     log(msg) {
@@ -87,13 +87,15 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     handleEvent(e) {
         switch (e.type) {
             // 68 add-on options menu showing
-            case "popupshowing": {
+            case "popupshowing":
+            {
                 this.add68PrefsEntry(e);
             }
                 break;
 
             // 78/88 add-on options menu/button click
-            case "click": {
+            case "click":
+            {
                 e.preventDefault();
                 e.stopPropagation();
                 let WL = {};
@@ -110,7 +112,8 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                 break;
 
             // 68 add-on options menu command
-            case "command": {
+            case "command":
+            {
                 let WL = {};
                 WL.extension = this.extension;
                 WL.messenger = this.getMessenger(this.context);
@@ -197,7 +200,7 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     // returns the outer browser, not the nested browser of the add-on manager
     // events must be attached to the outer browser
     getAddonManagerFromTab(tab) {
-        if (tab.browser) {
+        if (tab.browser && tab.mode.name == "contentTab") {
             let win = tab.browser.contentWindow;
             if (win && win.location.href == "about:addons") {
                 return win;
@@ -208,9 +211,28 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
     getAddonManagerFromWindow(window) {
         let tabMail = this.getTabMail(window);
         for (let tab of tabMail.tabInfo) {
-            let win = this.getAddonManagerFromTab(tab);
-            if (win) {
-                return win;
+            let managerWindow = this.getAddonManagerFromTab(tab);
+            if (managerWindow) {
+                return managerWindow;
+            }
+        }
+    }
+
+    async getAddonManagerFromWindowWaitForLoad(window) {
+        let { setTimeout } = Services.wm.getMostRecentWindow("mail:3pane");
+
+        let tabMail = this.getTabMail(window);
+        for (let tab of tabMail.tabInfo) {
+            if (tab.browser && tab.mode.name == "contentTab") {
+                // Instead of registering a load observer, wait until its loaded. Not nice,
+                // but gets aroud a lot of edge cases.
+                while(!tab.pageLoaded) {
+                    await new Promise(r => setTimeout(r, 150));
+                }
+                let managerWindow = this.getAddonManagerFromTab(tab);
+                if (managerWindow) {
+                    return managerWindow;
+                }
             }
         }
     }
@@ -326,50 +348,20 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
 
         // TabMonitor to detect opening of tabs, to setup the options button in the add-on manager.
         this.tabMonitor = {
-            onTabTitleChanged(aTab) {
-            },
-            onTabClosing(aTab) {
-            },
-            onTabPersist(aTab) {
-            },
-            onTabRestored(aTab) {
-            },
-            onTabSwitched(aNewTab, aOldTab) {
-                //self.setupAddonManager(self.getAddonManagerFromTab(aNewTab));
-            },
-            async onTabOpened(aTab) {
-                if (aTab.browser) {
-                    if (!aTab.pageLoaded) {
-                        // await a location change if browser is not loaded yet
-                        await new Promise((resolve) => {
-                            let reporterListener = {
-                                QueryInterface: ChromeUtils.generateQI([
-                                    "nsIWebProgressListener",
-                                    "nsISupportsWeakReference",
-                                ]),
-                                onStateChange() {
-                                },
-                                onProgressChange() {
-                                },
-                                onLocationChange(
-                                    /* in nsIWebProgress*/ aWebProgress,
-                                    /* in nsIRequest*/ aRequest,
-                                    /* in nsIURI*/ aLocation
-                                ) {
-                                    aTab.browser.removeProgressListener(reporterListener);
-                                    resolve();
-                                },
-                                onStatusChange() {
-                                },
-                                onSecurityChange() {
-                                },
-                                onContentBlockingEvent() {
-                                },
-                            };
-                            aTab.browser.addProgressListener(reporterListener);
-                        });
+            onTabTitleChanged(tab) { },
+            onTabClosing(tab) { },
+            onTabPersist(tab) { },
+            onTabRestored(tab) { },
+            onTabSwitched(aNewTab, aOldTab) { },
+            async onTabOpened(tab) {
+                if (tab.browser && tab.mode.name == "contentTab") {
+                    let { setTimeout } = Services.wm.getMostRecentWindow("mail:3pane");
+                    // Instead of registering a load observer, wait until its loaded. Not nice,
+                    // but gets aroud a lot of edge cases.
+                    while(!tab.pageLoaded) {
+                        await new Promise(r => setTimeout(r, 150));
                     }
-                    self.setupAddonManager(self.getAddonManagerFromTab(aTab));
+                    self.setupAddonManager(self.getAddonManagerFromTab(tab));
                 }
             },
         };
@@ -600,16 +592,14 @@ var WindowListener = class extends ExtensionCommon.ExtensionAPI {
                                                     self
                                                 );
                                             } else {
-                                                // Setup the options button/menu in the add-on manager, if it is already open.
-                                                self.setupAddonManager(
-                                                    self.getAddonManagerFromWindow(window),
-                                                    true
-                                                );
                                                 // Add a tabmonitor, to be able to setup the options button/menu in the add-on manager.
                                                 self
                                                     .getTabMail(window)
                                                     .registerTabMonitor(self.tabMonitor);
                                                 window[self.uniqueRandomID].hasTabMonitor = true;
+                                                // Setup the options button/menu in the add-on manager, if it is already open.
+                                                let managerWindow = await self.getAddonManagerFromWindowWaitForLoad(window);
+                                                self.setupAddonManager(managerWindow, true);
                                             }
                                         }
                                     }
