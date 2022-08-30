@@ -221,7 +221,7 @@ var quickarchiver = {
 
                 if (i == folders.length - 1) {
 
-                    // dont't display the target folder in brackets
+                    // don't display the target folder in brackets
                     continue;
                 }
 
@@ -312,21 +312,22 @@ var quickarchiver = {
 
         if (params.returned !== null) {
 
-            // if user dont clicked cancel
+            // if user not clicked cancel
 
             if (rule.id) {
 
                 // update
                 quickarchiverStorage.dbUpdateRule(params.returned.field,
                     params.returned.value, folder, '=', rule.id);
+            } else if (rule.id && params.returned.action == 'delete') {
+                // delete
+                quickarchiverStorage.dbRemoveRule(rule.id);
             } else {
-
                 //insert
                 quickarchiverStorage.dbInsertRule(params.returned.field,
                     params.returned.value, folder, '=');
             }
         }
-
     },
     showDialogFromSelected: function () {
 

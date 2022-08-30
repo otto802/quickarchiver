@@ -14,26 +14,29 @@ var quickarchiverDialog = {
 
         // handle events
 
-        document.addEventListener("dialogaccept", function(event) {
+        document.addEventListener("dialogaccept", function (event) {
             quickarchiverDialog.send();
         });
-        document.addEventListener("dialogextra1", function(event) {
+        document.addEventListener("dialogextra1", function (event) {
             quickarchiverDialog.deleteRule();
         });
 
     },
     deleteRule: function () {
-        let strings = document.getElementById("quickarchiver-dialog-strings");
 
-        if (this.params.sent.id) {
-            quickarchiverStorage.dbRemoveRule(this.params.sent.id);
+       this.send("delete");
+       window.close();
+    },
+    send: function (action) {
+
+        if (typeof(action) == "undefined") {
+            action = "update";
         }
-        window.close();
-},
-    send: function () {
+
         var ret_vals = {
             value: document.getElementById("value").value,
-            field: document.getElementById("field").selectedItem.value
+            field: document.getElementById("field").selectedItem.value,
+            action: action
         }
 
         window.arguments[0].returned = ret_vals;

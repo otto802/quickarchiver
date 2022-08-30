@@ -12,6 +12,7 @@ let quickarchiverStorage = {
                    value TEXT"
         }
     },
+    cache: {},
     init: function () {
 
         let dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
@@ -135,16 +136,26 @@ let quickarchiverStorage = {
 
         let statement = this.dbConnection.createStatement(sql);
 
+        let cache_id = '';
+
         if (hdr.subject) {
             statement.params.subject = hdr.subject;
+            cache_id += hdr.subject;
         }
 
         if (hdr.author) {
             statement.params.from = '%' + this.parseEmailAddress(hdr.author) + '%';
+            cache_id += statement.params.from;
+
         }
 
         if (hdr.recipients) {
             statement.params.to = '%' + this.parseEmailAddress(hdr.recipients) + '%';
+            cache_id += statement.params.to;
+        }
+
+        if (typeof (this.cache[cache_id]) != "undefined") {
+            return this.cache[cache_id];
         }
 
         let data = {};
@@ -160,6 +171,8 @@ let quickarchiverStorage = {
         } finally {
             statement.reset();
         }
+
+        this.cache[cache_id] = data;
 
         return data;
     },
@@ -194,6 +207,8 @@ let quickarchiverStorage = {
         } finally {
             statement.reset();
         }
+
+        this.clearCache();
     },
     dbUpdateRule: function (field, value, folder, operator, id) {
 
@@ -231,6 +246,8 @@ let quickarchiverStorage = {
         } finally {
             statement.reset();
         }
+
+        this.clearCache();
     },
     dbRemoveRule: function (id) {
 
@@ -247,6 +264,8 @@ let quickarchiverStorage = {
         } finally {
             statement.reset();
         }
+
+        this.clearCache();
     },
     resetDatabase: function () {
 
@@ -256,6 +275,8 @@ let quickarchiverStorage = {
         } finally {
             statement.reset();
         }
+
+        this.clearCache();
     },
     cleanupDatabase: function () {
 
@@ -272,5 +293,10 @@ let quickarchiverStorage = {
         } finally {
             statement.reset();
         }
-    }
+
+        this.clearCache();
+    },
+    clearCache: function () {
+        this.cache = {};
+    },
 };
