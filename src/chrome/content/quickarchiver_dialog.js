@@ -1,4 +1,4 @@
-var quickarchiverDialog = {
+let quickarchiverDialog = {
     params: {},
     onLoad: function () {
         quickarchiverStorage.init();
@@ -33,13 +33,11 @@ var quickarchiverDialog = {
             action = "update";
         }
 
-        var ret_vals = {
+        window.arguments[0].returned = {
             value: document.getElementById("value").value,
             field: document.getElementById("field").selectedItem.value,
             action: action
-        }
-
-        window.arguments[0].returned = ret_vals;
+        };
 
         return true;
     },

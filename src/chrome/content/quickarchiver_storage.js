@@ -140,18 +140,22 @@ let quickarchiverStorage = {
 
         if (hdr.subject) {
             statement.params.subject = hdr.subject;
-            cache_id += hdr.subject;
+            cache_id += 'SUBJECT:'+ hdr.subject;
         }
 
         if (hdr.author) {
-            statement.params.from = '%' + this.parseEmailAddress(hdr.author) + '%';
-            cache_id += statement.params.from;
+
+            let author = this.parseEmailAddress(hdr.author);
+            statement.params.from = author;
+            cache_id += 'FROM:'+ author;
 
         }
 
         if (hdr.recipients) {
-            statement.params.to = '%' + this.parseEmailAddress(hdr.recipients) + '%';
-            cache_id += statement.params.to;
+
+            let recipients = this.parseEmailAddress(hdr.recipients);
+            statement.params.to = recipients;
+            cache_id += 'TO:'+recipients;
         }
 
         if (typeof (this.cache[cache_id]) != "undefined") {
@@ -255,6 +259,8 @@ let quickarchiverStorage = {
             return false;
         }
 
+        console.info("Removed role id " + id);
+
         let sql = "DELETE FROM rules WHERE rowid = :id";
         let statement = this.dbConnection.createStatement(sql);
         statement.params.id = id;
@@ -293,6 +299,60 @@ let quickarchiverStorage = {
         } finally {
             statement.reset();
         }
+
+        // Check for duplicate rules and delete them
+        // Earlier versions might have created duplicate rules.
+        // Clean them up.
+
+        let statement_duplicates = this.dbConnection.createStatement(
+            "select *, count(field) as num from rules group by field, operator, folder, value;");
+        try {
+            while (statement_duplicates.step()) {
+
+                if (statement_duplicates.row.num > 1) {
+
+                    let statement_details = this.dbConnection.createStatement(
+                        "SELECT rowid,* from rules where field=:field AND operator=:operator AND folder=:folder AND value=:value");
+
+                    statement_details.params.field = statement_duplicates.row.field;
+                    statement_details.params.operator = statement_duplicates.row.operator;
+                    statement_details.params.folder = statement_duplicates.row.folder;
+                    statement_details.params.value = statement_duplicates.row.value;
+
+                    try {
+                        let i = 0;
+                        while (statement_details.step()) {
+                            console.debug(statement_details.row);
+
+                            if (i > 0) {
+
+                                // delete duplicate rule
+
+                                let statement_delete = this.dbConnection.createStatement(
+                                    "DELETE FROM rules WHERE rowid=:id;");
+                                statement_delete.params.id = statement_details.row.rowid;
+
+                                console.info("Delete duplicate rule " + statement_details.row.rowid)
+                                try {
+                                    statement_delete.step();
+                                } finally {
+                                    statement_delete.reset();
+                                }
+
+                            }
+
+                            i++;
+                        }
+                    } finally {
+                        statement_details.reset();
+                    }
+                }
+            }
+
+        } finally {
+            statement_duplicates.reset();
+        }
+
 
         this.clearCache();
     },

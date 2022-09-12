@@ -27,6 +27,7 @@ var quickarchiver_newMailListener = {
     }
 };
 
+
 var quickarchiverColumn = {
     CreateDbObserver: {
         // Components.interfaces.nsIObserver
@@ -128,7 +129,7 @@ var quickarchiverColumn = {
     }
 };
 
-var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
+var {MailServices} = ChromeUtils.import("resource:///modules/MailServices.jsm");
 
 var quickarchiver = {
     tree: {},
@@ -314,14 +315,15 @@ var quickarchiver = {
 
             // if user not clicked cancel
 
-            if (rule.id) {
+            if (rule.id && params.returned.action == 'delete') {
+                // delete
+                quickarchiverStorage.dbRemoveRule(rule.id);
+
+            } else if (rule.id) {
 
                 // update
                 quickarchiverStorage.dbUpdateRule(params.returned.field,
                     params.returned.value, folder, '=', rule.id);
-            } else if (rule.id && params.returned.action == 'delete') {
-                // delete
-                quickarchiverStorage.dbRemoveRule(rule.id);
             } else {
                 //insert
                 quickarchiverStorage.dbInsertRule(params.returned.field,
