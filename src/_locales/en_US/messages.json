@@ -1,0 +1,23 @@
+{
+  "extensionDescription": {
+    "message": "E-Mail-Betreff bearbeiten"
+  },
+  "extensionName": {
+    "message": "Edit email subject"
+  },
+  "lang.settings": {
+    "message": "Einstellungen"
+  },
+  "lang.keepBackup": {
+    "message": "Sicherung der E-Mail vor dem Umbenennen im lokalen Ordner „EES-Temp” ablegen."
+  },
+  "lang.menuTitle": {
+    "message": "E-Mail-Betreff bearbeiten"
+  },
+  "lang.subject": {
+    "message": "Betreff:"
+  },
+  "lang.subjectOld": {
+    "message": "Original-Betreff:"
+  }
+}

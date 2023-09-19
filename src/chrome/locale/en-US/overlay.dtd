@@ -1,5 +1,0 @@
-<!ENTITY quickarchiverCmd.key "a">
-<!ENTITY quickarchiverFolderHeader "QuickArchiver Folder">
-<!ENTITY quickarchiverFolderHeaderTooltip "Archive to folder">
-<!ENTITY quickarchiverContextmenuEntryDialog "Edit QuickArchiver rule">
-<!ENTITY quickarchiverContextmenuEntryApply "Apply QuickArchiver rule">

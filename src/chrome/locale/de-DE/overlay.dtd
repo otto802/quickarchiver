@@ -1,5 +1,0 @@
-<!ENTITY quickarchiverCmd.key "a">
-<!ENTITY quickarchiverFolderHeader "QuickArchiver Ordner">
-<!ENTITY quickarchiverFolderHeaderTooltip "Archivieren in Ordner">
-<!ENTITY quickarchiverContextmenuEntryDialog "QuickArchiver Regel bearbeiten">
-<!ENTITY quickarchiverContextmenuEntryApply "QuickArchiver Regel anwenden">
