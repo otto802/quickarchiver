@@ -1,5 +1,7 @@
 (async () => {
 
+    let currentMessageId = false;
+
     messenger.messageDisplay.onMessageDisplayed.addListener(async (tab, message) => {
 
         messenger.messageDisplayAction.setTitle({title: 'No role found'});
@@ -8,6 +10,8 @@
 
         let full = await messenger.messages.getFull(message.id);
         let folder = await quickarchiver.getFolder(full.headers);
+
+        currentMessageId = message.id;
 
         if (folder) {
 
@@ -20,7 +24,17 @@
                 contexts: ["message_display_action"],
                 id: 'qa_edit',
                 title: "Edit QuickArchiver rule",
-                onclick: awaitPopup
+                onclick: function () {
+
+                    let window = messenger.windows.create({
+                        url: "content/popup.html",
+                        type: "popup",
+                        height: 280,
+                        width: 390,
+                        allowScriptsToClose: true,
+                    });
+
+                }
             });
         }
     });
@@ -45,56 +59,16 @@
         await quickarchiver.movedMessages(movedMessages.messages);
     });
 
+    messenger.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message && message.hasOwnProperty("command")) {
 
-    // Function to open a popup and await user feedback
-    async function awaitPopup() {
-        async function popupPrompt(popupId, defaultResponse) {
-            try {
-                await messenger.windows.get(popupId);
-            } catch (e) {
-                // Window does not exist, assume closed.
-                return defaultResponse;
+            if (message.command === "getMessageId") {
+                messenger.runtime.sendMessage({
+                    command: "getMessageId",
+                    messageId: currentMessageId
+                });
             }
-            return new Promise(resolve => {
-                let response = defaultResponse;
-
-                function windowRemoveListener(closedId) {
-                    if (popupId == closedId) {
-                        messenger.windows.onRemoved.removeListener(windowRemoveListener);
-                        messenger.runtime.onMessage.removeListener(messageListener);
-                        resolve(response);
-                    }
-                }
-
-                function messageListener(request, sender, sendResponse) {
-                    if (sender.tab.windowId != popupId || !request) {
-                        return;
-                    }
-
-                    if (request.popupResponse) {
-                        response = request.popupResponse;
-                    }
-                }
-
-                messenger.runtime.onMessage.addListener(messageListener);
-                messenger.windows.onRemoved.addListener(windowRemoveListener);
-            });
         }
-
-        let window = await messenger.windows.create({
-            url: "content/popup.html",
-            type: "popup",
-            height: 280,
-            width: 390,
-            allowScriptsToClose: true,
-        });
-        // Wait for the popup to be closed and define a default return value if the
-        // window is closed without clicking a button.
-        let rv = await popupPrompt(window.id, "cancel");
-        console.log(rv);
-    }
-
-// Listener to trigger the popup.
-    //messenger.browserAction.onClicked.addListener(awaitPopup);
+    });
 
 })()
