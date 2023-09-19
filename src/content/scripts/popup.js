@@ -10,12 +10,9 @@ async function notifyMode(event) {
 
 messenger.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message && message.hasOwnProperty("command")) {
-        // If we have a command, return a promise from the command handler.
-        console.info("POPOP");
 
-        if (message.command == "setMessageId") {
+        if (message.command === "setMessageId") {
             let full = await messenger.messages.getFull(message.messageId);
-
             console.debug(full);
         }
     }

@@ -13,29 +13,28 @@
 
         currentMessageId = message.id;
 
+        await messenger.menus.create({
+            contexts: ["message_display_action"],
+            id: 'qa_edit',
+            title: "Edit QuickArchiver rule",
+            onclick: function () {
+
+                let window = messenger.windows.create({
+                    url: "content/popup.html",
+                    type: "popup",
+                    height: 280,
+                    width: 390,
+                    allowScriptsToClose: true,
+                });
+
+            }
+        });
+
         if (folder) {
 
             messenger.messageDisplayAction.enable();
             messenger.messageDisplayAction.setTitle({title: 'Move "' + message.subject + '" to Folder ' + folder.path});
             messenger.messageDisplayAction.setLabel({label: 'QuickArchiver: Move'});
-
-            console.info("Create menu");
-            await messenger.menus.create({
-                contexts: ["message_display_action"],
-                id: 'qa_edit',
-                title: "Edit QuickArchiver rule",
-                onclick: function () {
-
-                    let window = messenger.windows.create({
-                        url: "content/popup.html",
-                        type: "popup",
-                        height: 280,
-                        width: 390,
-                        allowScriptsToClose: true,
-                    });
-
-                }
-            });
         }
     });
 
@@ -64,7 +63,7 @@
 
             if (message.command === "getMessageId") {
                 messenger.runtime.sendMessage({
-                    command: "getMessageId",
+                    command: "setMessageId",
                     messageId: currentMessageId
                 });
             }
