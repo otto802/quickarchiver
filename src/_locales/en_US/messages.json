@@ -19,5 +19,23 @@
   },
   "lang.subjectOld": {
     "message": "Original-Betreff:"
+  },
+  "options_general": {
+    "message": "General"
+  },
+  "about": {
+    "message": "About"
+  },
+  "edit_rule": {
+    "message": "Edit Rule"
+  },
+  "popup.rule.from": {
+    "message": "From"
+  },
+  "popup.rule.to": {
+    "message": "To"
+  },
+  "popup.rule.subject": {
+    "message": "Subject"
   }
 }

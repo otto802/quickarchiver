@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>popup.html</title>
+    <script type="text/javascript" src="popup.js" defer="true"></script>
+    <script type="text/javascript" src="../scripts/quickarchiver.js" defer="true"></script>
+    <link rel='stylesheet' type='text/css' href="chrome://global/skin/in-content/common.css">
+    <link rel='stylesheet' type='text/css' href="popup.css">
+    <script type="module" src="../translation.mjs.js"></script>
+</head>
+<body>
+
+<nav class="nav-main"><h1>Quickarchiver</h1></nav>
+
+<section class="section-main">
+    <main class="rule">
+
+        <h2>Edit rule</h2>
+        <fieldset>
+            <legend data-i18n="popup.rule.from"></legend>
+            <label for="active-from">Enable</label>
+            <input id="active-from" type="checkbox" data-pref="dkim.enable"> <input id="from" type="text" value="">
+            <small>Author contains the given value</small>
+        </fieldset>
+        <fieldset>
+            <legend data-i18n="popup.rule.subject"></legend>
+            <label for="active-to">Enable</label>
+            <input id="active-to" type="checkbox" data-pref="dkim.enable"> <input id="to" type="text" value="">
+            <small>Recipient contains the given value</small>
+        </fieldset>
+        <fieldset>
+            <legend data-i18n="popup.rule.subject"></legend>
+            <label for="active-subject">Enable</label>
+            <input id="active-subject" type="checkbox" data-pref="dkim.enable"> <input id="subject" type="text"
+                                                                                       value="">
+            <small>Subject contains the given value</small>
+        </fieldset>
+        <fieldset>
+            <legend>Move to folder</legend>
+            <input id="folder" type="text" value="">
+        </fieldset>
+
+    </main>
+</section>
+
+</body>
+</html>

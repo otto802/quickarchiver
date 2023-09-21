@@ -20,10 +20,10 @@
             onclick: function () {
 
                 let window = messenger.windows.create({
-                    url: "content/popup.html",
+                    url: "content/popup/rule.html",
                     type: "popup",
-                    height: 280,
-                    width: 390,
+                    height: 500,
+                    width: 600,
                     allowScriptsToClose: true,
                 });
 

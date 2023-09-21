@@ -59,6 +59,20 @@ let quickarchiver = {
         }
 
     },
+    getRule: async function(header){
+
+        await this.initRules();
+
+        for (let i in this.rules.from) {
+
+            if (this.rules.from[i].value === this.parseEmail(header.from[0])) {
+                return new Promise((resolve) => {
+                    resolve(this.rules.from[i]);
+                });
+            }
+        }
+
+    },
     updateRule: async function (type, value, folder) {
 
         if (typeof(folder.type) !== "undefined" && folder.type === "inbox"){
