@@ -7,7 +7,7 @@
 
 
     // onClicked listener. Fires when the toolbar button is clicked.
-    messenger.messageDisplayAction.onClicked.addListener(async (tab, info) => {
+    messenger.messageDisplayAction.onClicked.addListener(async (tab) => {
 
         let message = await messenger.messageDisplay.getDisplayedMessage(tab.id);
         await quickarchiver.moveMail(message);
@@ -30,7 +30,7 @@
 
     // onMessage listener. fired when an internal message is sent via the internal message bus.
     // not an actual email-message ;-)
-    messenger.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    messenger.runtime.onMessage.addListener((message) => {
         if (message && message.hasOwnProperty("command")) {
 
             if (message.command === "getMessageId") {

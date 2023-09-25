@@ -10,7 +10,7 @@ async function notifyMode(event) {
     window.close();
 }
 
-async function ruleSave(event) {
+async function ruleSave() {
 
     if (typeof (rule.index) !== "undefined") {
 
@@ -27,12 +27,12 @@ async function ruleSave(event) {
     window.close();
 }
 
-async function ruleCancel(event) {
+async function ruleCancel() {
     window.close();
 }
 
 
-async function ruleDelete(event) {
+async function ruleDelete() {
     if (typeof (rule.index) !== "undefined") {
         await quickarchiver.deleteRule(rule.index);
         await quickarchiver.updateToolbarEntry(messageId);
@@ -41,7 +41,7 @@ async function ruleDelete(event) {
 }
 
 
-messenger.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+messenger.runtime.onMessage.addListener(async (message) => {
     if (message && message.hasOwnProperty("command")) {
 
         if (message.command === "setMessageId") {

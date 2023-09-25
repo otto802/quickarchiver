@@ -12,13 +12,6 @@ let quickarchiver = {
     },
     currentMessageId: null,
 
-    init: async function () {
-
-        return new Promise((resolve) => {
-            resolve(true);
-        });
-    },
-
     checkMovedMessages: async function (messages) {
 
         for (let i in messages) {
@@ -202,7 +195,7 @@ let quickarchiver = {
             title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
             onclick: function () {
 
-                let window = messenger.windows.create({
+                messenger.windows.create({
                     url: "content/popup/rule.html",
                     type: "popup",
                     height: 500,
