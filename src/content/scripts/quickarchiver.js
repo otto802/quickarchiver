@@ -35,7 +35,16 @@ let quickarchiver = {
 
         if (typeof (folder.type) !== "undefined" && folder.type === "inbox") {
 
-            console.info("Ignore the Inbox folder!");
+            console.warn("Ignored the inbox folder destination!");
+
+            return new Promise((resolve) => {
+                resolve(false);
+            });
+        }
+
+        if (typeof (folder.type) !== "undefined" && folder.type === "trash") {
+
+            console.warn("Ignored the trash folder destination!");
 
             return new Promise((resolve) => {
                 resolve(false);
@@ -87,17 +96,37 @@ let quickarchiver = {
 
         await this.initRules();
 
+        let match = false;
+
         for (let i in this.rules) {
 
             let rule = this.rules[i];
 
             if (rule.activeFrom && this.parseEmail(header.from[0]).search(rule.from) !== -1) {
+                match = true;
+            } else if (rule.activeFrom) {
+                match = false;
+            }
 
+            if (rule.activeTo && this.parseEmail(header.to[0]).search(rule.to) !== -1) {
+                match = true;
+            } else if (rule.activeTo) {
+                match = false;
+            }
+
+            if (rule.activeSubject && header.subject[0].search(rule.subject) !== -1) {
+                match = true;
+            } else if (rule.activeSubject) {
+                match = false;
+            }
+
+            if (match) {
                 rule.index = i;
                 return new Promise((resolve) => {
                     resolve(rule);
                 });
             }
+
         }
 
         return new Promise((resolve) => {
