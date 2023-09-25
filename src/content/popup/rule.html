@@ -11,35 +11,40 @@
 </head>
 <body>
 
-<nav class="nav-main"><h1>Quickarchiver</h1></nav>
+<nav class="nav-main"><h1 data-i18n="popup.headline"></h1></nav>
 
 <section class="section-main">
     <main class="rule">
 
-        <h2>Edit rule</h2>
+        <h2 data-i18n="popup.rule.headline"></h2>
         <fieldset>
             <legend data-i18n="popup.rule.from"></legend>
-            <label for="active-from">Enable</label>
-            <input id="active-from" type="checkbox" data-pref="dkim.enable"> <input id="from" type="text" value="">
-            <small>Author contains the given value</small>
+            <label for="active-from" data-i18n="popup.rule.from.checkbox.hint"></label>
+            <input id="active-from" type="checkbox"> <input id="from" type="text" value="">
+            <small data-i18n="popup.rule.from.help"></small>
+        </fieldset>
+        <fieldset>
+            <legend data-i18n="popup.rule.to"></legend>
+            <label for="active-to" data-i18n="popup.rule.to.checkbox.hint"></label>
+            <input id="active-to" type="checkbox"> <input id="to" type="text" value="">
+            <small data-i18n="popup.rule.to.help"></small>
         </fieldset>
         <fieldset>
             <legend data-i18n="popup.rule.subject"></legend>
-            <label for="active-to">Enable</label>
-            <input id="active-to" type="checkbox" data-pref="dkim.enable"> <input id="to" type="text" value="">
-            <small>Recipient contains the given value</small>
+            <label for="active-subject" data-i18n="popup.rule.subject.checkbox.hint"></label>
+            <input id="active-subject" type="checkbox"> <input id="subject" type="text"
+                                                               value="">
+            <small data-i18n="popup.rule.subject.help"></small>
         </fieldset>
         <fieldset>
-            <legend data-i18n="popup.rule.subject"></legend>
-            <label for="active-subject">Enable</label>
-            <input id="active-subject" type="checkbox" data-pref="dkim.enable"> <input id="subject" type="text"
-                                                                                       value="">
-            <small>Subject contains the given value</small>
+            <legend data-i18n="popup.rule.folder"></legend>
+            <input id="folder" type="text" value="" disabled="disabled">
         </fieldset>
-        <fieldset>
-            <legend>Move to folder</legend>
-            <input id="folder" type="text" value="">
-        </fieldset>
+
+
+        <button id="button_save" data-i18n="popup.rule.button.save"></button>
+        <button id="button_delete" data-i18n="popup.rule.button.delete"></button>
+        <button id="button_cancel" data-i18n="popup.rule.button.cancel"></button>
 
     </main>
 </section>

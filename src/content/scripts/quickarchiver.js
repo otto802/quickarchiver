@@ -1,33 +1,74 @@
 let quickarchiver = {
 
     rules: {},
+    defaultRule: {
+        from: '',
+        to: '',
+        subject: '',
+        activeFrom: false,
+        activeTo: false,
+        activeSubject: false,
+        folder: {},
+    },
+    currentMessageId: null,
 
     init: async function () {
 
         return new Promise((resolve) => {
             resolve(true);
         });
-
     },
 
-    movedMessages: async function (messages) {
+    checkMovedMessages: async function (messages) {
 
         for (let i in messages) {
             let message = messages[i];
 
-            console.info("Moved message:");
+            let full = await messenger.messages.getFull(message.id);
+            let rule = await this.findRule(full.headers);
 
-            await this.updateRule("from", this.parseEmail(message.author), message.folder)
+            console.info("Moved message: " + message.subject);
+
+            if (!rule) {
+                await this.createDefaultRule(full.headers, message.folder);
+            } else {
+                console.info("Rule already exists.");
+            }
 
         }
     },
+    createDefaultRule: async function (headers, folder) {
+
+
+        if (typeof (folder.type) !== "undefined" && folder.type === "inbox") {
+
+            console.info("Ignore the Inbox folder!");
+
+            return new Promise((resolve) => {
+                resolve(false);
+            });
+        }
+
+        console.info("Create default rule for message " + headers.subject);
+
+        let index = await this.createRule({
+            activeFrom: true,
+            from: this.parseEmail(headers.from[0]),
+            to: this.parseEmail(headers.to[0]),
+            subject: headers.subject[0],
+            folder: folder,
+        })
+
+        return new Promise((resolve) => {
+            resolve(index);
+        });
+    },
+
     initRules: async function () {
         let rules = await messenger.storage.local.get('rules');
 
         if (typeof (rules.rules) === "undefined") {
-            this.rules = {
-                from: []
-            };
+            this.rules = [];
         } else {
             this.rules = rules.rules;
         }
@@ -45,83 +86,156 @@ let quickarchiver = {
             resolve(true);
         });
     },
-    getFolder: async function(header){
+
+    /*
+        Finds a matching rule according header data
+    */
+    findRule: async function (header) {
 
         await this.initRules();
 
-        for (let i in this.rules.from) {
+        for (let i in this.rules) {
 
-            if (this.rules.from[i].value === this.parseEmail(header.from[0])) {
+            let rule = this.rules[i];
+
+            if (rule.activeFrom && this.parseEmail(header.from[0]).search(rule.from) !== -1) {
+
+                rule.index = i;
                 return new Promise((resolve) => {
-                    resolve(this.rules.from[i].folder);
+                    resolve(rule);
                 });
             }
         }
 
+        return new Promise((resolve) => {
+            resolve(false);
+        });
+
+
     },
-    getRule: async function(header){
+
+    /*
+        Creates a new rule in storage
+    */
+    createRule: async function (rule) {
 
         await this.initRules();
 
-        for (let i in this.rules.from) {
+        let newRule = this.defaultRule;
 
-            if (this.rules.from[i].value === this.parseEmail(header.from[0])) {
-                return new Promise((resolve) => {
-                    resolve(this.rules.from[i]);
-                });
+        for (let key in newRule) {
+
+            if (typeof (rule[key]) !== "undefined") {
+                newRule[key] = rule[key];
             }
         }
 
-    },
-    updateRule: async function (type, value, folder) {
-
-        if (typeof(folder.type) !== "undefined" && folder.type === "inbox"){
-
-            console.info("Ignore the Inbox folder!")
-
-            return new Promise((resolve) => {
-                resolve(true);
-            });
-        }
-
-        await this.initRules();
-
-        let found_index = false;
-
-        for (let i in this.rules[type]) {
-
-            if (this.rules[type][i].value === value) {
-                found_index = i;
-            }
-        }
-
-        if (found_index !== false) {
-            // update rule
-            this.rules[type][found_index].folder = folder;
-        } else {
-            // add rule
-            this.rules[type].push({
-                value: value,
-                folder: folder
-            });
-        }
+        this.rules.push(newRule);
 
         await this.saveRules();
 
         return new Promise((resolve) => {
-            resolve(true);
+            resolve(this.rules.length - 1);
+        });
+
+    },
+
+    /*
+        Updates rule in storage
+    */
+    updateRule: async function (index, rule) {
+
+        await this.initRules();
+
+        let updateRule = this.defaultRule;
+
+        for (let key in updateRule) {
+
+            if (typeof (rule[key]) !== "undefined") {
+                updateRule[key] = rule[key];
+            }
+        }
+
+        this.rules[index] = updateRule;
+
+        await this.saveRules();
+
+        return new Promise((resolve) => {
+            resolve(index);
+        });
+
+    },
+
+    /*
+        Deletes rule from storage
+    */
+    deleteRule: async function (index) {
+
+        await this.initRules();
+
+        delete this.rules[index];
+
+        await this.saveRules();
+
+        return new Promise((resolve) => {
+            resolve(index);
         });
     },
-    moveMail: async function(message) {
+
+    /*
+        Creates and update the toolbar button
+     */
+    updateToolbarEntry: async function (messageId) {
+
+        messenger.messageDisplayAction.setTitle({title: browser.i18n.getMessage("toolbar.title.rule_notfound")});
+        messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label")});
+        messenger.messageDisplayAction.disable();
+
+        let full = await messenger.messages.getFull(messageId);
+        let rule = await quickarchiver.findRule(full.headers);
+
+        this.currentMessageId = messageId;
+
+        await messenger.menus.create({
+            contexts: ["message_display_action"],
+            id: 'qa_edit',
+            title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
+            onclick: function () {
+
+                let window = messenger.windows.create({
+                    url: "content/popup/rule.html",
+                    type: "popup",
+                    height: 500,
+                    width: 600,
+                    allowScriptsToClose: true,
+                });
+
+            }
+        });
+
+        if (rule && rule.folder) {
+
+            messenger.messageDisplayAction.enable();
+            messenger.messageDisplayAction.setTitle({
+                title: browser.i18n.getMessage("toolbar.title.rule_present", [
+                    full.headers.subject,
+                    rule.folder.path
+                ])
+            });
+            messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_present")});
+        }
+    },
+
+    moveMail: async function (message) {
 
         let full = await messenger.messages.getFull(message.id);
-        let folder = await this.getFolder(full.headers);
+        let rule = await this.findRule(full.headers);
 
-        if (folder) {
+        if (rule && rule.folder) {
             try {
-                await messenger.messages.move([message.id], folder);
-                console.info("Moved message with id " + message.id + " to folder " + folder.path);
-            } catch(ex) {
+                await messenger.messages.move([message.id], rule.folder);
+                console.info("Moved message with id " + message.id + " to folder " + rule.folder.path);
+            } catch (ex) {
                 console.error(ex);
             }
         }

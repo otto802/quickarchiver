@@ -3,55 +3,55 @@
     "message": "QuickArchiver"
   },
   "popup.rule.headline": {
-    "message": "Edit Rule"
+    "message": "Regel bearbeiten"
   },
   "popup.rule.from": {
-    "message": "From"
+    "message": "Von"
   },
   "popup.rule.from.checkbox.hint": {
-    "message": "Enable"
+    "message": "Aktiv"
   },
   "popup.rule.from.help": {
-    "message": "Author contains the given value"
+    "message": "Autor enhält die angegebene Zeichenfolge"
   },
   "popup.rule.to": {
-    "message": "To"
+    "message": "An"
   },
   "popup.rule.to.checkbox.hint": {
-    "message": "Enable"
+    "message": "Aktiv"
   },
   "popup.rule.to.help": {
-    "message": "Recipient contains the given value"
+    "message": "Empfänger enhält die angegebene Zeichenfolge"
   },
   "popup.rule.subject": {
-    "message": "Subject"
+    "message": "Betreff"
   },
   "popup.rule.subject.checkbox.hint": {
-    "message": "Enable"
+    "message": "Aktiv"
   },
   "popup.rule.subject.help": {
-    "message": "Subject contains the given value"
+    "message": "Betreff enhält die angegebene Zeichenfolge"
   },
   "popup.rule.folder": {
-    "message": "Move to folder"
+    "message": "Archiviere in Ordner"
   },
   "popup.rule.button.save": {
-    "message": "Save Rule"
+    "message": "Regel speichern"
   },
   "popup.rule.button.delete": {
-    "message": "Delete Rule"
+    "message": "Regel löschen"
   },
   "popup.rule.button.cancel": {
-    "message": "Close"
+    "message": "Schliessen"
   },
   "toolbar.label": {
     "message": "QuickArchiver"
   },
   "toolbar.label.rule_present": {
-    "message": "QuickArchiver: Move"
+    "message": "QuickArchiver: Verschieben"
   },
   "toolbar.title.rule_present": {
-    "message": "Move \"$message$\" to Folder \"$folder$\"",
+    "message": "Verschiebe \"$message$\" in Ordner \"$folder$\"",
     "placeholders": {
       "message": {
         "content": "$1",
@@ -64,9 +64,9 @@
     }
   },
   "toolbar.title.rule_notfound": {
-    "message": "No rule found. Move a message to a folder to create a rule."
+    "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner um eine Regel zu erstellen."
   },
   "toolbar.menu.title.edit_rule": {
-    "message": "Edit QuickArchiver rule"
+    "message": "QuickArchiver Regel bearbeiten"
   }
 }
