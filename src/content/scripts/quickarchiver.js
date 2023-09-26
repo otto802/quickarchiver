@@ -10,30 +10,27 @@ let quickarchiver = {
         activeSubject: false,
         folder: {},
     },
-    currentMessageId: null,
+    currentMessage: null,
+    toolbarMenuId: null,
 
     checkMovedMessages: async function (messages) {
 
-        for (let i in messages) {
-            let message = messages[i];
+        for (const message of messages) {
 
-            let full = await messenger.messages.getFull(message.id);
-            let rule = await this.findRule(full.headers);
+            console.info("Check moved message with subject '" + message.subject + "'");
 
-            console.info("Moved message: " + message.subject);
+            let rule = await this.findRule(message);
 
             if (!rule) {
-                await this.createDefaultRule(full.headers, message.folder);
+                await this.createDefaultRule(message);
             } else {
-                console.info("Rule already exists.");
+                console.info("Rule for message with subject '" + message.subject + "' already exists.");
             }
-
         }
     },
-    createDefaultRule: async function (headers, folder) {
+    createDefaultRule: async function (message) {
 
-
-        if (typeof (folder.type) !== "undefined" && folder.type === "inbox") {
+        if (typeof (message.folder.type) !== "undefined" && message.folder.type === "inbox") {
 
             console.warn("Ignored the inbox folder destination!");
 
@@ -42,7 +39,7 @@ let quickarchiver = {
             });
         }
 
-        if (typeof (folder.type) !== "undefined" && folder.type === "trash") {
+        if (typeof (message.folder.type) !== "undefined" && message.folder.type === "trash") {
 
             console.warn("Ignored the trash folder destination!");
 
@@ -51,14 +48,14 @@ let quickarchiver = {
             });
         }
 
-        console.info("Create default rule for message " + headers.subject);
+        console.info("Create default rule for message with subject '" + message.subject + "'");
 
         let index = await this.createRule({
             activeFrom: true,
-            from: this.parseEmail(headers.from[0]),
-            to: this.parseEmail(headers.to[0]),
-            subject: headers.subject[0],
-            folder: folder,
+            from: this.getMessageHeaderValue(message, "author"),
+            to: this.getMessageHeaderValue(message, "recipients"),
+            subject: this.getMessageHeaderValue(message, "subject"),
+            folder: message.folder,
         })
 
         return new Promise((resolve) => {
@@ -89,51 +86,87 @@ let quickarchiver = {
         });
     },
 
+    findMatch: function (string, value) {
+
+        if (typeof (string) !== "string") {
+            return false;
+        }
+
+        return string.search(value) !== -1;
+    },
+    getMessageHeaderValue: function (message, type) {
+
+        let string = '';
+
+        if (typeof (message[type]) === "string") {
+            string = message[type];
+        } else if (typeof (message[type]) !== "string") {
+            string = message[type][0];
+        }
+
+        switch (type) {
+            case "author":
+            case "from":
+            case "recipients":
+            case "to":
+                string = this.parseEmail(string);
+                break;
+        }
+
+        return string;
+    },
+
     /*
         Finds a matching rule according header data
     */
-    findRule: async function (header) {
+    findRule: async function (message) {
 
         await this.initRules();
 
         let match = false;
 
-        for (let i in this.rules) {
+        try {
 
-            let rule = this.rules[i];
+            for (let i in this.rules) {
 
-            if (rule.activeFrom && this.parseEmail(header.from[0]).search(rule.from) !== -1) {
-                match = true;
-            } else if (rule.activeFrom) {
-                match = false;
+                let rule = this.rules[i];
+
+                if (rule.activeFrom && typeof (message.author) === "string"
+                    && this.findMatch(this.getMessageHeaderValue(message, "author"), rule.from)) {
+                    match = true;
+                } else if (rule.activeFrom) {
+                    match = false;
+                }
+
+                if (rule.activeTo && typeof (message.recipients[0]) === "string"
+                    && this.findMatch(this.getMessageHeaderValue(message, "recipients"), rule.to)) {
+                    match = true;
+                } else if (rule.activeTo) {
+                    match = false;
+                }
+
+                if (rule.activeSubject && typeof (message.subject) === "string"
+                    && this.findMatch(this.getMessageHeaderValue(message, "subject"), rule.subject)) {
+                    match = true;
+                } else if (rule.activeSubject) {
+                    match = false;
+                }
+
+                if (match) {
+                    rule.index = i;
+                    return new Promise((resolve) => {
+                        resolve(rule);
+                    });
+                }
             }
 
-            if (rule.activeTo && this.parseEmail(header.to[0]).search(rule.to) !== -1) {
-                match = true;
-            } else if (rule.activeTo) {
-                match = false;
-            }
-
-            if (rule.activeSubject && header.subject[0].search(rule.subject) !== -1) {
-                match = true;
-            } else if (rule.activeSubject) {
-                match = false;
-            }
-
-            if (match) {
-                rule.index = i;
-                return new Promise((resolve) => {
-                    resolve(rule);
-                });
-            }
-
+        } catch (e) {
+            console.error(e);
         }
 
         return new Promise((resolve) => {
             resolve(false);
         });
-
-
     },
 
     /*
@@ -207,59 +240,91 @@ let quickarchiver = {
     /*
         Creates and update the toolbar button
      */
-    updateToolbarEntry: async function (messageId) {
+    updateToolbarEntry: async function (message) {
 
-        messenger.messageDisplayAction.setTitle({title: browser.i18n.getMessage("toolbar.title.rule_notfound")});
-        messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label")});
-        messenger.messageDisplayAction.disable();
-
-        let full = await messenger.messages.getFull(messageId);
-        let rule = await quickarchiver.findRule(full.headers);
-
-        this.currentMessageId = messageId;
-
-        await messenger.menus.create({
-            contexts: ["message_display_action"],
-            id: 'qa_edit',
-            title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
-            onclick: function () {
-
-                messenger.windows.create({
-                    url: "content/popup/rule.html",
-                    type: "popup",
-                    height: 500,
-                    width: 600,
-                    allowScriptsToClose: true,
-                });
-
-            }
-        });
-
-        if (rule && rule.folder) {
-
-            messenger.messageDisplayAction.enable();
-            messenger.messageDisplayAction.setTitle({
-                title: browser.i18n.getMessage("toolbar.title.rule_present", [
-                    full.headers.subject,
-                    rule.folder.path
-                ])
+        if (message == null) {
+            return new Promise((resolve) => {
+                resolve(false);
             });
-            messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_present")});
+        }
+
+        try {
+
+            this.currentMessage = message;
+
+            messenger.messageDisplayAction.setTitle({title: browser.i18n.getMessage("toolbar.title.rule_notfound")});
+            messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label")});
+            messenger.messageDisplayAction.disable();
+
+            let menuProperties = {
+                contexts: ["message_display_action"],
+                title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
+                onclick: function () {
+
+                    messenger.windows.create({
+                        url: "content/popup/rule.html",
+                        type: "popup",
+                        height: 500,
+                        width: 600,
+                        allowScriptsToClose: true,
+                    });
+                }
+            };
+
+            if (this.toolbarMenuId) {
+
+                // if menu exists, update it (avoid a console warning)
+                await messenger.menus.update(this.toolbarMenuId, menuProperties);
+            } else {
+                menuProperties['id'] = 'qa_edit';
+                this.toolbarMenuId = await messenger.menus.create(menuProperties);
+            }
+
+            let rule = await quickarchiver.findRule(message);
+
+            if (rule && rule.folder) {
+
+                messenger.messageDisplayAction.enable();
+                messenger.messageDisplayAction.setTitle({
+                    title: browser.i18n.getMessage("toolbar.title.rule_present", [
+                        message.subject,
+                        rule.folder.path
+                    ])
+                });
+                messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_present")});
+            }
+
+        } catch (e) {
+            console.error(e);
+        }
+    },
+
+    moveMails: async function (messages) {
+
+        for (const message of messages) {
+            await this.moveMail(message);
         }
     },
 
     moveMail: async function (message) {
 
-        let full = await messenger.messages.getFull(message.id);
-        let rule = await this.findRule(full.headers);
+        if (message == null) {
+            return new Promise((resolve) => {
+                resolve(false);
+            });
+        }
+
+        let rule = await this.findRule(message);
 
         if (rule && rule.folder) {
             try {
                 await messenger.messages.move([message.id], rule.folder);
-                console.info("Moved message with id " + message.id + " to folder " + rule.folder.path);
+                console.info("Moved message with with subject '" + message.subject + "' to folder '" + rule.folder.path + "'");
             } catch (ex) {
                 console.error(ex);
             }
+        } else {
+            console.info("No rule found to move message with subject '" + message.subject + "'.");
         }
     },
     parseEmail: function (string) {
@@ -270,7 +335,8 @@ let quickarchiver = {
             return '';
         }
         if (email.length > 1) {
-            return email;
+            // return the last match if multiple addresses are found
+            return email[email.length - 1];
         } else {
             return email[0];
         }

@@ -2,7 +2,7 @@
 
     // onMessageDisplayed listener. Fires when a email-message gets displayed.
     messenger.messageDisplay.onMessageDisplayed.addListener(async (tab, message) => {
-        await quickarchiver.updateToolbarEntry(message.id);
+        await quickarchiver.updateToolbarEntry(message);
     });
 
 
@@ -17,14 +17,13 @@
     messenger.commands.onCommand.addListener(async (command, tab) => {
 
         if (command === "quickarchiver_move") {
-            let message = await messenger.messageDisplay.getDisplayedMessage(tab.id);
-            await quickarchiver.moveMail(message);
+            let messages = await messenger.messageDisplay.getDisplayedMessages(tab.id);
+            await quickarchiver.moveMails(messages);
         }
     });
 
     // onMoved listener. fired when message is moved to a folder.
     messenger.messages.onMoved.addListener(async (originalMessages, movedMessages) => {
-
         await quickarchiver.checkMovedMessages(movedMessages.messages);
     });
 
@@ -33,10 +32,10 @@
     messenger.runtime.onMessage.addListener((message) => {
         if (message && message.hasOwnProperty("command")) {
 
-            if (message.command === "getMessageId") {
+            if (message.command === "getMailMessage") {
                 messenger.runtime.sendMessage({
-                    command: "setMessageId",
-                    messageId: quickarchiver.currentMessageId
+                    command: "setMailMessage",
+                    mailMessage: quickarchiver.currentMessage
                 });
             }
         }

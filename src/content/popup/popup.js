@@ -1,7 +1,7 @@
 window.addEventListener("load", onLoad);
 
 let rule = {};
-let messageId = {};
+let message = {};
 
 async function notifyMode(event) {
     await messenger.runtime.sendMessage({
@@ -22,7 +22,7 @@ async function ruleSave() {
         rule.activeSubject = document.getElementById("active-subject").checked;
 
         await quickarchiver.updateRule(rule.index, rule);
-        await quickarchiver.updateToolbarEntry(messageId);
+        await quickarchiver.updateToolbarEntry(message);
     }
     window.close();
 }
@@ -35,21 +35,19 @@ async function ruleCancel() {
 async function ruleDelete() {
     if (typeof (rule.index) !== "undefined") {
         await quickarchiver.deleteRule(rule.index);
-        await quickarchiver.updateToolbarEntry(messageId);
+        await quickarchiver.updateToolbarEntry(message);
     }
     window.close();
 }
 
 
-messenger.runtime.onMessage.addListener(async (message) => {
-    if (message && message.hasOwnProperty("command")) {
+messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
+    if (broadcastMessage && broadcastMessage.hasOwnProperty("command")) {
 
-        if (message.command === "setMessageId") {
-            messageId = message.messageId;
+        if (broadcastMessage.command === "setMailMessage" && broadcastMessage.mailMessage) {
+            message = broadcastMessage.mailMessage;
 
-            let full = await messenger.messages.getFull(messageId);
-
-            rule = await quickarchiver.findRule(full.headers);
+            rule = await quickarchiver.findRule(message);
 
             document.getElementById("from").value = rule.from;
             document.getElementById("to").value = rule.to;
@@ -70,7 +68,7 @@ async function onLoad() {
     document.getElementById("button_delete").addEventListener("click", ruleDelete);
 
     await messenger.runtime.sendMessage({
-        command: "getMessageId"
+        command: "getMailMessage"
     });
 
 }
