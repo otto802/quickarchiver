@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>popup.html</title>
-    <script type="text/javascript" src="popup.js" defer="true"></script>
+    <script type="text/javascript" src="rule.js" defer="true"></script>
     <script type="text/javascript" src="../scripts/quickarchiver.js" defer="true"></script>
     <link rel='stylesheet' type='text/css' href="chrome://global/skin/in-content/common.css">
     <link rel='stylesheet' type='text/css' href="popup.css">
@@ -21,20 +21,20 @@
             <legend data-i18n="popup.rule.from"></legend>
             <label for="active-from" data-i18n="popup.rule.from.checkbox.hint"></label>
             <input id="active-from" type="checkbox"> <input id="from" type="text" value="">
-            <small data-i18n="popup.rule.from.help"></small>
+            <span data-i18n="popup.rule.from.help"></span>
         </fieldset>
         <fieldset>
             <legend data-i18n="popup.rule.to"></legend>
             <label for="active-to" data-i18n="popup.rule.to.checkbox.hint"></label>
             <input id="active-to" type="checkbox"> <input id="to" type="text" value="">
-            <small data-i18n="popup.rule.to.help"></small>
+            <span data-i18n="popup.rule.to.help"></span>
         </fieldset>
         <fieldset>
             <legend data-i18n="popup.rule.subject"></legend>
             <label for="active-subject" data-i18n="popup.rule.subject.checkbox.hint"></label>
             <input id="active-subject" type="checkbox"> <input id="subject" type="text"
                                                                value="">
-            <small data-i18n="popup.rule.subject.help"></small>
+            <span data-i18n="popup.rule.subject.help"></span>
         </fieldset>
         <fieldset>
             <legend data-i18n="popup.rule.folder"></legend>
@@ -48,6 +48,7 @@
 
     </main>
 </section>
+
 
 </body>
 </html>

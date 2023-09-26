@@ -51,7 +51,7 @@
     "message": "QuickArchiver: Verschieben"
   },
   "toolbar.title.rule_present": {
-    "message": "Verschiebe \"$message$\" in Ordner \"$folder$\"",
+    "message": "Verschiebe \"$message$\" in Ordner \"$folder$\" (ALT+A)",
     "placeholders": {
       "message": {
         "content": "$1",
@@ -67,6 +67,9 @@
     "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner um eine Regel zu erstellen."
   },
   "toolbar.menu.title.edit_rule": {
-    "message": "QuickArchiver Regel bearbeiten"
+    "message": "QuickArchiver: Regel bearbeiten"
+  },
+  "toolbar.menu.title.list_rules": {
+    "message": "QuickArchiver: zeige alle Regeln"
   }
 }

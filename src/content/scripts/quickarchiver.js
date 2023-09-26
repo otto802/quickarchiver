@@ -11,7 +11,8 @@ let quickarchiver = {
         folder: {},
     },
     currentMessage: null,
-    toolbarMenuId: null,
+    toolbarMenuEditRuleId: null,
+    toolbarMenuListRulesId: null,
 
     checkMovedMessages: async function (messages) {
 
@@ -256,28 +257,56 @@ let quickarchiver = {
             messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label")});
             messenger.messageDisplayAction.disable();
 
-            let menuProperties = {
+
+            let menuEditRuleProperties = {
                 contexts: ["message_display_action"],
                 title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
+                enabled: false,
                 onclick: function () {
 
                     messenger.windows.create({
                         url: "content/popup/rule.html",
                         type: "popup",
-                        height: 500,
+                        height: 550,
                         width: 600,
                         allowScriptsToClose: true,
+                        titlePreface: 'QuickArchiver Edit Rule | '
                     });
                 }
             };
 
-            if (this.toolbarMenuId) {
+            if (this.toolbarMenuEditRuleId) {
 
                 // if menu exists, update it (avoid a console warning)
-                await messenger.menus.update(this.toolbarMenuId, menuProperties);
+                await messenger.menus.update(this.toolbarMenuEditRuleId, menuEditRuleProperties);
             } else {
-                menuProperties['id'] = 'qa_edit';
-                this.toolbarMenuId = await messenger.menus.create(menuProperties);
+                menuEditRuleProperties['id'] = 'qa_edit';
+                this.toolbarMenuEditRuleId = await messenger.menus.create(menuEditRuleProperties);
+            }
+
+            let menuListRulesProperties = {
+                contexts: ["message_display_action"],
+                title: browser.i18n.getMessage("toolbar.menu.title.list_rules"),
+                onclick: function () {
+
+                    messenger.windows.create({
+                        url: "content/popup/list.html",
+                        type: "popup",
+                        height: 600,
+                        width: 800,
+                        allowScriptsToClose: true,
+                        titlePreface: 'QuickArchiver List Rules | '
+                    });
+                }
+            };
+
+            if (this.toolbarMenuListRulesId) {
+
+                // if menu exists, update it (avoid a console warning)
+                await messenger.menus.update(this.toolbarMenuListRulesId, menuListRulesProperties);
+            } else {
+                menuListRulesProperties['id'] = 'qa_list';
+                this.toolbarMenuListRulesId = await messenger.menus.create(menuListRulesProperties);
             }
 
             let rule = await quickarchiver.findRule(message);
@@ -292,6 +321,8 @@ let quickarchiver = {
                     ])
                 });
                 messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_present")});
+
+                await messenger.menus.update(this.toolbarMenuEditRuleId, {enabled: true});
             }
 
         } catch (e) {
@@ -326,6 +357,10 @@ let quickarchiver = {
         } else {
             console.info("No rule found to move message with subject '" + message.subject + "'.");
         }
+    },
+    getAllRules: async function () {
+        await this.initRules();
+        return this.rules;
     },
     parseEmail: function (string) {
 

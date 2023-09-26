@@ -15,3 +15,12 @@ section.section-main {
     grid-template-rows: 100vh;
     padding:15px;
 }
+
+.rule input[type=text] {
+    width:70%
+}
+
+.rule span {
+    display:block;
+    opacity: 50%;
+}

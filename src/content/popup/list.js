@@ -1,7 +1,5 @@
 window.addEventListener("load", onLoad);
 
-let rule = {};
-let message = {};
 
 async function notifyMode(event) {
     await messenger.runtime.sendMessage({
@@ -10,37 +8,11 @@ async function notifyMode(event) {
     window.close();
 }
 
-async function ruleSave() {
-
-    if (typeof (rule.index) !== "undefined") {
-
-        rule.from = document.getElementById("from").value;
-        rule.to = document.getElementById("to").value;
-        rule.subject = document.getElementById("subject").value;
-        rule.activeFrom = document.getElementById("active-from").checked;
-        rule.activeTo = document.getElementById("active-to").checked;
-        rule.activeSubject = document.getElementById("active-subject").checked;
-
-        await quickarchiver.updateRule(rule.index, rule);
-        await quickarchiver.updateToolbarEntry(message);
-    }
-    window.close();
-}
-
 async function ruleCancel() {
     window.close();
 }
 
-
-async function ruleDelete() {
-    if (typeof (rule.index) !== "undefined") {
-        await quickarchiver.deleteRule(rule.index);
-        await quickarchiver.updateToolbarEntry(message);
-    }
-    window.close();
-}
-
-
+/*
 messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
     if (broadcastMessage && broadcastMessage.hasOwnProperty("command")) {
 
@@ -56,19 +28,64 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
             document.getElementById("active-to").checked = rule.activeTo;
             document.getElementById("active-subject").checked = rule.activeSubject;
             document.getElementById("folder").value = rule.folder.path;
+
+
+
+
         }
     }
 });
-
+*/
 
 async function onLoad() {
 
-    document.getElementById("button_save").addEventListener("click", ruleSave);
     document.getElementById("button_cancel").addEventListener("click", ruleCancel);
-    document.getElementById("button_delete").addEventListener("click", ruleDelete);
 
-    await messenger.runtime.sendMessage({
+    /*await messenger.runtime.sendMessage({
         command: "getMailMessage"
+    });*/
+
+
+    let rules = await quickarchiver.getAllRules();
+
+    console.debug(rules);
+
+    let table = document.getElementById("rule-list-table");
+
+    await buildTableHead(table, {
+        from: "FROM",
+        to: "TO",
+        subject: "SUBJECT",
+        activeFrom: "FROM",
+        activeTo: "FROM",
+        activeSubject: "FROM",
+        folder: "FOLDER"
     });
+    await buildTableBody(table, rules);
 
 }
+
+function buildTableHead(table, data) {
+    let thead = table.createTHead();
+    let row = thead.insertRow();
+    for (let key in data) {
+
+
+        let th = document.createElement("th");
+        let value = document.createTextNode(data[key]);
+        th.appendChild(value);
+        row.appendChild(th);
+    }
+}
+
+function buildTableBody(table, data) {
+    for (let row_data of data) {
+        let row = table.insertRow();
+        for (let key in row_data) {
+            let cell = row.insertCell();
+            let value = document.createTextNode(row_data[key]);
+            cell.appendChild(value);
+        }
+    }
+}
+
