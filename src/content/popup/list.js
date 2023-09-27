@@ -28,10 +28,6 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
             document.getElementById("active-to").checked = rule.activeTo;
             document.getElementById("active-subject").checked = rule.activeSubject;
             document.getElementById("folder").value = rule.folder.path;
-
-
-
-
         }
     }
 });
@@ -48,44 +44,42 @@ async function onLoad() {
 
     let rules = await quickarchiver.getAllRules();
 
-    console.debug(rules);
-
-    let table = document.getElementById("rule-list-table");
-
-    await buildTableHead(table, {
-        from: "FROM",
-        to: "TO",
-        subject: "SUBJECT",
-        activeFrom: "FROM",
-        activeTo: "FROM",
-        activeSubject: "FROM",
-        folder: "FOLDER"
+    let tab = new htmlSimpleTable();
+    tab.setData(rules);
+    tab.setTableConfig({
+        table: {
+            class: "qa-table",
+            rowHighlighter: function (key) {
+                return (key % 2) ? "highlight" : "";
+            }
+        },
+        fields: [
+            {
+                field: "from",
+                title: "From"
+            },
+            {
+                field: "to",
+                title: "To"
+            },
+            {
+                field: "subject",
+                title: "Subject"
+            },
+            {
+                field: "folder",
+                title: "Folder",
+                formatterField: function (value) {
+                    return value.path;
+                }
+            }
+        ]
     });
-    await buildTableBody(table, rules);
+
+    let s = tab.build();
+
+    console.debug(s);
+
+    document.getElementById("rule-list-table").appendChild(s);
 
 }
-
-function buildTableHead(table, data) {
-    let thead = table.createTHead();
-    let row = thead.insertRow();
-    for (let key in data) {
-
-
-        let th = document.createElement("th");
-        let value = document.createTextNode(data[key]);
-        th.appendChild(value);
-        row.appendChild(th);
-    }
-}
-
-function buildTableBody(table, data) {
-    for (let row_data of data) {
-        let row = table.insertRow();
-        for (let key in row_data) {
-            let cell = row.insertCell();
-            let value = document.createTextNode(row_data[key]);
-            cell.appendChild(value);
-        }
-    }
-}
-

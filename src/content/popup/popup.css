@@ -1,26 +1,34 @@
 
-
 body {
 }
 
 nav.nav-main {
     background-color: var(--in-content-categories-background);
-    display:block;
-    height:40px;
-    padding:15px;
+    display: block;
+    height: 40px;
+    padding: 15px;
 }
 
 section.section-main {
     display: grid;
     grid-template-rows: 100vh;
-    padding:15px;
+    padding: 15px;
 }
 
 .rule input[type=text] {
-    width:70%
+    width: 70%
 }
 
 .rule span {
-    display:block;
+    display: block;
     opacity: 50%;
 }
+
+.qa-table td {
+}
+
+
+.qa-table tr.highlight td {
+    background-color: #444;
+}
+
