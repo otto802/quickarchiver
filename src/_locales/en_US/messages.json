@@ -1,5 +1,5 @@
 {
-  "popup.headline": {
+  "main.title": {
     "message": "QuickArchiver"
   },
   "popup.rule.headline": {
@@ -43,6 +43,9 @@
   },
   "popup.rule.button.cancel": {
     "message": "Close"
+  },
+  "tab.list.headline": {
+    "message": "All rules"
   },
   "toolbar.label": {
     "message": "QuickArchiver"

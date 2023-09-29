@@ -1,14 +1,6 @@
 window.addEventListener("load", onLoad);
 
 let rule = {};
-let message = {};
-
-async function notifyMode(event) {
-    await messenger.runtime.sendMessage({
-        popupResponse: event.target.getAttribute("data")
-    });
-    window.close();
-}
 
 async function ruleSave() {
 
@@ -21,8 +13,15 @@ async function ruleSave() {
         rule.activeTo = document.getElementById("active-to").checked;
         rule.activeSubject = document.getElementById("active-subject").checked;
 
-        await quickarchiver.updateRule(rule.index, rule);
-        await quickarchiver.updateToolbarEntry(message);
+        await messenger.runtime.sendMessage({
+            command: "requestRuleUpdate",
+            rule: rule
+        });
+
+        await messenger.runtime.sendMessage({
+            command: "requestRefreshList"
+        });
+
     }
     window.close();
 }
@@ -31,23 +30,29 @@ async function ruleCancel() {
     window.close();
 }
 
-
 async function ruleDelete() {
+
     if (typeof (rule.index) !== "undefined") {
-        await quickarchiver.deleteRule(rule.index);
-        await quickarchiver.updateToolbarEntry(message);
+        await messenger.runtime.sendMessage({
+            command: "requestRuleDelete",
+            rule: rule
+        });
+
+        await messenger.runtime.sendMessage({
+            command: "requestRefreshList"
+        });
     }
     window.close();
 }
 
-
 messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
     if (broadcastMessage && broadcastMessage.hasOwnProperty("command")) {
 
-        if (broadcastMessage.command === "setMailMessage" && broadcastMessage.mailMessage) {
-            message = broadcastMessage.mailMessage;
+        console.info("Broadcast Message received: " + broadcastMessage.command);
 
-            rule = await quickarchiver.findRule(message);
+        if (broadcastMessage.command === "transmitRule" && broadcastMessage.rule) {
+
+            rule = broadcastMessage.rule;
 
             document.getElementById("from").value = rule.from;
             document.getElementById("to").value = rule.to;
@@ -60,7 +65,6 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
     }
 });
 
-
 async function onLoad() {
 
     document.getElementById("button_save").addEventListener("click", ruleSave);
@@ -68,8 +72,7 @@ async function onLoad() {
     document.getElementById("button_delete").addEventListener("click", ruleDelete);
 
     await messenger.runtime.sendMessage({
-        command: "getMailMessage"
+        command: "requestRule"
     });
-
 }
 

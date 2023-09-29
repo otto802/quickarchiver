@@ -102,7 +102,7 @@ class htmlSimpleTable {
                 let val = rowData[field.field];
 
                 if (typeof (field.formatterField) !== "undefined") {
-                    val = field.formatterField(val);
+                    val = field.formatterField(val, rowKey);
                 }
 
                 if (typeof (field.formatterRow) !== "undefined") {
@@ -110,6 +110,11 @@ class htmlSimpleTable {
                 }
 
                 let value = document.createTextNode(val);
+
+                if (typeof (field.createChild) !== "undefined") {
+                    value = field.createChild(val, rowKey);
+                }
+
                 cell.appendChild(value);
             }
         }

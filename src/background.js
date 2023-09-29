@@ -5,7 +5,6 @@
         await quickarchiver.updateToolbarEntry(message);
     });
 
-
     // onClicked listener. Fires when the toolbar button is clicked.
     messenger.messageDisplayAction.onClicked.addListener(async (tab) => {
 
@@ -29,16 +28,8 @@
 
     // onMessage listener. fired when an internal message is sent via the internal message bus.
     // not an actual email-message ;-)
-    messenger.runtime.onMessage.addListener((message) => {
-        if (message && message.hasOwnProperty("command")) {
-
-            if (message.command === "getMailMessage") {
-                messenger.runtime.sendMessage({
-                    command: "setMailMessage",
-                    mailMessage: quickarchiver.currentMessage
-                });
-            }
-        }
+    messenger.runtime.onMessage.addListener(async (message) => {
+        await quickarchiver.handleBroadcastMessage(message);
     });
 
 })()
