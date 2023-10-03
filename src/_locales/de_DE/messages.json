@@ -66,6 +66,12 @@
       }
     }
   },
+  "toolbar.label.rule_edit": {
+    "message": "QuickArchiver: Regel bearbeiten"
+  },
+  "toolbar.title.rule_edit": {
+    "message": "E-Mail befindet sich schon im Zielordner. Klicke um die Regel zu bearbeiten."
+  },
   "toolbar.title.rule_notfound": {
     "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner um eine Regel zu erstellen."
   },

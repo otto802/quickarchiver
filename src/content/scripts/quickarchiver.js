@@ -265,6 +265,17 @@ let quickarchiver = {
         });
     },
 
+    getThemeColorScheme: async function () {
+
+        let theme = await messenger.theme.getCurrent();
+
+        if ((theme.properties && theme.properties.color_scheme === "dark")
+            || (window.matchMedia && !!window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            return "dark";
+        }
+        return "light";
+    },
+
     /*
         Creates and update the toolbar button
      */
@@ -280,10 +291,6 @@ let quickarchiver = {
 
         try {
 
-            messenger.messageDisplayAction.setTitle({title: browser.i18n.getMessage("toolbar.title.rule_notfound")});
-            messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label")});
-            messenger.messageDisplayAction.disable();
-
             let rule = await quickarchiver.findRule(message);
 
             let menuEditRuleProperties = {
@@ -291,9 +298,7 @@ let quickarchiver = {
                 title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
                 enabled: false,
                 onclick: async function () {
-
                     await quickarchiver.openRulePopup();
-
                 }
             };
 
@@ -312,7 +317,7 @@ let quickarchiver = {
                 onclick: function () {
 
                     messenger.tabs.create({
-                        url: "content/popup/list.html",
+                        url: "content/tab/list.html",
                     });
                 }
             };
@@ -326,30 +331,51 @@ let quickarchiver = {
                 this.toolbarMenuListRulesId = await messenger.menus.create(menuListRulesProperties);
             }
 
-            //let rule = await quickarchiver.findRule(message);
+            let color_scheme = await this.getThemeColorScheme();
 
             if (rule && rule.folder) {
 
                 this.currentRule = rule;
 
                 messenger.messageDisplayAction.enable();
-                messenger.messageDisplayAction.setTitle({
-                    title: browser.i18n.getMessage("toolbar.title.rule_present", [
-                        message.subject,
-                        rule.folder.path
-                    ])
-                });
-                messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_present")});
+
+                if (this.messageIsInFolder(message, rule.folder)) {
+                    messenger.messageDisplayAction.setIcon({path: "content/icons/" + color_scheme + "/qa_edit.svg"});
+                    // messenger.messageDisplayAction.setThemeIcons
+                    messenger.messageDisplayAction.setTitle({
+                        title: browser.i18n.getMessage("toolbar.title.rule_edit")
+                    });
+                    messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_edit")});
+                } else {
+                    messenger.messageDisplayAction.setIcon({path: "content/icons/" + color_scheme + "/qa_move.svg"});
+                    messenger.messageDisplayAction.setTitle({
+                        title: browser.i18n.getMessage("toolbar.title.rule_present", [
+                            message.subject,
+                            rule.folder.path
+                        ])
+                    });
+                    messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_present")});
+                }
 
                 await messenger.menus.update(this.toolbarMenuEditRuleId, {enabled: true});
 
             } else {
+
+                messenger.messageDisplayAction.setTitle({title: browser.i18n.getMessage("toolbar.title.rule_notfound")});
+                messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label")});
+                messenger.messageDisplayAction.setIcon({path: "content/icons/" + color_scheme + "/qa_move.svg"});
+                messenger.messageDisplayAction.disable();
+
                 this.currentRule = null;
             }
 
         } catch (e) {
             console.error(e);
         }
+    },
+
+    messageIsInFolder: function (message, folder) {
+        return folder.path === message.folder.path && folder.accountId === message.folder.accountId;
     },
 
     moveMails: async function (messages) {
@@ -370,6 +396,33 @@ let quickarchiver = {
         let rule = await this.findRule(message);
 
         if (rule && rule.folder) {
+            try {
+                await messenger.messages.move([message.id], rule.folder);
+                console.info("Moved message with with subject '" + message.subject + "' to folder '" + rule.folder.path + "'");
+            } catch (ex) {
+                console.error(ex);
+            }
+        } else {
+            console.info("No rule found to move message with subject '" + message.subject + "'.");
+        }
+    },
+
+    moveMailOrOpenRulePopupIfSameFolder: async function (message) {
+
+        if (message == null) {
+            return new Promise((resolve) => {
+                resolve(false);
+            });
+        }
+
+        let rule = await this.findRule(message);
+
+        if (rule && rule.folder && this.messageIsInFolder(message, rule.folder)) {
+
+            await this.openRulePopup();
+
+        } else if (rule && rule.folder) {
+
             try {
                 await messenger.messages.move([message.id], rule.folder);
                 console.info("Moved message with with subject '" + message.subject + "' to folder '" + rule.folder.path + "'");

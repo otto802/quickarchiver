@@ -66,6 +66,12 @@
       }
     }
   },
+  "toolbar.label.rule_edit": {
+    "message": "QuickArchiver: Edit Rule"
+  },
+  "toolbar.title.rule_edit": {
+    "message": "Mail is in the destination folder already. Click to edit rule."
+  },
   "toolbar.title.rule_notfound": {
     "message": "No rule found. Move a message to a folder to create a rule."
   },

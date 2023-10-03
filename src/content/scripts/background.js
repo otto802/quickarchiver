@@ -9,7 +9,7 @@
     messenger.messageDisplayAction.onClicked.addListener(async (tab) => {
 
         let message = await messenger.messageDisplay.getDisplayedMessage(tab.id);
-        await quickarchiver.moveMail(message);
+        await quickarchiver.moveMailOrOpenRulePopupIfSameFolder(message);
     });
 
     // onCommand listener. Fires when the command key is pressed.
