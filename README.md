@@ -1,7 +1,8 @@
 QuickArchiver
 =============
 
-Thunderbird WebExtension 
+- A Thunderbird WebExtension
+- Getting things done in your mailbox!
 
 ![Logo](https://github.com/otto802/quickarchiver/raw/master/content/icons/dark/qa_move.svg)
 
