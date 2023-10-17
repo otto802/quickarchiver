@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8"/>
+    <title data-i18n="tab.about.title"></title>
+    <script type="module" src="../../scripts/translation.mjs.js"></script>
+    <link rel='stylesheet' type='text/css' href="chrome://global/skin/in-content/common.css">
+    <link rel='stylesheet' type='text/css' href="../tab.css">
+</head>
+<body>
+
+<nav class="nav-main"><img src="../../icons/dark/qa_move.svg"/>
+    <h1 data-i18n="main.title"></h1></nav>
+
+<section class="section-main">
+
+    <main class="about">
+
+        <div class="col main">
+
+            <div class="section">
+                <h2>What is QuickArchiver?</h2>
+
+                <p>QuickArchiver helps you to keep your inbox clean: Instead of first searching for the right folder for
+                    each email and then dragging and dropping the email, all it takes now is a single click (or key
+                    combination).</p>
+            </div>
+
+            <div class="section">
+                <h2>How does QuickArchiver work?</h2>
+
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_no_rule@2x.png" alt="toolbar button: no rule"/>
+                    <p>QuickArchiver uses its own rules to remember the appropriate folder for an email. Currently the
+                        rules can consist of sender, recipient or subject. </p>
+                </div>
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_editrule@2x.png" alt="toolbar button: click to edit rule"/>
+                    <h3>Create (default) rule</h3>
+                    <p>The first time you move an email (that does not yet have a matching rule) to a folder,
+                        QuickArchiver automatically creates a rule based on the sender of the email.</p>
+                </div>
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_move@2x.png" alt="toolbar button: click to move email"/>
+                    <h3>Archive emails (move)</h3>
+                    <p>If there are more emails with the same sender, QuickArchiver offers to move them to the
+                        appropriate folder with just one click.</p>
+                </div>
+
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_menu@2x.png"
+                         alt="toolbar button: right-click to open menu"/>
+                    <h3>Context menu</h3>
+                    <p>Right-click on the QuickArchiver button to open the context menu.</p>
+                </div>
+
+                <div class="panel">
+                    <h3>Edit rules</h3>
+                    <p>Using the menu item "Show all rules" all rules can be listed and also edited.</p>
+                    <img width="100%" src="../images/screenshot_editor@2x.png" alt="Screenshot Regeleditor"/>
+                    <p></p>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>FAQ</h2>
+
+                <h3>How can I archive all emails of a certain domain into one folder?</h3>
+
+                <p>The default rule refers to the entire sender address. If you want to archive all emails of a certain
+                    domain, e.g. @amazon.com into one folder, edit the rule and remove the corresponding characters
+                    before the @.</p>
+
+                <h3>Can I archive multiple emails at the same time?</h3>
+
+                <p>It is possible! With the shortcut ALT+A QuickArchiver moves all selected emails into the respective
+                    folders.</p>
+            </div>
+            <div class="section">
+                <h2>Entwicklung</h2>
+
+                <p>QuickArchiver is a open source software project by Otto Berger (<a
+                        href="mailto:quickarchiver@bergercity.de">quickarchiver@bergercity.de</a>). Supported by <a
+                        href="https://www.bergerdata.com">www.bergerdata.com</a>.
+                </p>
+                <p>GitHub Projekt: <a href="https://github.com/otto802/quickarchiver">https://github.com/otto802/quickarchiver</a>
+                </p>
+                <p>Many thanks to</p>
+                <ul>
+                    <li><a href="https://developer.thunderbird.net">developer.thunderbird.net</a></li>
+                    <li>
+                        <a href="https://thunderbird.topicbox.com/groups/addons">thunderbird.topicbox.com/groups/addons</a>
+                    </li>
+                    <li><a href="https://github.com/jobisoft">John Bieling, all his efforts on examples!</a></li>
+                    <li>Philippe Lieser, translation logic</li>
+                    <li>And many, many others working on the WebExtension API!</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col changelog">
+            <h2>Release Notes</h2>
+
+            <h3>Version 2.0</h3>
+
+            <p>The new version of Thunderbird 115.* (Supernova) requires deep changes to QuickArchiver. The old
+                QuickArchiver 0.2 branch will therefore no longer work and thus will not be developed further. The last
+                Thunderbird updates had already announced it: only with effort and unattractive compromises
+                QuickArchiver could continue to work.</p>
+
+            <p>The good news: there is a new version and you have just installed it!</p>
+
+            <p>New features:</p>
+
+            <ul>
+                <li>Complete new development based on the current WebExtension API from Mozilla. Future updates are
+                    easier with this!
+                </li>
+                <li>Rules are stored in the WebExtension storage</li>
+                <li>Rules are potentially available across devices (on the roadmap)</li>
+                <li>New UI: Toolbar button, menu and keyboard shortcuts</li>
+                <li>New UI: improved rule editor and list of all rules</li>
+                <li> Rule creation happens as usual automatically when moving</li>
+            </ul>
+
+            <p>Some disadvantages, which can not be prevented according to the current state:</p>
+
+            <ul>
+                <li>All rules have to be created again. An update of the old rule database to the new structure would be
+                    very time-consuming.
+                </li>
+                <li> There is no QuickArchiver column in the list anymore. This is no longer possible with the current
+                    Thunderbird version, but should probably be possible again in future versions for WebExtensions. It
+                    is also not yet clear how the previous operation can be implemented with the new "card view". The
+                    operation is now done via toolbar buttons and keyboard shortcuts.
+                </li>
+            </ul>
+        </div>
+    </main>
+</section>
+</body>
+</html>
