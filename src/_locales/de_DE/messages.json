@@ -1,6 +1,12 @@
 {
+  "locale.aboutUrl": {
+    "message": "de_DE/about.html"
+  },
   "main.title": {
     "message": "QuickArchiver"
+  },
+  "popup.rule.title": {
+    "message": "QuickArchiver: Regel bearbeiten"
   },
   "popup.rule.headline": {
     "message": "Regel bearbeiten"
@@ -44,6 +50,9 @@
   "popup.rule.button.cancel": {
     "message": "Schliessen"
   },
+  "tab.list.title": {
+    "message": "QuickArchiver: Alle Regeln"
+  },
   "tab.list.headline": {
     "message": "Liste aller Regeln"
   },
@@ -76,9 +85,15 @@
     "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner um eine Regel zu erstellen."
   },
   "toolbar.menu.title.edit_rule": {
-    "message": "QuickArchiver: Regel bearbeiten"
+    "message": "Regel bearbeiten"
   },
   "toolbar.menu.title.list_rules": {
-    "message": "QuickArchiver: zeige alle Regeln"
+    "message": "Zeige alle Regeln"
+  },
+  "toolbar.menu.title.about": {
+    "message": "Über QuickArchiver"
+  },
+  "tab.about.title": {
+    "message": "Über QuickArchiver"
   }
 }

@@ -9,6 +9,13 @@ nav.nav-main {
     padding: 15px;
 }
 
+nav.nav-main img {
+    float: left;
+    display: block;
+    margin-top: 8px;
+    margin-right: 10px;
+}
+
 section.section-main {
     display: grid;
     grid-template-rows: 100vh;

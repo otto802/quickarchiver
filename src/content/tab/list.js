@@ -65,6 +65,7 @@ async function renderTable() {
                 createChild: function (value, key) {
 
                     let a = document.createElement("a");
+                    a.style = 'cursor:pointer';
                     a.onclick = async function () {
 
                         await messenger.runtime.sendMessage({
