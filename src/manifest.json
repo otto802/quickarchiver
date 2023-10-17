@@ -3,7 +3,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "quickarchiver@bergerdata.de",
-      "strict_min_version": "115.1",
+      "strict_min_version": "115.0",
       "strict_max_version": "115.*"
     }
   },
@@ -11,7 +11,7 @@
   "author": "Otto Berger <otto@bergerdata.de>",
   "description": "Getting things done in your inbox.",
   "version": "2.0.0",
-  "default_locale": "en-US",
+  "default_locale": "en_US",
   "background": {
     "scripts": [
       "content/scripts/quickarchiver.js",
