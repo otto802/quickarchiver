@@ -10,6 +10,35 @@ QuickArchiver ![Logo](https://github.com/otto802/quickarchiver/raw/master/src/co
 
 QuickArchiver helps you to keep your inbox clean: Instead of first searching for the right folder for each email and then dragging and dropping the email, all it takes now is a single click (or key combination).
 
+## Release Notes
+
+### Version 2.0
+
+The new version of Thunderbird 115.* (Supernova) required deep changes to QuickArchiver. The old
+QuickArchiver 0.2 branch will therefore no longer work and thus will not be developed further. The last
+Thunderbird updates had already announced it: only with effort and unattractive compromises
+QuickArchiver could continue to work.
+
+The good news: there is a new version :-)
+
+#### New features:
+
+- Complete rewrite based on the current WebExtension API from Mozilla. Future updates are easier with this!
+- Rules are stored in the WebExtension storage
+- Rules are potentially available across devices (on the roadmap)
+- New UI: Toolbar button, menu and keyboard shortcuts
+- New UI: improved rule editor and list of all rules
+- Rule creation happens as usual automatically when moving emails
+
+#### Some disadvantages, which can not be prevented according to the current state:
+
+- All rules have to be created again. An update of the old rule database to the new structure would be
+  very time-consuming.
+- There is no QuickArchiver column in the list anymore. This is no longer possible with the current
+  Thunderbird version, but should probably be possible again in future versions for WebExtensions. It
+  is also not yet clear how the previous operation can be implemented with the new "card view". The
+  operation is now done via toolbar buttons and keyboard shortcuts.
+
 ## How does QuickArchiver work?
 
 ![toolbar button: no rule](https://github.com/otto802/quickarchiver/raw/master/src/content/tab/images/toolbar_no_rule@2x.png)
