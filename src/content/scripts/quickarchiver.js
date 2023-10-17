@@ -14,8 +14,9 @@ let quickarchiver = {
     currentMessage: null,
     toolbarMenuEditRuleId: null,
     toolbarMenuListRulesId: null,
+    toolbarMenuAboutId: null,
 
-    checkMovedMessages: async function (messages) {
+    handleMovedMessages: async function (messages) {
 
         for (const message of messages) {
 
@@ -260,8 +261,15 @@ let quickarchiver = {
             type: "popup",
             height: 550,
             width: 600,
-            allowScriptsToClose: true,
-            titlePreface: 'QuickArchiver Edit Rule | '
+            allowScriptsToClose: true
+        });
+    },
+    openAboutTab: function () {
+
+        let path = browser.i18n.getMessage("locale.aboutUrl");
+
+        messenger.tabs.create({
+            url: "content/tab/" + path,
         });
     },
 
@@ -368,6 +376,25 @@ let quickarchiver = {
 
                 this.currentRule = null;
             }
+
+
+            let menuAboutProperties = {
+                contexts: ["message_display_action"],
+                title: browser.i18n.getMessage("toolbar.menu.title.about"),
+                onclick: function () {
+                    quickarchiver.openAboutTab();
+                }
+            };
+
+            if (this.toolbarMenuAboutId) {
+
+                // if menu exists, update it (avoid a console warning)
+                await messenger.menus.update(this.toolbarMenuAboutId, menuAboutProperties);
+            } else {
+                menuAboutProperties['id'] = 'qa_about';
+                this.toolbarMenuAboutId = await messenger.menus.create(menuAboutProperties);
+            }
+
 
         } catch (e) {
             console.error(e);
