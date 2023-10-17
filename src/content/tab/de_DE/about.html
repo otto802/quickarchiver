@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8"/>
+    <title data-i18n="tab.about.title"></title>
+    <script type="module" src="../../scripts/translation.mjs.js"></script>
+    <link rel='stylesheet' type='text/css' href="chrome://global/skin/in-content/common.css">
+    <link rel='stylesheet' type='text/css' href="../tab.css">
+</head>
+<body>
+
+<nav class="nav-main"><img src="../../icons/dark/qa_move.svg"/>
+    <h1 data-i18n="main.title"></h1></nav>
+
+<section class="section-main">
+
+    <main class="about">
+
+        <div class="col main">
+
+            <div class="section">
+                <h2>Was ist QuickArchiver?</h2>
+
+                <p>QuickArchiver hilft dir den Posteingang sauber zu halten: Anstatt zu jeder E-Mail zunächst den
+                    richtigen
+                    Ordner zu suchen und dann per Drag-and-drop die E-Mail zu verschieben, reicht dazu jetzt ein
+                    einziger
+                    Klick (oder Tastenkombination).</p>
+            </div>
+
+            <div class="section">
+                <h2>Wie funktioniert QuickArchiver?</h2>
+
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_no_rule@2x.png" alt="toolbar button: no rule"/>
+                    <p>QuickArchiver
+                        verwendet eigene Regeln um sich zu einer E-Mail den passenden Ordner zu merken. Aktuell können
+                        die
+                        Regeln aus Absender, Empfänger oder Betreff bestehen. </p>
+                </div>
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_editrule@2x.png" alt="toolbar button: click to edit rule"/>
+                    <h3>(Standard-)Regel erstellen</h3>
+                    <p>Beim
+                        ersten Verschieben einer E-Mail (auf die noch keine Regel passt) in einen Ordner, legt
+                        QuickArchiver
+                        automatisch eine Regel basierend auf den Absender der E-Mail an. </p>
+                </div>
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_move@2x.png" alt="toolbar button: click to move email"/>
+                    <h3>E-Mails Archivieren (Verschieben)</h3>
+                    <p>Bei
+                        weiteren E-Mails mit dem gleichen Absender bietet QuickArchiver an, diese mit nur einem Klick in
+                        den
+                        betreffenden Ordner zu verschieben.</p>
+                </div>
+
+                <div class="panel">
+                    <img width="300" src="../images/toolbar_menu@2x.png" alt="toolbar button: right-click to open menu"/>
+                    <h3>Kontextmenü</h3>
+                    <p>Rechtsklick auf den QuickArchiver Button öffnet das Kontextmenü.</p>
+                </div>
+
+                <div class="panel">
+                    <h3>Regeln bearbeiten</h3>
+                    <img width="100%" src="../images/screenshot_editor@2x.png" alt="Screenshot Regeleditor"/>
+                    <p></p>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>FAQ</h2>
+
+                <h3>Wie kann ich alle E-Mails einer bestimmten Domain in einen Ordner archivieren?</h3>
+
+                <p>Die Standardregel bezieht sich auf die gesamte Absender-Adresse. Sollen alle E-Mails einer bestimmten
+                    Domain, z.B. @amazon.com in einen Ordner landen, bearbeitet man die Regel und entfernt die entspr.
+                    Zeichen vor dem @.</p>
+
+                <h3>Kann ich auch mehrere E-Mails gleichzeitig archivieren?</h3>
+
+                <p>Das geht! Mit dem Tastenkürzel ALT+A verschiebt QuickArchiver alle selektieren E-Mails in die
+                    jeweiligen
+                    Ordner.</p>
+            </div>
+            <div class="section">
+                <h2>Entwicklung</h2>
+
+                <p>QuickArchiver ist ein freies Software-Projekt von Otto Berger (<a
+                        href="mailto:quickarchiver@bergercity.de">quickarchiver@bergercity.de</a>). Unterstützt durch <a
+                        href="https://www.bergerdata.com">www.bergerdata.com</a>.
+                </p>
+                <p>GitHub Projekt: <a href="https://github.com/otto802/quickarchiver">https://github.com/otto802/quickarchiver</a>
+                </p>
+                <p>Vielen Dank an</p>
+                <ul>
+                    <li><a href="https://developer.thunderbird.net">developer.thunderbird.net</a></li>
+                    <li>
+                        <a href="https://thunderbird.topicbox.com/groups/addons">thunderbird.topicbox.com/groups/addons</a>
+                    </li>
+                    <li><a href="https://github.com/jobisoft">John Bieling, all his efforts on examples!</a></li>
+                    <li>Philippe Lieser, translation logic</li>
+                    <li>And many, many others working on the WebExtension API!</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col changelog">
+            <h2>Release Notes</h2>
+
+            <h3>Version 2.0</h3>
+
+            <p>die neue Version von Thunderbird 115.* (Supernova) erfordert tiefgreifende Änderungen an QuickArchiver.
+                Die alte Version wird daher nicht mehr funktionieren und somit auch nicht mehr weiterentwickelt. Die
+                letzten Thunderbird Updates hatten es schon angekündigt: nur mit Mühe und unschönen Kompromissen konnte
+                QuickArchiver weiter funktionieren. </p>
+
+            <p>Die gute Nachricht: Es wird eine ganz neue Version geben und sie ist auch bereits sehr weit
+                fortgeschritten! </p>
+
+            <ul>
+                <li>komplette Neuentwicklung auf Basis der aktuellen WebExtension API von Mozilla. Zukünftige Updates
+                    sind damit einfacher!
+                </li>
+                <li>Regeln werden im WebExtension storage gespeichert</li>
+                <li>Regeln sind damit potentiell auch geräteübergreifend verfügbar (auf der Roadmap)</li>
+                <li>Neues UI: Toolbar Button, Menü und Tastenkürzel</li>
+                <li>Neues UI: verbesserter Regeleditor und Liste aller Regeln</li>
+                <li>Regelerstellung erfolgt wie gehabt automatisch beim Verschieben</li>
+            </ul>
+
+            <p>Einige Nachteile, welche sich nach aktuellem Stand prinzip-bedingt nicht verhindern lassen:</p>
+
+            <ul>
+                <li>Alle Regeln müssen neu erstellt werden. Ein Update der alten Regeldatenbank auf die neue Struktur
+                    wäre sehr aufwendig.
+                </li>
+                <li>Es gibt keine QuickArchiver Spalte mehr in der Liste. Dies ist mit der aktuellen Thunderbird Version
+                    nicht mehr möglich, soll aber wohl in künftigen Versionen für WebExtensions wieder möglich sein. Es
+                    ist auch noch nicht klar wie sich die bisherige Bedienung mit der neuen &quot;Kartenansicht&quot;
+                    umsetzen lässt. Die Bedienung erfolgt jetzt über Toolbar-Buttons und Tastenkürzel.
+                </li>
+            </ul>
+        </div>
+    </main>
+</section>
+</body>
+</html>

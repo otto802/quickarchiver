@@ -9,6 +9,13 @@ nav.nav-main {
     padding: 15px;
 }
 
+nav.nav-main img {
+    float: left;
+    display: block;
+    margin-top: 8px;
+    margin-right: 10px;
+}
+
 section.section-main {
     display: grid;
     grid-template-rows: 100vh;
@@ -32,3 +39,38 @@ section.section-main {
     background-color: #444;
 }
 
+.col {
+    float: left;
+}
+
+.col.main {
+    width: 60%;
+    margin-right: 40px;
+}
+
+.col.changelog {
+    float: right;
+    width: 30%;
+    padding: 20px;
+    padding-top: 0px;
+    background-color: #444444;
+}
+
+.col.main img {
+    border: 1px solid #444444;
+    float: right;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+
+.col.main .panel {
+    clear: both;
+}
+
+.col.main .section {
+    margin-bottom: 40px;
+}
+
+h2 {
+    clear: both;
+}
