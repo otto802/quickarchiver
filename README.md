@@ -4,16 +4,10 @@ QuickArchiver ![Logo](https://github.com/otto802/quickarchiver/raw/master/src/co
 - A Thunderbird WebExtension
 - Getting things done in your mailbox!
 
-
-
-
 ## What is QuickArchiver?
 
 QuickArchiver helps you to keep your inbox clean: Instead of first searching for the right folder for each email and
 then dragging and dropping the email, all it takes now is a single click (or keyboard shortcut).
-
-
-
 
 ## Release Notes
 
@@ -43,9 +37,6 @@ The good news: there is a new version :-)
   Thunderbird version, but should probably be possible again in future versions for WebExtensions. It
   is also not yet clear how the previous operation can be implemented with the new "card view". The
   operation is now done via toolbar buttons and keyboard shortcuts.
-
-  
-
 
 ## How does QuickArchiver work?
 
@@ -80,8 +71,6 @@ Right-click on the QuickArchiver button to open the context menu.
 
 Using the menu item "Show all rules" all rules can be listed and also edited.
 
-
-
 ## FAQ
 
 #### How can I archive all emails of a certain domain into one folder?
@@ -97,15 +86,13 @@ It is possible! With the shortcut ALT+A QuickArchiver moves all selected emails 
 
 That's partly true. Thunderbird currently does not allow to recognize the movement of mails
 between accounts (possibly due to a bug), so the default rule gets not created. But there is a
-workaround: 
+workaround:
 
-1. Move the mail first to the Inbox of the account where the destination folder is 
-located.
+1. Move the mail first to the Inbox of the account where the destination folder is
+   located.
 2. Then move the mail to your destination folder (this will create the default rule)
 3. feel free to edit the rule
 4. Moving mails via the QuickArchiver button between accounts works seamlessly!
-
-
 
 ## Development
 
