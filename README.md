@@ -4,6 +4,14 @@ QuickArchiver ![Logo](https://github.com/otto802/quickarchiver/raw/master/src/co
 - A Thunderbird WebExtension
 - Getting things done in your mailbox!
 
+### Table of contents
+
+- [What is QuickArchiver?](#what-is-quickarchiver)
+- [Release Notes](#release-notes)
+- [How does QuickArchiver work?](#how-does-quickarchiver-work)
+- [FAQ](#faq)
+- [Development](#development)
+
 ## What is QuickArchiver?
 
 QuickArchiver helps you to keep your inbox clean: Instead of first searching for the right folder for each email and
