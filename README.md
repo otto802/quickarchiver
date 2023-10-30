@@ -19,6 +19,19 @@ then dragging and dropping the email, all it takes now is a single click (or key
 
 ## Release Notes
 
+### Version 2.1
+
+Warning: The stored rules of QuickArchiver will be lost if you uninstall the extension (using the
+Thunderbird default settings). But there is now an new import/export module for the stored rule data! Theoretically it
+should be possible to transfer the rules to another Thunderbird: The account/folder structure must be be identical (
+untested!).
+
+#### New features:
+
+- Import/Export of all rules in JSON format. Dialog can be found at the bottom of the rules list.
+- Improved look and feel of the rules list
+- Fixed initialization at the first start
+
 ### Version 2.0
 
 The new version of Thunderbird 115.* (Supernova) required deep changes to QuickArchiver. The old
