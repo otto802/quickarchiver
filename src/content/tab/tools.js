@@ -20,34 +20,62 @@ async function onLoad() {
 
     document.getElementById("button-cancel").addEventListener("click", closeTab);
     document.getElementById("button-import").addEventListener("click", toolsImport);
-    document.getElementById("tools-export").addEventListener("click", selectAll);
+    document.getElementById("button-export").addEventListener("click", toolsExport);
+
+    document.getElementById("import-file").addEventListener("change", toolsImportFile);
 
     await messenger.runtime.sendMessage({
         command: "requestAllRules"
     });
 }
 
+function toolsImportFile() {
+
+    let reader = new FileReader();
+    reader.addEventListener(
+        "load",
+        async () => {
+
+            try {
+                let data = JSON.parse(reader.result);
+
+                if (!confirm(browser.i18n.getMessage("tab.tools.backup.import.message.confirm"))) {
+                    return false;
+                }
+
+                await messenger.runtime.sendMessage({
+                    command: "requestToolsImportRules",
+                    importData: data
+                });
+
+            } catch (e) {
+                alert(browser.i18n.getMessage("tab.tools.backup.import.message.parse_error"));
+            }
+        },
+        false,
+    );
+
+    let files = document.getElementById("import-file");
+    if (typeof (files.files) !== "undefined") {
+        reader.readAsText(files.files[0]);
+    }
+}
 
 
 async function toolsImport() {
+    document.getElementById("import-file").click();
+}
 
-    if (!confirm(browser.i18n.getMessage("tab.tools.backup.import.message.confirm"))) {
-        return false;
-    }
 
-    let text = document.getElementById("tools-import").value;
+async function toolsExport() {
 
-    try{
-        let data = JSON.parse(text);
+    let today = new Date();
+    let dateStr = today.toISOString();
+    dateStr = dateStr.replaceAll(":", "");
+    dateStr = dateStr.replaceAll("-", "");
+    dateStr = dateStr.substring(0, 15);
 
-        await messenger.runtime.sendMessage({
-            command: "requestToolsImportRules",
-            importData: data
-        });
-
-    } catch (e){
-        alert(browser.i18n.getMessage("tab.tools.backup.import.message.parse_error"));
-    }
+    saveAsFile(rules, "QuickArchiver-RulesExport-" + dateStr + ".json");
 }
 
 
@@ -55,16 +83,26 @@ async function closeTab() {
     window.close();
 }
 
-async function selectAll() {
-    this.select();
-}
-
-
 async function openTools() {
     await messenger.runtime.sendMessage({
         command: "requestOpenToolsTab"
     });
 }
+
+let saveAsFile = (function () {
+    let a = document.createElement("a");
+    a.style = "display:none";
+    document.body.appendChild(a);
+    return function (data, fileName) {
+        let json = JSON.stringify(data, null, 4),
+            blob = new Blob([json], {type: "octet/stream"}),
+            url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+}());
 
 messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
 

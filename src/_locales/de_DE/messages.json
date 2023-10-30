@@ -124,16 +124,19 @@
     "message": "Exportieren"
   },
   "tab.tools.backup.export.hint": {
-    "message": "Kopiere und speichere die Zeichenkette um die Regeln zu sichern."
+    "message": "Speichere alle Regeln in eine Datei zum späteren Wiederherstellen. Wenn kein Speicher-Dialog erscheint speichert Thunderbird die Datei direkt im Download Ordner (ohne Rückfrage)."
   },
   "tab.tools.backup.import.headline": {
     "message": "Importieren"
   },
   "tab.tools.backup.import.hint": {
-    "message": "Füge hier die vorher gespeicherten Regeln ein um klicke 'Importieren!' um sie wiederherzustellen."
+    "message": "Wähle die Datei mit den gepeicherten Regeln aus."
+  },
+  "tab.tools.backup.button.export": {
+    "message": "In Datei exportieren"
   },
   "tab.tools.backup.button.import": {
-    "message": "Importieren!"
+    "message": "Aus Datei importieren..."
   },
   "tab.tools.button.cancel": {
     "message": "Schliessen"

@@ -124,16 +124,19 @@
     "message": "Export"
   },
   "tab.tools.backup.export.hint": {
-    "message": "Copy and save the selected string somewhere to backup your ruleset."
+    "message": "Save your rules into a file to be able to restore them later. If no save-file dialog is shown Thunderbird saves the file instantly into your download folder (without a notice). "
   },
   "tab.tools.backup.import.headline": {
     "message": "Import"
   },
   "tab.tools.backup.import.hint": {
-    "message": "Paste a previously saved ruleset and click 'import' to restore it."
+    "message": "Choose your file with the previously saved rules."
+  },
+  "tab.tools.backup.button.export": {
+    "message": "Export to file"
   },
   "tab.tools.backup.button.import": {
-    "message": "Import"
+    "message": "Import from file..."
   },
   "tab.tools.button.cancel": {
     "message": "Close"

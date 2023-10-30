@@ -23,18 +23,18 @@
         <span data-i18n="tab.tools.backup.warning"></span>
 
         <h3 data-i18n="tab.tools.backup.export.headline"></h3>
-        <div>
-            <textarea id="tools-export"></textarea><br/>
-            <span data-i18n="tab.tools.backup.export.hint"></span>
+        <div class="action-buttons">
+            <p data-i18n="tab.tools.backup.export.hint"></p>
+            <button id="button-export" data-i18n="tab.tools.backup.button.export"></button>
         </div>
 
         <h3 data-i18n="tab.tools.backup.import.headline"></h3>
         <div>
-            <textarea id="tools-import"></textarea><br/>
-            <span data-i18n="tab.tools.backup.import.hint"></span>
+            <p data-i18n="tab.tools.backup.import.hint"></p>
+            <input id="import-file" type="file" style="display:none">
+            <button id="button-import" data-i18n="tab.tools.backup.button.import"></button>
         </div>
         <div class="action-buttons">
-            <button class="primary" id="button-import" data-i18n="tab.tools.backup.button.import"></button>
             <button id="button-cancel" data-i18n="tab.tools.button.cancel"></button>
         </div>
     </main>
