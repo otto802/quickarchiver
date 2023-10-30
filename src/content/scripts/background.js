@@ -13,19 +13,6 @@
 
 (async () => {
 
-    // at the first start after install the onMessageDisplayed gets not fired
-    // therefore handle all opened messages
-
-    let tabs = (await messenger.tabs.query({})).filter(t => ["messageDisplay", "mail"].includes(t.type));
-
-    for (let tab of tabs) {
-        let message = await messenger.messageDisplay.getDisplayedMessage(tab.id);
-
-        if (message) {
-            await quickarchiver.updateToolbarEntry(message);
-        }
-    }
-
     // onMessageDisplayed listener. Fires when a email-message gets displayed.
     messenger.messageDisplay.onMessageDisplayed.addListener(async (tab, message) => {
         await quickarchiver.updateToolbarEntry(message);
@@ -58,9 +45,23 @@
         await quickarchiver.handleBroadcastMessage(message);
     });
 
-    // onInstalled listener. fires quickArchiver got an update.
+    // onInstalled listener. fires when quickArchiver got an update.
     messenger.runtime.onInstalled.addListener((info) => {
         quickarchiver.openAboutTab(info);
     });
+
+    // at the first start after install the onMessageDisplayed gets not fired
+    // therefore handle all opened messages
+
+    let tabs = (await messenger.tabs.query({})).filter(t => ["messageDisplay", "mail"].includes(t.type));
+
+    for (let tab of tabs) {
+        let message = await messenger.messageDisplay.getDisplayedMessage(tab.id);
+
+        if (message) {
+            await quickarchiver.updateToolbarEntry(message);
+        }
+    }
+
 
 })()
