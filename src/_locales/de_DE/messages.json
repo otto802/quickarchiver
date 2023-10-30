@@ -141,8 +141,11 @@
   "tab.tools.backup.import.message.success": {
     "message": "Daten wurden erfolgreich importiert!"
   },
+  "tab.tools.backup.import.message.failed": {
+    "message": "Import war nicht erfolgreich. Das Format der Regeln ist nicht korrekt."
+  },
   "tab.tools.backup.import.message.parse_error": {
-    "message": "Importierte Daten sind fehlerhaft."
+    "message": "Import war nicht erfolgreich. Das JSON Format ist fehlerhaft."
   },
   "tab.tools.backup.import.message.confirm": {
     "message": "Sind sie sicher dass sie alle existierenden Regeln überschrieben wollen?"

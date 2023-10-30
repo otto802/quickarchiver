@@ -115,12 +115,22 @@ let quickarchiver = {
         });
     },
     importRules: async function (importData) {
+
+        // quick check of importedData
+        for (let rule of importData) {
+
+            if (typeof (rule.from) === "undefined"
+                || typeof (rule.to) === "undefined"
+                || typeof (rule.subject) === "undefined"
+                || typeof (rule.folder) === "undefined") {
+                return false;
+            }
+        }
+
         this.rules = importData
         await this.saveRules();
 
-        return new Promise((resolve) => {
-            resolve(true);
-        });
+        return true;
     },
 
     findMatch: function (string, value) {
@@ -567,6 +577,12 @@ let quickarchiver = {
                             await messenger.runtime.sendMessage({
                                 command: "transmitAllRules",
                                 rules: await this.getAllRules()
+                            });
+                        } else {
+
+                            await messenger.runtime.sendMessage({
+                                command: "transmitToolsImportResponse",
+                                message: browser.i18n.getMessage("tab.tools.backup.import.message.failed")
                             });
                         }
                     }

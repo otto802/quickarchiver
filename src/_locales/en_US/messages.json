@@ -141,8 +141,11 @@
   "tab.tools.backup.import.message.success": {
     "message": "Ruleset successfully imported!"
   },
+  "tab.tools.backup.import.message.failed": {
+    "message": "Import failed. Rule structure is invalid."
+  },
   "tab.tools.backup.import.message.parse_error": {
-    "message": "Something is wrong with your imported data!"
+    "message": "Import failed. JSON structure is invalid."
   },
   "tab.tools.backup.import.message.confirm": {
     "message": "Are you sure that you want to replace your complete ruleset?"
