@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title data-i18n="tab.tools.title"></title>
+    <script type="text/javascript" src="tools.js" defer="true"></script>
+    <script type="module" src="../scripts/translation.mjs.js"></script>
+    <link rel='stylesheet' type='text/css' href="chrome://global/skin/in-content/common.css">
+    <link rel='stylesheet' type='text/css' href="tab.css">
+</head>
+<body>
+
+<nav class="nav-main"><img src="../icons/dark/qa_move.svg"/>
+    <h1 data-i18n="main.title"></h1>
+</nav>
+
+<section class="section-main">
+
+    <main class="tools">
+
+        <h2 data-i18n="tab.tools.backup.headline"></h2>
+
+        <span data-i18n="tab.tools.backup.warning"></span>
+
+        <h3 data-i18n="tab.tools.backup.export.headline"></h3>
+        <div>
+            <textarea id="tools-export"></textarea><br/>
+            <span data-i18n="tab.tools.backup.export.hint"></span>
+        </div>
+
+        <h3 data-i18n="tab.tools.backup.import.headline"></h3>
+        <div>
+            <textarea id="tools-import"></textarea><br/>
+            <span data-i18n="tab.tools.backup.import.hint"></span>
+        </div>
+        <div class="action-buttons">
+            <button id="button-import" data-i18n="tab.tools.backup.button.import"></button>
+            <button id="button-cancel" data-i18n="tab.tools.button.cancel"></button>
+        </div>
+    </main>
+
+</section>
+
+</body>
+</html>

@@ -5,6 +5,43 @@
   "main.title": {
     "message": "QuickArchiver"
   },
+  "toolbar.label": {
+    "message": "QuickArchiver"
+  },
+  "toolbar.label.rule_present": {
+    "message": "QuickArchiver: Move"
+  },
+  "toolbar.title.rule_present": {
+    "message": "Move \"$message$\" to Folder \"$folder$\" (ALT+A)",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "A Message title"
+      },
+      "folder": {
+        "content": "$2",
+        "example": "/INBOX/Blah"
+      }
+    }
+  },
+  "toolbar.label.rule_edit": {
+    "message": "QuickArchiver: Edit Rule"
+  },
+  "toolbar.title.rule_edit": {
+    "message": "Mail is in the destination folder already. Click to edit rule."
+  },
+  "toolbar.title.rule_notfound": {
+    "message": "No rule found. Move a message to a folder to create a rule."
+  },
+  "toolbar.menu.title.edit_rule": {
+    "message": "QuickArchiver: Edit QuickArchiver rule"
+  },
+  "toolbar.menu.title.list_rules": {
+    "message": "Show all rules"
+  },
+  "toolbar.menu.title.about": {
+    "message": "About QuickArchiver"
+  },
   "popup.rule.title": {
     "message": "QuickArchiver: Edit rule"
   },
@@ -56,44 +93,49 @@
   "tab.list.headline": {
     "message": "All rules"
   },
-  "toolbar.label": {
-    "message": "QuickArchiver"
+  "tab.list.button.tools": {
+    "message": "Import/Export Tools"
   },
-  "toolbar.label.rule_present": {
-    "message": "QuickArchiver: Move"
-  },
-  "toolbar.title.rule_present": {
-    "message": "Move \"$message$\" to Folder \"$folder$\" (ALT+A)",
-    "placeholders": {
-      "message": {
-        "content": "$1",
-        "example": "A Message title"
-      },
-      "folder": {
-        "content": "$2",
-        "example": "/INBOX/Blah"
-      }
-    }
-  },
-  "toolbar.label.rule_edit": {
-    "message": "QuickArchiver: Edit Rule"
-  },
-  "toolbar.title.rule_edit": {
-    "message": "Mail is in the destination folder already. Click to edit rule."
-  },
-  "toolbar.title.rule_notfound": {
-    "message": "No rule found. Move a message to a folder to create a rule."
-  },
-  "toolbar.menu.title.edit_rule": {
-    "message": "QuickArchiver: Edit QuickArchiver rule"
-  },
-  "toolbar.menu.title.list_rules": {
-    "message": "Show all rules"
-  },
-  "toolbar.menu.title.about": {
-    "message": "About QuickArchiver"
+  "tab.list.button.cancel": {
+    "message": "Close"
   },
   "tab.about.title": {
     "message": "About QuickArchiver"
+  },
+  "tab.tools.title": {
+    "message": "QuickArchiver: Tools"
+  },
+  "tab.tools.backup.headline": {
+    "message": "Import/Export"
+  },
+  "tab.tools.backup.warning": {
+    "message": "Warning! This feature is ment for power-users. A wrong import format might break your ruleset! All rules will be replaced by using the import function!"
+  },
+  "tab.tools.backup.export.headline": {
+    "message": "Export"
+  },
+  "tab.tools.backup.export.hint": {
+    "message": "Copy and save the selected string somewhere to backup your ruleset."
+  },
+  "tab.tools.backup.import.headline": {
+    "message": "Import"
+  },
+  "tab.tools.backup.import.hint": {
+    "message": "Paste a previously saved ruleset and click 'import' to restore it."
+  },
+  "tab.tools.backup.button.import": {
+    "message": "Import"
+  },
+  "tab.tools.button.cancel": {
+    "message": "Close"
+  },
+  "tab.tools.backup.import.message.success": {
+    "message": "Ruleset successfully imported!"
+  },
+  "tab.tools.backup.import.message.parse_error": {
+    "message": "Something is wrong with your imported data!"
+  },
+  "tab.tools.backup.import.message.confirm": {
+    "message": "Are you sure that you want to replace your complete ruleset?"
   }
 }

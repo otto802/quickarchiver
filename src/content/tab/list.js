@@ -18,15 +18,22 @@ let rules = {};
 
 async function onLoad() {
 
-    document.getElementById("button_cancel").addEventListener("click", ruleCancel);
+    document.getElementById("button-cancel").addEventListener("click", closeTab);
+    document.getElementById("button-tools").addEventListener("click", openTools);
 
     await messenger.runtime.sendMessage({
         command: "requestAllRules"
     });
 }
 
-async function ruleCancel() {
+async function closeTab() {
     window.close();
+}
+
+async function openTools() {
+    await messenger.runtime.sendMessage({
+        command: "requestOpenToolsTab"
+    });
 }
 
 messenger.runtime.onMessage.addListener(async (broadcastMessage) => {

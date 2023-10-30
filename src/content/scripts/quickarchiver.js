@@ -80,6 +80,16 @@ let quickarchiver = {
     },
 
     initRules: async function () {
+
+        if (typeof (this.rules) === "undefined" || typeof (this.rules.rules) === "undefined") {
+            await this.loadRules();
+        }
+
+        return new Promise((resolve) => {
+            resolve(true);
+        });
+    },
+    loadRules: async function () {
         let rules = await messenger.storage.local.get('rules');
 
         if (typeof (rules.rules) === "undefined") {
@@ -96,6 +106,17 @@ let quickarchiver = {
         await messenger.storage.local.set({
             rules: this.rules
         });
+
+        // reload rules after changing them
+        await this.loadRules();
+
+        return new Promise((resolve) => {
+            resolve(true);
+        });
+    },
+    importRules: async function (importData) {
+        this.rules = importData
+        await this.saveRules();
 
         return new Promise((resolve) => {
             resolve(true);
@@ -283,6 +304,12 @@ let quickarchiver = {
 
         messenger.tabs.create({
             url: "content/tab/" + path,
+        });
+    },
+    openToolsTab: function () {
+
+        messenger.tabs.create({
+            url: "content/tab/tools.html",
         });
     },
 
@@ -514,12 +541,34 @@ let quickarchiver = {
                         rules: await this.getAllRules()
                     });
                     break;
+                case "requestToolsImportRules":
+
+                    if (broadcastMessage.importData) {
+                        let ret = await this.importRules(broadcastMessage.importData);
+
+                        if (ret) {
+                            await messenger.runtime.sendMessage({
+                                command: "transmitToolsImportResponse",
+                                message: browser.i18n.getMessage("tab.tools.backup.import.message.success")
+                            });
+                            await messenger.runtime.sendMessage({
+                                command: "transmitAllRules",
+                                rules: await this.getAllRules()
+                            });
+                        }
+                    }
+
+                    break;
                 case "requestOpenRulePopup":
 
                     if (broadcastMessage.ruleId) {
                         this.currentRule = await this.getRule(broadcastMessage.ruleId)
                         await this.openRulePopup();
                     }
+                    break;
+                case "requestOpenToolsTab":
+
+                    await this.openToolsTab();
                     break;
             }
         }

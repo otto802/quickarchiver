@@ -74,3 +74,12 @@ section.section-main {
 h2 {
     clear: both;
 }
+
+.action-buttons{
+    margin-top:20px;
+}
+
+.tools textarea {
+    width:50%;
+    height:150px;
+}

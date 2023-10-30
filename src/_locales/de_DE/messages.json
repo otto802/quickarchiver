@@ -5,6 +5,43 @@
   "main.title": {
     "message": "QuickArchiver"
   },
+  "toolbar.label": {
+    "message": "QuickArchiver"
+  },
+  "toolbar.label.rule_present": {
+    "message": "QuickArchiver: Verschieben"
+  },
+  "toolbar.title.rule_present": {
+    "message": "Verschiebe \"$message$\" in Ordner \"$folder$\" (ALT+A)",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "A Message title"
+      },
+      "folder": {
+        "content": "$2",
+        "example": "/INBOX/Blah"
+      }
+    }
+  },
+  "toolbar.label.rule_edit": {
+    "message": "QuickArchiver: Regel bearbeiten"
+  },
+  "toolbar.title.rule_edit": {
+    "message": "E-Mail befindet sich schon im Zielordner. Klicke um die Regel zu bearbeiten."
+  },
+  "toolbar.title.rule_notfound": {
+    "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner um eine Regel zu erstellen."
+  },
+  "toolbar.menu.title.edit_rule": {
+    "message": "Regel bearbeiten"
+  },
+  "toolbar.menu.title.list_rules": {
+    "message": "Zeige alle Regeln"
+  },
+  "toolbar.menu.title.about": {
+    "message": "Über QuickArchiver"
+  },
   "popup.rule.title": {
     "message": "QuickArchiver: Regel bearbeiten"
   },
@@ -56,44 +93,49 @@
   "tab.list.headline": {
     "message": "Liste aller Regeln"
   },
-  "toolbar.label": {
-    "message": "QuickArchiver"
+  "tab.list.button.tools": {
+    "message": "Import/Export Werkzeuge"
   },
-  "toolbar.label.rule_present": {
-    "message": "QuickArchiver: Verschieben"
-  },
-  "toolbar.title.rule_present": {
-    "message": "Verschiebe \"$message$\" in Ordner \"$folder$\" (ALT+A)",
-    "placeholders": {
-      "message": {
-        "content": "$1",
-        "example": "A Message title"
-      },
-      "folder": {
-        "content": "$2",
-        "example": "/INBOX/Blah"
-      }
-    }
-  },
-  "toolbar.label.rule_edit": {
-    "message": "QuickArchiver: Regel bearbeiten"
-  },
-  "toolbar.title.rule_edit": {
-    "message": "E-Mail befindet sich schon im Zielordner. Klicke um die Regel zu bearbeiten."
-  },
-  "toolbar.title.rule_notfound": {
-    "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner um eine Regel zu erstellen."
-  },
-  "toolbar.menu.title.edit_rule": {
-    "message": "Regel bearbeiten"
-  },
-  "toolbar.menu.title.list_rules": {
-    "message": "Zeige alle Regeln"
-  },
-  "toolbar.menu.title.about": {
-    "message": "Über QuickArchiver"
+  "tab.list.button.cancel": {
+    "message": "Schliessen"
   },
   "tab.about.title": {
     "message": "Über QuickArchiver"
+  },
+  "tab.tools.title": {
+    "message": "QuickArchiver: Werkzeuge"
+  },
+  "tab.tools.backup.headline": {
+    "message": "Importieren/Exportieren"
+  },
+  "tab.tools.backup.warning": {
+    "message": "Vorsicht! Diese folgenden Funktionen sind für Experten. Ein falsches Import-Datenformat kann die Regeln unbrauchbar machen. Alle bestehenden Regeln werden beim Import überschrieben!"
+  },
+  "tab.tools.backup.export.headline": {
+    "message": "Exportieren"
+  },
+  "tab.tools.backup.export.hint": {
+    "message": "Kopiere und speichere die Zeichenkette um die Regeln zu sichern."
+  },
+  "tab.tools.backup.import.headline": {
+    "message": "Importieren"
+  },
+  "tab.tools.backup.import.hint": {
+    "message": "Füge hier die vorher gespeicherten Regeln ein um klicke 'Importieren!' um sie wiederherzustellen."
+  },
+  "tab.tools.backup.button.import": {
+    "message": "Importieren!"
+  },
+  "tab.tools.button.cancel": {
+    "message": "Schliessen"
+  },
+  "tab.tools.backup.import.message.success": {
+    "message": "Daten wurden erfolgreich importiert!"
+  },
+  "tab.tools.backup.import.message.parse_error": {
+    "message": "Importierte Daten sind fehlerhaft."
+  },
+  "tab.tools.backup.import.message.confirm": {
+    "message": "Sind sie sicher dass sie alle existierenden Regeln überschrieben wollen?"
   }
 }
