@@ -93,6 +93,15 @@
   "tab.list.headline": {
     "message": "Liste aller Regeln"
   },
+  "tab.list.table.action.edit": {
+    "message": "Bearbeiten"
+  },
+  "tab.list.table.action.delete": {
+    "message": "Löschen"
+  },
+  "tab.list.table.action.delete.message.confirm": {
+    "message": "Soll die Regel wirklich gelöscht werden?"
+  },
   "tab.list.button.tools": {
     "message": "Import/Export Werkzeuge"
   },

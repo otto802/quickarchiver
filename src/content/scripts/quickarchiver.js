@@ -281,6 +281,11 @@ let quickarchiver = {
 
         delete this.rules[index];
 
+        // remove null values after deletion
+        this.rules = this.rules.filter(function (element) {
+            return element != null;
+        });
+
         await this.saveRules();
 
         return new Promise((resolve) => {
@@ -531,6 +536,12 @@ let quickarchiver = {
                     if (broadcastMessage.rule) {
                         await quickarchiver.deleteRule(broadcastMessage.rule.index);
                         await quickarchiver.updateToolbarEntry(this.currentMessage);
+
+                        // trigger reload of the rule table (if any)
+                        await messenger.runtime.sendMessage({
+                            command: "transmitAllRules",
+                            rules: await this.getAllRules()
+                        });
                     }
                     break;
                 case "requestRefreshList":
@@ -551,6 +562,8 @@ let quickarchiver = {
                                 command: "transmitToolsImportResponse",
                                 message: browser.i18n.getMessage("tab.tools.backup.import.message.success")
                             });
+
+                            // trigger reload of the rule table
                             await messenger.runtime.sendMessage({
                                 command: "transmitAllRules",
                                 rules: await this.getAllRules()

@@ -63,15 +63,49 @@ async function renderTable() {
         fields: [
             {
                 field: "from",
-                title: "From"
+                title: "From",
+                createChild: function (value, key) {
+
+                    let span = document.createElement("span");
+
+                    if (!value.activeFrom) {
+                        span.className = 'text-muted';
+                    }
+
+                    span.textContent = value.from;
+                    return span;
+                }
             },
             {
                 field: "to",
-                title: "To"
+                title: "To",
+                createChild: function (value, key) {
+
+                    let span = document.createElement("span");
+
+                    if (!value.activeTo) {
+                        span.className = 'text-muted';
+                    }
+
+                    span.textContent = value.to;
+                    return span;
+                }
             },
             {
                 field: "subject",
-                title: "Subject"
+                title: "Subject",
+                createChild: function (value, key) {
+
+                    let span = document.createElement("span");
+
+                    if (!value.activeSubject) {
+                        span.className = 'text-muted';
+                    }
+
+                    span.textContent = value.subject;
+                    return span;
+                }
+
             },
             {
                 field: "folder",
@@ -82,7 +116,8 @@ async function renderTable() {
             },
             {
                 field: "index",
-                title: "Edit",
+                title: "",
+                width: "80px",
                 createChild: function (value, key) {
 
                     let a = document.createElement("a");
@@ -94,7 +129,33 @@ async function renderTable() {
                             ruleId: key
                         });
                     }
-                    a.textContent = "Edit";
+                    a.textContent = browser.i18n.getMessage("tab.list.table.action.edit");
+
+                    return a;
+                }
+            },
+            {
+                field: "index",
+                title: "",
+                width: "80px",
+                createChild: function (value, key) {
+
+                    let a = document.createElement("a");
+                    a.style = 'cursor:pointer';
+                    a.onclick = async function () {
+
+                        if (!confirm(browser.i18n.getMessage("tab.list.table.action.delete.message.confirm"))) {
+                            return false;
+                        }
+
+                        value.index = key;
+
+                        await messenger.runtime.sendMessage({
+                            command: "requestRuleDelete",
+                            rule: value
+                        });
+                    }
+                    a.textContent = browser.i18n.getMessage("tab.list.table.action.delete");
 
                     return a;
                 }

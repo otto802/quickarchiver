@@ -86,7 +86,7 @@ class htmlSimpleTable {
                 th.style = 'width:' + field.width;
             }
 
-            let value = document.createTextNode(field.title ? field.title : field.field);
+            let value = document.createTextNode(typeof(field.title) !== "undefined" ? field.title : field.field);
             th.appendChild(value);
             row.appendChild(th);
         }
@@ -104,8 +104,7 @@ class htmlSimpleTable {
 
             let rowData = this.data[rowKey];
 
-
-            let row = this.table.insertRow();
+            let row = tbody.insertRow();
 
             let css_class = "";
 
@@ -131,7 +130,11 @@ class htmlSimpleTable {
                 let value = document.createTextNode(val);
 
                 if (typeof (field.createChild) !== "undefined") {
-                    value = field.createChild(val, rowKey);
+                    value = field.createChild(rowData, rowKey);
+                }
+
+                if (typeof (field.cellCssClass) !== "undefined") {
+                    cell.className = field.cellCssClass(rowData);
                 }
 
                 cell.appendChild(value);

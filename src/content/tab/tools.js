@@ -84,5 +84,5 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
 });
 
 async function renderExport() {
-    document.getElementById("tools-export").textContent = JSON.stringify(rules);
+    document.getElementById("tools-export").textContent = JSON.stringify(rules, null, 4);
 }
