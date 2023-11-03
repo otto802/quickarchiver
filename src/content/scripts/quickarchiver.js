@@ -325,6 +325,14 @@ let quickarchiver = {
             allowScriptsToClose: true
         });
     },
+
+    openAllRulesTab: async function () {
+
+        await messenger.tabs.create({
+            url: "content/tab/list.html",
+        });
+    },
+
     openAboutTab: function () {
 
         let path = browser.i18n.getMessage("locale.aboutUrl");
@@ -333,6 +341,7 @@ let quickarchiver = {
             url: "content/tab/" + path,
         });
     },
+
     openToolsTab: function () {
 
         messenger.tabs.create({
@@ -389,11 +398,8 @@ let quickarchiver = {
             let menuListRulesProperties = {
                 contexts: ["message_display_action"],
                 title: browser.i18n.getMessage("toolbar.menu.title.list_rules"),
-                onclick: function () {
-
-                    messenger.tabs.create({
-                        url: "content/tab/list.html",
-                    });
+                onclick: async function () {
+                    await quickarchiver.openAllRulesTab();
                 }
             };
 
@@ -610,6 +616,14 @@ let quickarchiver = {
                 case "requestOpenToolsTab":
 
                     await this.openToolsTab();
+                    break;
+                case "requestOpenAllRulesTab":
+
+                    await this.openAllRulesTab();
+                    break;
+                case "requestOpenAboutTab":
+
+                    await this.openAboutTab();
                     break;
             }
         }

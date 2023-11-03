@@ -10,13 +10,16 @@
   "name": "QuickArchiver",
   "author": "Otto Berger <otto@bergerdata.de>",
   "description": "Getting things done in your inbox.",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "default_locale": "en_US",
   "background": {
     "scripts": [
       "content/scripts/quickarchiver.js",
       "content/scripts/background.js"
     ]
+  },
+  "options_ui": {
+    "page": "content/options/options.html"
   },
   "permissions": [
     "storage",

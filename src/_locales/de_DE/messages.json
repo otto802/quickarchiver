@@ -152,5 +152,11 @@
   },
   "tab.tools.backup.import.message.confirm": {
     "message": "Sind sie sicher dass sie alle existierenden Regeln überschrieben wollen?"
+  },
+  "options.headline": {
+    "message": "QuickArchiver Administration"
+  },
+  "options.intro": {
+    "message": "Die Bedienung erfolgt über den QuickArchiver Toolbar-Button im Kontext einer E-Mail. Klicke auf 'Über QuickArchiver' für mehr Informationen und Hilfe."
   }
 }

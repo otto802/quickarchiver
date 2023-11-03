@@ -152,5 +152,11 @@
   },
   "tab.tools.backup.import.message.confirm": {
     "message": "Are you sure that you want to replace your complete ruleset?"
+  },
+  "options.headline": {
+    "message": "QuickArchiver Administration"
+  },
+  "options.intro": {
+    "message": "This extension works mainly via the QuickArchiver toolbar button in context of a e-mail. Click 'About QuickArchiver' for more help and information."
   }
 }
