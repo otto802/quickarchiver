@@ -48,6 +48,9 @@
   "popup.rule.headline": {
     "message": "Edit Rule"
   },
+  "popup.rule.intro": {
+    "message": "You can also make use of wildcards ('*'): For example '@*example.com' matches mails with info@newsletter.example.com and support@example.com."
+  },
   "popup.rule.from": {
     "message": "From"
   },
@@ -55,7 +58,7 @@
     "message": "Enable"
   },
   "popup.rule.from.help": {
-    "message": "Author contains the given value"
+    "message": "Author contains the given value."
   },
   "popup.rule.to": {
     "message": "To"
@@ -64,7 +67,7 @@
     "message": "Enable"
   },
   "popup.rule.to.help": {
-    "message": "Recipient contains the given value"
+    "message": "Recipient contains the given value."
   },
   "popup.rule.subject": {
     "message": "Subject"
@@ -73,7 +76,7 @@
     "message": "Enable"
   },
   "popup.rule.subject.help": {
-    "message": "Subject contains the given value"
+    "message": "Subject contains the given value."
   },
   "popup.rule.folder": {
     "message": "Move to folder"

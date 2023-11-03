@@ -19,6 +19,14 @@ then dragging and dropping the email, all it takes now is a single click (or key
 
 ## Release Notes
 
+### Version 2.2
+
+#### New features:
+
+- QuickArchiver preferences-page added (see Tools->Add-ons)</li>
+- Rules can now make use of wildcards ('*'): For example ```@*example.com``` matches mails with
+  ```info@newsletter.example.com``` and ```support@example.com```.
+
 ### Version 2.1
 
 Warning: The stored rules of QuickArchiver will be lost if you uninstall the extension (using the

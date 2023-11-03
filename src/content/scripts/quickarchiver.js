@@ -320,7 +320,7 @@ let quickarchiver = {
         await messenger.windows.create({
             url: "content/popup/rule.html",
             type: "popup",
-            height: 550,
+            height: 570,
             width: 600,
             allowScriptsToClose: true
         });

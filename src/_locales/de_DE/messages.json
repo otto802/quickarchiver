@@ -48,6 +48,9 @@
   "popup.rule.headline": {
     "message": "Regel bearbeiten"
   },
+  "popup.rule.intro": {
+    "message": "Es können auch Platzhalter ('*') verwendet werden: z.B. '@*example.com' findet E-Mails mit info@newsletter.example.com und @support@example.com."
+  },
   "popup.rule.from": {
     "message": "Von"
   },
@@ -55,7 +58,7 @@
     "message": "Aktiv"
   },
   "popup.rule.from.help": {
-    "message": "Autor enhält die angegebene Zeichenfolge"
+    "message": "Autor enhält die angegebene Zeichenfolge."
   },
   "popup.rule.to": {
     "message": "An"
@@ -64,7 +67,7 @@
     "message": "Aktiv"
   },
   "popup.rule.to.help": {
-    "message": "Empfänger enhält die angegebene Zeichenfolge"
+    "message": "Empfänger enhält die angegebene Zeichenfolge."
   },
   "popup.rule.subject": {
     "message": "Betreff"
@@ -73,7 +76,7 @@
     "message": "Aktiv"
   },
   "popup.rule.subject.help": {
-    "message": "Betreff enhält die angegebene Zeichenfolge"
+    "message": "Betreff enhält die angegebene Zeichenfolge."
   },
   "popup.rule.folder": {
     "message": "Archiviere in Ordner"
