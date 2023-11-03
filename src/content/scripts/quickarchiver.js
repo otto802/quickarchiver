@@ -139,7 +139,19 @@ let quickarchiver = {
             return false;
         }
 
-        return string.search(value) !== -1;
+        // add a default wildcard, as this was the default behaviour before
+
+        if (value.substring(0, 1) !== "*") {
+            value = '*' + value;
+        }
+
+        if (value.substring(-1) !== "*") {
+            value = value + '*';
+        }
+
+        // support for wildcards ("*") within the search string
+        let escapeRegex = (string) => string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+        return new RegExp("^" + value.split("*").map(escapeRegex).join(".*") + "$", 'i').test(string);
     },
     getMessageHeaderValue: function (message, type) {
 
