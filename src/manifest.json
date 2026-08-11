@@ -3,7 +3,8 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "quickarchiver@bergerdata.de",
-      "strict_min_version": "128.0"
+      "strict_min_version": "128.0",
+      "strict_max_version": "153.*"
     }
   },
   "name": "QuickArchiver",
