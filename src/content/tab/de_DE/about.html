@@ -21,61 +21,61 @@
             <div class="section">
                 <h2>Was ist QuickArchiver?</h2>
 
-                <p>QuickArchiver hilft dir den Posteingang sauber zu halten: Anstatt zu jeder E-Mail zunächst den
-                    richtigen
-                    Ordner zu suchen und dann per Drag-and-drop die E-Mail zu verschieben, reicht dazu jetzt ein
-                    einziger
-                    Klick (oder Tastenkombination).</p>
+                <p>QuickArchiver hilft dir, deinen Posteingang sauber zu halten. Anstatt den richtigen Ordner zu suchen
+                    und jede E-Mail per Drag-and-drop dorthin zu verschieben, genügt ein Klick oder ein Tastenkürzel.</p>
             </div>
 
             <div class="section">
                 <h2>Wie funktioniert QuickArchiver?</h2>
 
                 <div class="panel">
-                    <img width="300" src="../images/toolbar_no_rule@2x.png" alt="toolbar button: no rule"/>
-                    <p>QuickArchiver
-                        verwendet eigene Regeln um sich zu einer E-Mail den passenden Ordner zu merken. Aktuell können
-                        die
-                        Regeln aus Absender, Empfänger oder Betreff bestehen. </p>
+                    <img width="300" src="../images/toolbar_no_rule@2x.png" alt="Toolbar-Button ohne vorhandene Regel"/>
+                    <p>QuickArchiver verwendet Regeln, um sich den Zielordner für eine E-Mail zu merken. Regeln können
+                        derzeit den Absender, die Empfänger oder den Betreff berücksichtigen.</p>
                 </div>
                 <div class="panel">
-                    <img width="300" src="../images/toolbar_editrule@2x.png" alt="toolbar button: click to edit rule"/>
-                    <h3>(Standard-)Regel erstellen</h3>
-                    <p>Beim
-                        ersten Verschieben einer E-Mail (auf die noch keine Regel passt) in einen Ordner, legt
-                        QuickArchiver
-                        automatisch eine Regel basierend auf den Absender der E-Mail an. </p>
+                    <img width="300" src="../images/toolbar_editrule@2x.png" alt="Toolbar-Button zum Bearbeiten einer Regel"/>
+                    <h3>Standardregel erstellen</h3>
+                    <p>Wenn du eine E-Mail ohne passende Regel zum ersten Mal in einen Ordner verschiebst, legt
+                        QuickArchiver automatisch eine Regel auf Basis des Absenders an.</p>
                 </div>
                 <div class="panel">
-                    <img width="300" src="../images/toolbar_move@2x.png" alt="toolbar button: click to move email"/>
-                    <h3>E-Mails Archivieren (Verschieben)</h3>
-                    <p>Bei
-                        weiteren E-Mails mit dem gleichen Absender bietet QuickArchiver an, diese mit nur einem Klick in
-                        den
-                        betreffenden Ordner zu verschieben.</p>
+                    <img width="300" src="../images/toolbar_move@2x.png" alt="Toolbar-Button zum Verschieben einer E-Mail"/>
+                    <h3>E-Mails archivieren</h3>
+                    <p>Wenn eine weitere E-Mail zum gleichen Absender passt, kannst du sie mit einem Klick in den
+                        passenden Ordner verschieben.</p>
                 </div>
 
                 <div class="panel">
                     <img width="300" src="../images/toolbar_menu@2x.png"
-                         alt="toolbar button: right-click to open menu"/>
+                         alt="Toolbar-Button mit geöffnetem Kontextmenü"/>
                     <h3>Kontextmenü</h3>
-                    <p>Rechtsklick auf den QuickArchiver Button öffnet das Kontextmenü.</p>
+                    <p>Ein Rechtsklick auf den QuickArchiver-Button öffnet das Kontextmenü.</p>
+                </div>
+
+                <div class="panel">
+                    <h3>QuickArchiver-Ordnerspalte einblenden</h3>
+                    <p>Die QuickArchiver-Ordnerspalte ist in der Tabellenansicht von Thunderbird verfügbar. Um sie
+                        einzublenden, klicke mit der rechten Maustaste auf eine beliebige Spaltenüberschrift in der
+                        Nachrichtenliste und wähle im Spaltenmenü <q>QuickArchiver-Ordner</q> aus. Anschließend kannst du
+                        die Spalte an die gewünschte Position verschieben.</p>
+                    <p>Die Spalte zeigt den Zielordner für passende Regeln an. Befindet sich die E-Mail bereits in diesem
+                        Ordner, wird <q>✓ Aktueller Ordner</q> angezeigt.</p>
                 </div>
 
                 <div class="panel">
                     <h3>Regeln bearbeiten</h3>
-                    <p>Über den Menüeintag "Alle Regeln zeigen" können alle Regeln aufgelistet und auch bearbeitet
-                        werden.</p>
-                    <img width="100%" src="../images/screenshot_editor@2x.png" alt="Screenshot Regeleditor"/>
+                    <p>Wähle im Kontextmenü <q>Alle Regeln anzeigen</q>, um alle Regeln aufzulisten und zu bearbeiten.</p>
+                    <img width="100%" src="../images/screenshot_editor@2x.png" alt="Screenshot des Regeleditors"/>
                     <p></p>
                     <div style="clear: both"></div>
                 </div>
 
                 <div class="panel">
-                    <h3>Exportieren/Importieren aller Regeln</h3>
-                    <p>Unterhalb der Regelliste befindet sich der Button zum Import/Export Modul.</p>
-                    <p>Export und Import der Regeln erfolgt über das JSON Format.</p>
-                    <img width="100%" src="../images/screenshot_tools@2x.png" alt="Screenshot Tools"/>
+                    <h3>Regeln exportieren und importieren</h3>
+                    <p>Unterhalb der Regelliste findest du einen Button, der die Import-/Export-Werkzeuge öffnet.</p>
+                    <p>Regeln werden im JSON-Format exportiert und importiert.</p>
+                    <img width="100%" src="../images/screenshot_tools@2x.png" alt="Screenshot der Import-/Export-Werkzeuge"/>
                     <p></p>
                     <div style="clear: both"></div>
                 </div>
@@ -85,26 +85,25 @@
 
                 <h3>Wie kann ich alle E-Mails einer bestimmten Domain in einen Ordner archivieren?</h3>
 
-                <p>Die Standardregel bezieht sich auf die gesamte Absender-Adresse. Sollen alle E-Mails einer bestimmten
-                    Domain, z.B. @amazon.com in einen Ordner landen, bearbeitet man die Regel und entfernt die entspr.
-                    Zeichen vor dem @.</p>
-                <p>Regeln können auch Platzhalter ('*') enthalten. z.B. '@*example.com' findet E-Mails mit
-                    info@newsletter.example.com und @support@example.com. </p>
+                <p>Die Standardregel berücksichtigt die vollständige Absenderadresse. Um alle E-Mails einer bestimmten
+                    Domain, zum Beispiel @amazon.com, in einem Ordner zu sammeln, bearbeite die Regel und entferne die
+                    Zeichen vor dem @-Zeichen.</p>
+                <p>Regeln unterstützen auch Platzhalter ('*'). Der Ausdruck '@*example.com' findet zum Beispiel E-Mails
+                    von info@newsletter.example.com und support@example.com.</p>
 
                 <h3>Kann ich auch mehrere E-Mails gleichzeitig archivieren?</h3>
 
-                <p>Das geht! Mit dem Tastenkürzel ALT+A verschiebt QuickArchiver alle selektieren E-Mails in die
-                    jeweiligen
+                <p>Ja. Mit dem Tastenkürzel Alt+A verschiebt QuickArchiver alle ausgewählten E-Mails in die jeweiligen
                     Ordner.</p>
             </div>
             <div class="section">
                 <h2>Entwicklung</h2>
 
-                <p>QuickArchiver ist ein freies Software-Projekt von Otto Berger (<a
+                <p>QuickArchiver ist ein Open-Source-Projekt von Otto Berger (<a
                         href="mailto:quickarchiver@bergercity.de">quickarchiver@bergercity.de</a>). Unterstützt durch <a
                         href="https://www.bergerdata.com">www.bergerdata.com</a>.
                 </p>
-                <p>GitHub Projekt: <a href="https://github.com/otto802/quickarchiver">https://github.com/otto802/quickarchiver</a>
+                <p>GitHub-Projekt: <a href="https://github.com/otto802/quickarchiver">https://github.com/otto802/quickarchiver</a>
                 </p>
                 <p>Vielen Dank an</p>
                 <ul>
@@ -112,9 +111,9 @@
                     <li>
                         <a href="https://thunderbird.topicbox.com/groups/addons">thunderbird.topicbox.com/groups/addons</a>
                     </li>
-                    <li><a href="https://github.com/jobisoft">John Bieling, all his efforts on examples!</a></li>
-                    <li>Philippe Lieser, translation logic</li>
-                    <li>And many, many others working on the WebExtension API!</li>
+                    <li><a href="https://github.com/jobisoft">John Bieling für seine Arbeit an den Beispielen</a></li>
+                    <li>Philippe Lieser für die Übersetzungslogik</li>
+                    <li>und viele weitere Mitwirkende an der WebExtension-API</li>
                 </ul>
             </div>
         </div>
@@ -122,60 +121,62 @@
         <div class="col changelog">
             <h2>Release Notes</h2>
 
+            <h3>Version 2.3</h3>
+            <p>Verbesserte Kompatibilität mit neueren Thunderbird-Versionen.</p>
+            <ul>
+                <li>QuickArchiver-Ordnerspalte in der Tabellenansicht der Nachrichtenliste hinzugefügt</li>
+                <li>Kompatibilität mit den aktuellen WebExtension-APIs verbessert</li>
+            </ul>
+
             <h3>Version 2.2</h3>
             <p>Neuerungen:</p>
             <ul>
-                <li>Optionen-Seite hinzugefügt (unter Erweiterungen)</li>
-                <li>Regeln können jetzt Platzhalter ('*') enthalten. z.B. '@*example.com' findet E-Mails mit
+                <li>Eine Einstellungsseite hinzugefügt (unter Erweiterungen → QuickArchiver)</li>
+                <li>Regeln unterstützen jetzt Platzhalter ('*'). Der Ausdruck '@*example.com' findet E-Mails von
                     info@newsletter.example.com und @support@example.com.
                 </li>
             </ul>
 
             <h3>Version 2.1</h3>
-            <p>Vorsicht: Die angelernten QuickArchiver Regeln überleben mit den Standardeinstellungen von Thunderbird
-                keine Deinstallation der Extension. Dafür gibt es jetzt ein Import/Export Modul für die Regeldaten.
-                Theoretisch sollte es damit auch möglich sein, die Regeln auf einen anderen Thunderbird zu übertragen:
-                Jedoch muss dafür die Account/Ordnerstruktur
-                identisch sein (ungetestet).
+            <p>Vorsicht: Mit den Standardeinstellungen von Thunderbird gehen gespeicherte QuickArchiver-Regeln bei einer
+                Deinstallation der Erweiterung verloren. Mit den Import-/Export-Werkzeugen kannst du die Regeln vorher
+                sichern. Theoretisch lassen sich die Regeln auf eine andere Thunderbird-Installation übertragen, wenn
+                die Account- und Ordnerstruktur identisch ist (ungetestet).
             </p>
             <p>Neuerungen:</p>
             <ul>
-                <li>Import/Export aller Regeln im JSON Format. Zugang zum Export Modul befindet unten in der Regel
-                    Liste.
-                </li>
-                <li>Look and Feel der Regelliste verbessert</li>
-                <li>Initialisierung beim ersten Start behoben</li>
+                <li>Import und Export aller Regeln im JSON-Format</li>
+                <li>Aussehen und Bedienbarkeit der Regelliste verbessert</li>
+                <li>Initialisierung beim ersten Start korrigiert</li>
             </ul>
 
             <h3>Version 2.0</h3>
-            <p>Die neue Version von Thunderbird 115.* (Supernova) erfordert tiefgreifende Änderungen an QuickArchiver.
-                Der alte QuickArchiver 0.2er Zweig wird daher nicht mehr funktionieren und somit auch nicht mehr
-                weiterentwickelt. Die
-                letzten Thunderbird Updates hatten es schon angekündigt: nur mit Mühe und unschönen Kompromissen konnte
-                QuickArchiver weiter funktionieren. </p>
-            <p>Die gute Nachricht: Es gibt eine neue Version und Du hast sie soeben installiert!</p>
+            <p>Thunderbird 115 (Supernova) erforderte umfangreiche Änderungen an QuickArchiver. Der alte
+                QuickArchiver-0.2-Zweig funktioniert daher nicht mehr und wird nicht weiterentwickelt. Bereits frühere
+                Thunderbird-Updates hatten gezeigt, dass eine Fortführung nur mit erheblichem Aufwand und ungünstigen
+                Kompromissen möglich gewesen wäre.</p>
+            <p>Die gute Nachricht: Es gibt eine neue Version, und du hast sie gerade installiert!</p>
             <p>Neuerungen:</p>
             <ul>
-                <li>komplette Neuentwicklung auf Basis der aktuellen WebExtension API von Mozilla. Zukünftige Updates
-                    sind damit einfacher!
+                <li>Komplette Neuentwicklung auf Basis der aktuellen WebExtension-API von Mozilla – zukünftige Updates
+                    werden dadurch einfacher.
                 </li>
-                <li>Regeln werden im WebExtension storage gespeichert</li>
-                <li>Regeln sind damit potentiell auch geräteübergreifend verfügbar (auf der Roadmap)</li>
-                <li>Neues UI: Toolbar Button, Menü und Tastenkürzel</li>
-                <li>Neues UI: verbesserter Regeleditor und Liste aller Regeln</li>
-                <li>Regelerstellung erfolgt wie gehabt automatisch beim Verschieben</li>
+                <li>Regeln werden im WebExtension-Speicher gespeichert</li>
+                <li>Regeln könnten künftig geräteübergreifend verfügbar sein</li>
+                <li>Neue Benutzeroberfläche mit Toolbar-Button, Menü und Tastenkürzeln</li>
+                <li>Verbesserter Regeleditor und verbesserte Regelliste</li>
+                <li>Regeln werden wie gewohnt beim Verschieben automatisch erstellt</li>
             </ul>
 
-            <p>Einige Nachteile, welche sich nach aktuellem Stand prinzipbedingt nicht verhindern lassen:</p>
+            <p>Einige Einschränkungen bleiben bestehen:</p>
 
             <ul>
-                <li>Alle Regeln müssen neu erstellt werden. Ein Update der alten Regeldatenbank auf die neue Struktur
+                <li>Alle Regeln müssen neu erstellt werden. Eine Migration der alten Regeldatenbank in die neue Struktur
                     wäre sehr aufwendig.
                 </li>
-                <li>Es gibt keine QuickArchiver Spalte mehr in der Liste. Dies ist mit der aktuellen Thunderbird Version
-                    nicht mehr möglich, soll aber wohl in künftigen Versionen für WebExtensions wieder möglich sein. Es
-                    ist auch noch nicht klar wie sich die bisherige Bedienung mit der neuen &quot;Kartenansicht&quot;
-                    umsetzen lässt. Die Bedienung erfolgt jetzt über Toolbar-Buttons und Tastenkürzel.
+                <li>In der Kartenansicht ist die QuickArchiver-Ordnerspalte nicht verfügbar. In der Tabellenansicht kann
+                    sie über die Spaltenauswahl eingeblendet werden. Nachrichten können außerdem über den Toolbar-Button
+                    und Tastenkürzel verschoben werden.
                 </li>
             </ul>
         </div>

@@ -1,6 +1,6 @@
 /**
  * QuickArchiver
- * Copyright (c) 2023 Otto Berger <otto@bergerdata.de>
+ * Copyright (c) 2026 Otto Berger <otto@bergerdata.de>
  *
  * QuickArchiver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,6 +29,8 @@ let quickarchiver = {
     toolbarMenuListRulesId: 'qa_list',
     toolbarMenuAboutId: 'qa_about',
     toolbarMenuMoveId: 'qa_move',
+    columnId: 'quickarchiverFolder',
+    columnRegistered: false,
 
     getMessages: function (messageList) {
         // MV3 returns a MessageList. Keep accepting arrays for compatibility
@@ -36,12 +38,29 @@ let quickarchiver = {
         return Array.isArray(messageList) ? messageList : (messageList?.messages ?? []);
     },
 
+    describeError: function (error) {
+        return {
+            name: error?.name,
+            message: error?.message,
+            code: error?.code,
+            stack: error?.stack,
+        };
+    },
+
     getFolderId: async function (folder) {
         // MV3 messages.move() expects a MailFolderId, not a MailFolder object.
         if (typeof folder === "string") {
+            console.info("[QuickArchiver move] Destination is already an ID", {
+                folderId: folder,
+            });
             return folder;
         }
         if (folder?.id) {
+            console.info("[QuickArchiver move] Resolved destination from rule", {
+                folderId: folder.id,
+                path: folder.path,
+                accountId: folder.accountId,
+            });
             return folder.id;
         }
 
@@ -49,9 +68,17 @@ let quickarchiver = {
         // Resolve those legacy rules once against the current folder tree.
         if (folder?.accountId && folder?.path && messenger.folders?.query) {
             let folders = await messenger.folders.query({accountId: folder.accountId});
-            return folders.find(candidate => candidate.path === folder.path)?.id ?? null;
+            let resolvedFolder = folders.find(candidate => candidate.path === folder.path);
+            console.info("[QuickArchiver move] Resolved legacy destination", {
+                accountId: folder.accountId,
+                path: folder.path,
+                folderId: resolvedFolder?.id ?? null,
+                folderCount: folders.length,
+            });
+            return resolvedFolder?.id ?? null;
         }
 
+        console.warn("[QuickArchiver move] Could not resolve destination", {folder});
         return null;
     },
 
@@ -100,24 +127,23 @@ let quickarchiver = {
             }
         }
     },
+    isSpecialFolder: function (folder, specialUse, legacyType) {
+        return folder?.type === legacyType
+            || (Array.isArray(folder?.specialUse)
+                && folder.specialUse.includes(specialUse));
+    },
     createDefaultRule: async function (message) {
 
-        if (typeof (message.folder.type) !== "undefined" && message.folder.type === "inbox") {
+        if (this.isSpecialFolder(message?.folder, "inbox", "inbox")) {
 
             console.warn("Ignored the inbox folder destination!");
-
-            return new Promise((resolve) => {
-                resolve(false);
-            });
+            return false;
         }
 
-        if (typeof (message.folder.type) !== "undefined" && message.folder.type === "trash") {
+        if (this.isSpecialFolder(message?.folder, "trash", "trash")) {
 
             console.warn("Ignored the trash folder destination!");
-
-            return new Promise((resolve) => {
-                resolve(false);
-            });
+            return false;
         }
 
         console.info("Create default rule for message with subject '" + message.subject + "'");
@@ -153,6 +179,26 @@ let quickarchiver = {
 
         return true;
     },
+    initColumn: async function () {
+        if (typeof messenger.customColumns?.add !== "function") {
+            console.warn("QuickArchiver folder column API is unavailable.");
+            return false;
+        }
+
+        if (!this.columnRegistered) {
+            await messenger.customColumns.add(
+                this.columnId,
+                browser.i18n.getMessage("column.quickarchiverFolder"),
+                this.rules,
+                browser.i18n.getMessage("column.currentFolder")
+            );
+            this.columnRegistered = true;
+        } else {
+            await messenger.customColumns.setRules(this.columnId, this.rules);
+        }
+
+        return true;
+    },
     saveRules: async function () {
         await messenger.storage.local.set({
             rules: this.rules
@@ -160,6 +206,7 @@ let quickarchiver = {
 
         // reload rules after changing them
         await this.loadRules();
+        await this.initColumn();
 
         return true;
     },
@@ -183,49 +230,10 @@ let quickarchiver = {
     },
 
     findMatch: function (string, value) {
-
-        if (typeof (string) !== "string") {
-            return false;
-        }
-
-        // add a default wildcard, as this was the default behavior before
-
-        if (typeof value !== "string") {
-            return false;
-        }
-
-        if (value.substring(0, 1) !== "*") {
-            value = '*' + value;
-        }
-
-        if (value.substring(-1) !== "*") {
-            value = value + '*';
-        }
-
-        // support for wildcards ("*") within the search string
-        let escapeRegex = (string) => string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-        return new RegExp("^" + value.split("*").map(escapeRegex).join(".*") + "$", 'i').test(string);
+        return QuickArchiverRuleMatching.findMatch(string, value);
     },
     getMessageHeaderValue: function (message, type) {
-
-        let string = '';
-
-        if (typeof (message[type]) === "string") {
-            string = message[type];
-        } else if (Array.isArray(message[type]) && message[type].length > 0) {
-            string = message[type][0];
-        }
-
-        switch (type) {
-            case "author":
-            case "from":
-            case "recipients":
-            case "to":
-                string = this.parseEmail(string);
-                break;
-        }
-
-        return string;
+        return QuickArchiverRuleMatching.getMessageHeaderValue(message, type);
     },
 
     /*
@@ -237,35 +245,10 @@ let quickarchiver = {
 
         try {
 
-            for (let i = 0; i < this.rules.length; i++) {
-
-                let rule = this.rules[i];
-                let match = true;
-                let hasActiveCriteria = false;
-
-                if (rule.activeFrom) {
-                    hasActiveCriteria = true;
-                    match = typeof message.author === "string"
-                        && this.findMatch(this.getMessageHeaderValue(message, "author"), rule.from);
-                }
-
-                if (match && rule.activeTo) {
-                    hasActiveCriteria = true;
-                    match = Array.isArray(message.recipients)
-                        && typeof message.recipients[0] === "string"
-                        && this.findMatch(this.getMessageHeaderValue(message, "recipients"), rule.to);
-                }
-
-                if (match && rule.activeSubject) {
-                    hasActiveCriteria = true;
-                    match = typeof message.subject === "string"
-                        && this.findMatch(this.getMessageHeaderValue(message, "subject"), rule.subject);
-                }
-
-                if (hasActiveCriteria && match) {
-                    rule.index = i;
-                    return rule;
-                }
+            const rule = QuickArchiverRuleMatching.findRule(message, this.rules);
+            if (rule) {
+                rule.index = this.rules.indexOf(rule);
+                return rule;
             }
 
         } catch (e) {
@@ -472,20 +455,61 @@ let quickarchiver = {
 
     moveMails: async function (messages) {
 
-        for (const message of messages) {
+        console.info("[QuickArchiver move] Starting batch", {
+            count: messages?.length ?? 0,
+            messageIds: messages?.map(message => message.id) ?? [],
+        });
+
+        for (let index = 0; index < (messages?.length ?? 0); index++) {
+            const message = messages[index];
+            console.info("[QuickArchiver move] Processing batch item", {
+                index,
+                messageId: message?.id,
+                subject: message?.subject,
+            });
             await this.moveMail(message);
         }
+
+        console.info("[QuickArchiver move] Batch finished");
     },
 
     moveMail: async function (message) {
 
+        console.info("[QuickArchiver move] Start message", {
+            messageId: message?.id,
+            subject: message?.subject,
+            sourceFolder: message?.folder
+                ? {
+                    id: message.folder.id,
+                    path: message.folder.path,
+                    accountId: message.folder.accountId,
+                    type: message.folder.type,
+                    specialUse: message.folder.specialUse,
+                }
+                : null,
+        });
+
         if (message == null) {
+            console.warn("[QuickArchiver move] Skipping empty message");
             return new Promise((resolve) => {
                 resolve(false);
             });
         }
 
         let rule = await this.findRule(message);
+
+        console.info("[QuickArchiver move] Rule lookup result", {
+            messageId: message.id,
+            matched: Boolean(rule),
+            ruleIndex: rule?.index,
+            destination: rule?.folder
+                ? {
+                    id: rule.folder.id,
+                    path: rule.folder.path,
+                    accountId: rule.folder.accountId,
+                }
+                : null,
+        });
 
         if (rule && rule.folder) {
             try {
@@ -494,13 +518,46 @@ let quickarchiver = {
                     console.error("Could not resolve destination folder", rule.folder);
                     return false;
                 }
+
+                // A selected IMAP message can still be represented by a
+                // partially loaded message object. Fetch it once before the
+                // move so Thunderbird has a current message header.
+                try {
+                    message = await messenger.messages.get(message.id);
+                    console.info("[QuickArchiver move] Refreshed message", {
+                        messageId: message.id,
+                        subject: message.subject,
+                        sourceFolderId: message.folder?.id,
+                    });
+                } catch (refreshError) {
+                    console.warn("[QuickArchiver move] Could not refresh message; using selected message", {
+                        messageId: message.id,
+                        error: refreshError,
+                    });
+                }
+
+                console.info("[QuickArchiver move] Calling messages.move", {
+                    messageId: message.id,
+                    destinationFolderId: folderId,
+                });
                 await messenger.messages.move([message.id], folderId);
+                console.info("[QuickArchiver move] messages.move succeeded", {
+                    messageId: message.id,
+                    destinationFolderId: folderId,
+                });
                 console.info("Moved message with with subject '" + message.subject + "' to folder '" + rule.folder.path + "'");
             } catch (ex) {
-                console.error(ex);
+                console.error("[QuickArchiver move] messages.move failed", {
+                    messageId: message.id,
+                    destination: rule.folder,
+                    error: this.describeError(ex),
+                });
             }
         } else {
-            console.info("No rule found to move message with subject '" + message.subject + "'.");
+            console.info("[QuickArchiver move] No rule found", {
+                messageId: message.id,
+                subject: message.subject,
+            });
         }
     },
 
@@ -631,17 +688,6 @@ let quickarchiver = {
         }
     },
     parseEmail: function (string) {
-
-        let email = string.match(/(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/g);
-
-        if (email === null) {
-            return '';
-        }
-        if (email.length > 1) {
-            // return the last match if multiple addresses are found
-            return email[email.length - 1];
-        } else {
-            return email[0];
-        }
+        return QuickArchiverRuleMatching.parseEmail(string);
     },
 }

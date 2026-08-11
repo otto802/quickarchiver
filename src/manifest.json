@@ -13,10 +13,27 @@
   "default_locale": "en_US",
   "background": {
     "scripts": [
+      "content/shared/rule-matching.js",
       "content/scripts/quickarchiver.js",
       "content/scripts/background.js"
     ],
     "type": "classic"
+  },
+  "experiment_apis": {
+    "customColumns": {
+      "schema": "experiments/customColumns/schema.json",
+      "parent": {
+        "scopes": [
+          "addon_parent"
+        ],
+        "paths": [
+          [
+            "customColumns"
+          ]
+        ],
+        "script": "experiments/customColumns/implementation.js"
+      }
+    }
   },
   "options_ui": {
     "page": "content/options/options.html"

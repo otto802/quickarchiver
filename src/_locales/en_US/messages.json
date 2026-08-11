@@ -5,6 +5,12 @@
   "main.title": {
     "message": "QuickArchiver"
   },
+  "column.quickarchiverFolder": {
+    "message": "QuickArchiver Folder"
+  },
+  "column.currentFolder": {
+    "message": "✓ Current Folder"
+  },
   "toolbar.label": {
     "message": "QuickArchiver"
   },
@@ -12,7 +18,7 @@
     "message": "QuickArchiver: Move"
   },
   "toolbar.title.rule_present": {
-    "message": "Move \"$message$\" to Folder \"$folder$\" (ALT+A)",
+    "message": "Move \"$message$\" to \"$folder$\" (Alt+A)",
     "placeholders": {
       "message": {
         "content": "$1",
@@ -28,13 +34,13 @@
     "message": "QuickArchiver: Edit Rule"
   },
   "toolbar.title.rule_edit": {
-    "message": "Mail is in the destination folder already. Click to edit rule."
+    "message": "This message is already in the destination folder. Click to edit the rule."
   },
   "toolbar.title.rule_notfound": {
-    "message": "No rule found. Move a message to a folder to create a rule."
+    "message": "No rule found. Move a message to a folder to create one."
   },
   "toolbar.menu.title.edit_rule": {
-    "message": "QuickArchiver: Edit QuickArchiver rule"
+    "message": "QuickArchiver: Edit rule"
   },
   "toolbar.menu.title.list_rules": {
     "message": "Show all rules"
@@ -49,7 +55,7 @@
     "message": "Edit Rule"
   },
   "popup.rule.intro": {
-    "message": "You can also make use of wildcards ('*'): For example '@*example.com' matches mails with info@newsletter.example.com and support@example.com."
+    "message": "You can use wildcards ('*'). For example, '@*example.com' matches messages from info@newsletter.example.com and support@example.com."
   },
   "popup.rule.from": {
     "message": "From"
@@ -58,7 +64,7 @@
     "message": "Enable"
   },
   "popup.rule.from.help": {
-    "message": "Author contains the given value."
+    "message": "The sender contains the specified value."
   },
   "popup.rule.to": {
     "message": "To"
@@ -67,7 +73,7 @@
     "message": "Enable"
   },
   "popup.rule.to.help": {
-    "message": "Recipient contains the given value."
+    "message": "A recipient contains the specified value."
   },
   "popup.rule.subject": {
     "message": "Subject"
@@ -76,10 +82,10 @@
     "message": "Enable"
   },
   "popup.rule.subject.help": {
-    "message": "Subject contains the given value."
+    "message": "The subject contains the specified value."
   },
   "popup.rule.folder": {
-    "message": "Move to folder"
+    "message": "Destination folder"
   },
   "popup.rule.button.save": {
     "message": "Save Rule"
@@ -88,7 +94,7 @@
     "message": "Delete Rule"
   },
   "popup.rule.button.cancel": {
-    "message": "Close"
+    "message": "Cancel"
   },
   "tab.list.title": {
     "message": "QuickArchiver: All rules"
@@ -106,7 +112,7 @@
     "message": "Do you really want to delete the rule?"
   },
   "tab.list.button.tools": {
-    "message": "Import/Export Tools"
+    "message": "Import/Export tools"
   },
   "tab.list.button.cancel": {
     "message": "Close"
@@ -121,19 +127,19 @@
     "message": "Import/Export"
   },
   "tab.tools.backup.warning": {
-    "message": "Warning! This feature is ment for power-users. A wrong import format might break your ruleset! All rules will be replaced by using the import function!"
+    "message": "Warning! These tools are intended for advanced users. An invalid import file may make your rules unusable. Importing replaces all existing rules."
   },
   "tab.tools.backup.export.headline": {
     "message": "Export"
   },
   "tab.tools.backup.export.hint": {
-    "message": "Save your rules into a file to be able to restore them later. If no save-file dialog is shown Thunderbird saves the file instantly into your download folder (without a notice). "
+    "message": "Save your rules to a file so you can restore them later. If no save dialog appears, Thunderbird saves the file directly to your Downloads folder without showing a notification."
   },
   "tab.tools.backup.import.headline": {
     "message": "Import"
   },
   "tab.tools.backup.import.hint": {
-    "message": "Choose your file with the previously saved rules."
+    "message": "Choose a file containing previously saved rules."
   },
   "tab.tools.backup.button.export": {
     "message": "Export to file"
@@ -145,21 +151,21 @@
     "message": "Close"
   },
   "tab.tools.backup.import.message.success": {
-    "message": "Ruleset successfully imported!"
+    "message": "Rules imported successfully."
   },
   "tab.tools.backup.import.message.failed": {
-    "message": "Import failed. Rule structure is invalid."
+    "message": "Import failed. The rule structure is invalid."
   },
   "tab.tools.backup.import.message.parse_error": {
-    "message": "Import failed. JSON structure is invalid."
+    "message": "Import failed. The JSON structure is invalid."
   },
   "tab.tools.backup.import.message.confirm": {
-    "message": "Are you sure that you want to replace your complete ruleset?"
+    "message": "Are you sure you want to replace all existing rules?"
   },
   "options.headline": {
-    "message": "QuickArchiver Administration"
+    "message": "QuickArchiver Settings"
   },
   "options.intro": {
-    "message": "This extension works mainly via the QuickArchiver toolbar button in context of a e-mail. Click 'About QuickArchiver' for more help and information."
+    "message": "QuickArchiver is mainly used through the toolbar button when viewing an email. Click 'About QuickArchiver' for more information and help."
   }
 }

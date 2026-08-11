@@ -1,6 +1,6 @@
 /**
  * QuickArchiver
- * Copyright (c) 2023 Otto Berger <otto@bergerdata.de>
+ * Copyright (c) 2026 Otto Berger <otto@bergerdata.de>
  *
  * QuickArchiver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,13 @@
 
         if (command === "quickarchiver_move") {
             let messageList = await messenger.messageDisplay.getDisplayedMessages(tab.id);
-            await quickarchiver.moveMails(quickarchiver.getMessages(messageList));
+            let messages = quickarchiver.getMessages(messageList);
+            console.info("[QuickArchiver move] Command received", {
+                tabId: tab?.id,
+                count: messages.length,
+                messageIds: messages.map(message => message.id),
+            });
+            await quickarchiver.moveMails(messages);
         }
     });
 
@@ -61,7 +67,12 @@
                 await quickarchiver.openAboutTab();
                 break;
             case quickarchiver.toolbarMenuMoveId:
-                await quickarchiver.moveMails(quickarchiver.getMessages(info.selectedMessages));
+                let selectedMessages = quickarchiver.getMessages(info.selectedMessages);
+                console.info("[QuickArchiver move] Menu action received", {
+                    count: selectedMessages.length,
+                    messageIds: selectedMessages.map(message => message.id),
+                });
+                await quickarchiver.moveMails(selectedMessages);
                 break;
         }
     });
@@ -74,6 +85,8 @@
     // MV3 event pages can be restarted at any time. Recreate the extension's
     // menus before handling the initially displayed messages below.
     await quickarchiver.createMenus();
+    await quickarchiver.initRules();
+    await quickarchiver.initColumn();
 
     // at the first start after install the display event may not be fired
     // therefore handle all opened messages

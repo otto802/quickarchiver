@@ -1,6 +1,6 @@
 /**
  * QuickArchiver
- * Copyright (c) 2023 Otto Berger <otto@bergerdata.de>
+ * Copyright (c) 2026 Otto Berger <otto@bergerdata.de>
  *
  * QuickArchiver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

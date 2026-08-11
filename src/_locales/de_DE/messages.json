@@ -5,6 +5,12 @@
   "main.title": {
     "message": "QuickArchiver"
   },
+  "column.quickarchiverFolder": {
+    "message": "QuickArchiver-Ordner"
+  },
+  "column.currentFolder": {
+    "message": "✓ Aktueller Ordner"
+  },
   "toolbar.label": {
     "message": "QuickArchiver"
   },
@@ -12,7 +18,7 @@
     "message": "QuickArchiver: Verschieben"
   },
   "toolbar.title.rule_present": {
-    "message": "Verschiebe \"$message$\" in Ordner \"$folder$\" (ALT+A)",
+    "message": "Verschiebe \"$message$\" nach \"$folder$\" (Alt+A)",
     "placeholders": {
       "message": {
         "content": "$1",
@@ -28,16 +34,16 @@
     "message": "QuickArchiver: Regel bearbeiten"
   },
   "toolbar.title.rule_edit": {
-    "message": "E-Mail befindet sich schon im Zielordner. Klicke um die Regel zu bearbeiten."
+    "message": "Diese E-Mail befindet sich bereits im Zielordner. Klicke, um die Regel zu bearbeiten."
   },
   "toolbar.title.rule_notfound": {
-    "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner um eine Regel zu erstellen."
+    "message": "Keine Regel gefunden. Verschiebe eine E-Mail in einen Ordner, um eine Regel zu erstellen."
   },
   "toolbar.menu.title.edit_rule": {
-    "message": "Regel bearbeiten"
+    "message": "QuickArchiver: Regel bearbeiten"
   },
   "toolbar.menu.title.list_rules": {
-    "message": "Zeige alle Regeln"
+    "message": "Alle Regeln anzeigen"
   },
   "toolbar.menu.title.about": {
     "message": "Über QuickArchiver"
@@ -49,7 +55,7 @@
     "message": "Regel bearbeiten"
   },
   "popup.rule.intro": {
-    "message": "Es können auch Platzhalter ('*') verwendet werden: z.B. '@*example.com' findet E-Mails mit info@newsletter.example.com und @support@example.com."
+    "message": "Du kannst Platzhalter ('*') verwenden. Der Ausdruck '@*example.com' findet zum Beispiel E-Mails von info@newsletter.example.com und support@example.com."
   },
   "popup.rule.from": {
     "message": "Von"
@@ -58,7 +64,7 @@
     "message": "Aktiv"
   },
   "popup.rule.from.help": {
-    "message": "Autor enhält die angegebene Zeichenfolge."
+    "message": "Der Absender enthält die angegebene Zeichenfolge."
   },
   "popup.rule.to": {
     "message": "An"
@@ -67,7 +73,7 @@
     "message": "Aktiv"
   },
   "popup.rule.to.help": {
-    "message": "Empfänger enhält die angegebene Zeichenfolge."
+    "message": "Ein Empfänger enthält die angegebene Zeichenfolge."
   },
   "popup.rule.subject": {
     "message": "Betreff"
@@ -76,10 +82,10 @@
     "message": "Aktiv"
   },
   "popup.rule.subject.help": {
-    "message": "Betreff enhält die angegebene Zeichenfolge."
+    "message": "Der Betreff enthält die angegebene Zeichenfolge."
   },
   "popup.rule.folder": {
-    "message": "Archiviere in Ordner"
+    "message": "Zielordner"
   },
   "popup.rule.button.save": {
     "message": "Regel speichern"
@@ -88,7 +94,7 @@
     "message": "Regel löschen"
   },
   "popup.rule.button.cancel": {
-    "message": "Schliessen"
+    "message": "Abbrechen"
   },
   "tab.list.title": {
     "message": "QuickArchiver: Alle Regeln"
@@ -106,10 +112,10 @@
     "message": "Soll die Regel wirklich gelöscht werden?"
   },
   "tab.list.button.tools": {
-    "message": "Import/Export Werkzeuge"
+    "message": "Import-/Export-Werkzeuge"
   },
   "tab.list.button.cancel": {
-    "message": "Schliessen"
+    "message": "Schließen"
   },
   "tab.about.title": {
     "message": "Über QuickArchiver"
@@ -121,19 +127,19 @@
     "message": "Importieren/Exportieren"
   },
   "tab.tools.backup.warning": {
-    "message": "Vorsicht! Diese folgenden Funktionen sind für Experten. Ein falsches Import-Datenformat kann die Regeln unbrauchbar machen. Alle bestehenden Regeln werden beim Import überschrieben!"
+    "message": "Vorsicht! Diese Werkzeuge sind für fortgeschrittene Nutzer gedacht. Eine ungültige Importdatei kann deine Regeln unbrauchbar machen. Beim Import werden alle bestehenden Regeln ersetzt."
   },
   "tab.tools.backup.export.headline": {
     "message": "Exportieren"
   },
   "tab.tools.backup.export.hint": {
-    "message": "Speichere alle Regeln in eine Datei zum späteren Wiederherstellen. Wenn kein Speicher-Dialog erscheint speichert Thunderbird die Datei direkt im Download Ordner (ohne Rückfrage)."
+    "message": "Speichere deine Regeln in einer Datei, um sie später wiederherstellen zu können. Wenn kein Speicherdialog erscheint, speichert Thunderbird die Datei direkt im Download-Ordner, ohne eine Benachrichtigung anzuzeigen."
   },
   "tab.tools.backup.import.headline": {
     "message": "Importieren"
   },
   "tab.tools.backup.import.hint": {
-    "message": "Wähle die Datei mit den gepeicherten Regeln aus."
+    "message": "Wähle eine Datei mit zuvor gespeicherten Regeln aus."
   },
   "tab.tools.backup.button.export": {
     "message": "In Datei exportieren"
@@ -142,24 +148,24 @@
     "message": "Aus Datei importieren..."
   },
   "tab.tools.button.cancel": {
-    "message": "Schliessen"
+    "message": "Schließen"
   },
   "tab.tools.backup.import.message.success": {
-    "message": "Daten wurden erfolgreich importiert!"
+    "message": "Die Regeln wurden erfolgreich importiert."
   },
   "tab.tools.backup.import.message.failed": {
-    "message": "Import war nicht erfolgreich. Das Format der Regeln ist nicht korrekt."
+    "message": "Der Import ist fehlgeschlagen. Das Format der Regeln ist ungültig."
   },
   "tab.tools.backup.import.message.parse_error": {
-    "message": "Import war nicht erfolgreich. Das JSON Format ist fehlerhaft."
+    "message": "Der Import ist fehlgeschlagen. Das JSON-Format ist ungültig."
   },
   "tab.tools.backup.import.message.confirm": {
-    "message": "Sind sie sicher dass sie alle existierenden Regeln überschrieben wollen?"
+    "message": "Möchtest du wirklich alle bestehenden Regeln ersetzen?"
   },
   "options.headline": {
-    "message": "QuickArchiver Administration"
+    "message": "QuickArchiver-Einstellungen"
   },
   "options.intro": {
-    "message": "Die Bedienung erfolgt über den QuickArchiver Toolbar-Button im Kontext einer E-Mail. Klicke auf 'Über QuickArchiver' für mehr Informationen und Hilfe."
+    "message": "QuickArchiver wird hauptsächlich über den Toolbar-Button beim Anzeigen einer E-Mail verwendet. Klicke auf „Über QuickArchiver“, um weitere Informationen und Hilfe zu erhalten."
   }
 }

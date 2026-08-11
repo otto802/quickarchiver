@@ -1,0 +1,43 @@
+[
+  {
+    "namespace": "customColumns",
+    "functions": [
+      {
+        "name": "add",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          { "name": "id", "type": "string" },
+          { "name": "name", "type": "string" },
+          {
+            "name": "rules",
+            "type": "array",
+            "items": { "type": "object", "additionalProperties": true }
+          },
+          { "name": "currentFolderText", "type": "string" }
+        ]
+      },
+      {
+        "name": "setRules",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          { "name": "id", "type": "string" },
+          {
+            "name": "rules",
+            "type": "array",
+            "items": { "type": "object", "additionalProperties": true }
+          }
+        ]
+      },
+      {
+        "name": "remove",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          { "name": "id", "type": "string" }
+        ]
+      }
+    ]
+  }
+]

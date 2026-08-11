@@ -21,52 +21,60 @@
             <div class="section">
                 <h2>What is QuickArchiver?</h2>
 
-                <p>QuickArchiver helps you to keep your inbox clean: Instead of first searching for the right folder for
-                    each email and then dragging and dropping the email, all it takes now is a single click (or key
-                    combination).</p>
+                <p>QuickArchiver helps you keep your inbox clean. Instead of searching for the right folder and
+                    dragging each message there, you can archive it with a single click or keyboard shortcut.</p>
             </div>
 
             <div class="section">
                 <h2>How does QuickArchiver work?</h2>
 
                 <div class="panel">
-                    <img width="300" src="../images/toolbar_no_rule@2x.png" alt="toolbar button: no rule"/>
-                    <p>QuickArchiver uses its own rules to remember the matching folder for an email. Currently the
-                        rules can consist of sender, recipient or subject. </p>
+                    <img width="300" src="../images/toolbar_no_rule@2x.png" alt="Toolbar button when no rule exists"/>
+                    <p>QuickArchiver uses rules to remember the destination folder for a message. Rules can currently
+                        match the sender, recipients, or subject.</p>
                 </div>
                 <div class="panel">
-                    <img width="300" src="../images/toolbar_editrule@2x.png" alt="toolbar button: click to edit rule"/>
-                    <h3>Create (default) rule</h3>
-                    <p>The first time you move an email (that does not yet have a matching rule) to a folder,
-                        QuickArchiver automatically creates a rule based on the sender of the email.</p>
+                    <img width="300" src="../images/toolbar_editrule@2x.png" alt="Toolbar button for editing a rule"/>
+                    <h3>Create a default rule</h3>
+                    <p>When you move a message without a matching rule to a folder for the first time, QuickArchiver
+                        automatically creates a rule based on the sender.</p>
                 </div>
                 <div class="panel">
-                    <img width="300" src="../images/toolbar_move@2x.png" alt="toolbar button: click to move email"/>
-                    <h3>Archive emails (move)</h3>
-                    <p>If there are more emails with the same sender, QuickArchiver offers to move them to the
-                        appropriate folder with just one click.</p>
+                    <img width="300" src="../images/toolbar_move@2x.png" alt="Toolbar button for moving a message"/>
+                    <h3>Archive messages</h3>
+                    <p>When another message matches the same sender, QuickArchiver lets you move it to the appropriate
+                        folder with a single click.</p>
                 </div>
 
                 <div class="panel">
                     <img width="300" src="../images/toolbar_menu@2x.png"
-                         alt="toolbar button: right-click to open menu"/>
+                         alt="Toolbar button with context menu"/>
                     <h3>Context menu</h3>
-                    <p>Right-click on the QuickArchiver button to open the context menu.</p>
+                    <p>Right-click the QuickArchiver button to open its context menu.</p>
+                </div>
+
+                <div class="panel">
+                    <h3>Show the QuickArchiver folder column</h3>
+                    <p>The QuickArchiver folder column is available in Thunderbird's table view. To show it, right-click
+                        any column heading in the message list and select <q>QuickArchiver Folder</q> from the column
+                        picker. You can then move the column to your preferred position.</p>
+                    <p>The column displays the destination folder for matching rules. If the message is already in that
+                        folder, it displays <q>✓ Current Folder</q>.</p>
                 </div>
 
                 <div class="panel">
                     <h3>Edit rules</h3>
-                    <p>Using the menu item "Show all rules" all rules can be listed and also edited.</p>
-                    <img width="100%" src="../images/screenshot_editor@2x.png" alt="Screenshot Rules edit"/>
+                    <p>Select <q>Show all rules</q> from the context menu to view and edit all rules.</p>
+                    <img width="100%" src="../images/screenshot_editor@2x.png" alt="Screenshot of the rule editor"/>
                     <p></p>
                     <div style="clear: both"></div>
                 </div>
 
                 <div class="panel">
-                    <h3>Export/Import of the ruleset</h3>
-                    <p>Below the list of rules there is a button to open the Export/Import tools.</p>
-                    <p>Export and import the ruleset using JSON format.</p>
-                    <img width="100%" src="../images/screenshot_tools@2x.png" alt="Screenshot Tools"/>
+                    <h3>Export and import rules</h3>
+                    <p>Below the list of rules, you will find a button that opens the import and export tools.</p>
+                    <p>Rules are exported and imported in JSON format.</p>
+                    <img width="100%" src="../images/screenshot_tools@2x.png" alt="Screenshot of the import and export tools"/>
                     <p></p>
                     <div style="clear: both"></div>
                 </div>
@@ -77,26 +85,24 @@
 
                 <h3>How can I archive all emails of a certain domain into one folder?</h3>
 
-                <p>The default rule refers to the entire sender address. If you want to archive all emails of a certain
-                    domain, e.g. @amazon.com into one folder, edit the rule and remove the corresponding characters
-                    before the @.</p>
+                <p>The default rule matches the complete sender address. To archive all messages from a domain, such as
+                    @amazon.com, edit the rule and remove the characters before the @ sign.</p>
 
-                <p>Rules can also make use of wildcards ('*'): For example '@*example.com' matches mails with
+                <p>Rules also support wildcards ('*'). For example, '@*example.com' matches messages from
                     info@newsletter.example.com and support@example.com.</p>
 
                 <h3>Can I archive multiple emails at the same time?</h3>
 
-                <p>It is possible! With the shortcut ALT+A QuickArchiver moves all selected emails into the respective
-                    folders.</p>
+                <p>Yes. With the Alt+A shortcut, QuickArchiver moves all selected messages to their respective folders.</p>
             </div>
             <div class="section">
                 <h2>Development</h2>
 
-                <p>QuickArchiver is a open source software project by Otto Berger (<a
+                <p>QuickArchiver is an open-source project by Otto Berger (<a
                         href="mailto:quickarchiver@bergercity.de">quickarchiver@bergercity.de</a>). Supported by <a
                         href="https://www.bergerdata.com">www.bergerdata.com</a>.
                 </p>
-                <p>GitHub Projekt: <a href="https://github.com/otto802/quickarchiver">https://github.com/otto802/quickarchiver</a>
+                <p>GitHub project: <a href="https://github.com/otto802/quickarchiver">https://github.com/otto802/quickarchiver</a>
                 </p>
                 <p>Many thanks to</p>
                 <ul>
@@ -104,9 +110,9 @@
                     <li>
                         <a href="https://thunderbird.topicbox.com/groups/addons">thunderbird.topicbox.com/groups/addons</a>
                     </li>
-                    <li><a href="https://github.com/jobisoft">John Bieling, all his efforts on examples!</a></li>
-                    <li>Philippe Lieser, translation logic</li>
-                    <li>And many, many others working on the WebExtension API!</li>
+                    <li><a href="https://github.com/jobisoft">John Bieling, for his work on the examples</a></li>
+                    <li>Philippe Lieser, for the translation logic</li>
+                    <li>And many others working on the WebExtension API</li>
                 </ul>
             </div>
         </div>
@@ -114,64 +120,67 @@
         <div class="col changelog">
             <h2>Release Notes</h2>
 
+            <h3>Version 2.3</h3>
+            <p>Compatibility improvements for newer Thunderbird versions.</p>
+            <ul>
+                <li>Added the QuickArchiver folder column in the message list's table view</li>
+                <li>Improved compatibility with the current WebExtension APIs</li>
+            </ul>
+
             <h3>Version 2.2</h3>
             <p>New features:</p>
             <ul>
-                <li>QuickArchiver preferences-page added (see Tools->Add-ons)</li>
-                <li>Rules can now make use of wildcards ('*'): For example '@*example.com' matches mails with
+                <li>Added a QuickArchiver settings page (see Add-ons Manager → QuickArchiver)</li>
+                <li>Rules now support wildcards ('*'). For example, '@*example.com' matches messages from
                     info@newsletter.example.com and support@example.com.
                 </li>
             </ul>
 
             <h3>Version 2.1</h3>
 
-            <p>Warning: The stored rules of QuickArchiver will be lost if you uninstall the extension (using the
-                Thunderbird default settings).
-                But there is now an new import/export module for the stored rule data!
-                Theoretically it should be possible to transfer the rules to another Thunderbird:
-                The account/folder structure must be be identical (untested!).
+            <p>Warning: With Thunderbird's default settings, stored QuickArchiver rules are lost when the extension is
+                uninstalled. The import and export tools can be used to back up the rules first. In theory, you can
+                transfer the rules to another Thunderbird installation if the account and folder structure is identical
+                (untested).
             </p>
 
             <p>New features:</p>
 
             <ul>
-                <li>Import/Export of all rules in JSON format. Dialog can be found at the bottom of the rules list.</li>
-                <li>Improved look and feel of the rules list</li>
-                <li>Fixed initialization at the first start</li>
+                <li>Import and export of all rules in JSON format</li>
+                <li>Improved appearance and usability of the rules list</li>
+                <li>Fixed initialization on first start</li>
             </ul>
 
             <h3>Version 2.0</h3>
 
-            <p>The new version of Thunderbird 115.* (Supernova) requires deep changes to QuickArchiver. The old
-                QuickArchiver 0.2 branch will therefore no longer work and thus will not be developed further. The last
-                Thunderbird updates had already announced it: only with effort and unattractive compromises
-                QuickArchiver could continue to work.</p>
+            <p>Thunderbird 115 (Supernova) required substantial changes to QuickArchiver. The old QuickArchiver 0.2
+                branch no longer works and will not be developed further. Earlier Thunderbird updates had already made
+                it clear that continuing to support it would require significant effort and undesirable compromises.</p>
 
             <p>The good news: there is a new version and you have just installed it!</p>
 
             <p>New features:</p>
 
             <ul>
-                <li>Complete new development based on the current WebExtension API from Mozilla. Future updates are
-                    easier with this!
+                <li>Complete redevelopment based on Mozilla's current WebExtension API, making future updates easier
                 </li>
-                <li>Rules are stored in the WebExtension storage</li>
-                <li>Rules are potentially available across devices (on the roadmap)</li>
-                <li>New UI: Toolbar button, menu and keyboard shortcuts</li>
-                <li>New UI: improved rule editor and list of all rules</li>
-                <li> Rule creation happens as usual automatically when moving emails</li>
+                <li>Rules are stored in WebExtension storage</li>
+                <li>Rules may become available across devices in the future</li>
+                <li>New interface with a toolbar button, menu, and keyboard shortcuts</li>
+                <li>Improved rule editor and list of all rules</li>
+                <li>Rules are still created automatically when messages are moved</li>
             </ul>
 
-            <p>Some disadvantages, which can not be prevented according to the current state:</p>
+            <p>Some limitations remain:</p>
 
             <ul>
-                <li>All rules have to be created again. An update of the old rule database to the new structure would be
+                <li>All rules have to be created again. Migrating the old rule database to the new structure would be
                     very time-consuming.
                 </li>
-                <li> There is no QuickArchiver column in the list anymore. This is no longer possible with the current
-                    Thunderbird version, but should probably be possible again in future versions for WebExtensions. It
-                    is also not yet clear how the previous operation can be implemented with the new "card view". The
-                    operation is now done via toolbar buttons and keyboard shortcuts.
+                <li>The QuickArchiver folder column is not available in Thunderbird's card view. In table view, it can
+                    be enabled from the column picker. Moving messages can also be done with the toolbar button and
+                    keyboard shortcuts.
                 </li>
             </ul>
         </div>

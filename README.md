@@ -19,6 +19,15 @@ then dragging and dropping the email, all it takes now is a single click (or key
 
 ## Release Notes
 
+### Version 2.3
+
+Compatibility improvements for newer Thunderbird versions.</p>
+
+#### New features:
+
+- Added the QuickArchiver folder column in the message list's table view
+- Improved compatibility with the current WebExtension APIs
+
 ### Version 2.2
 
 #### New features:
