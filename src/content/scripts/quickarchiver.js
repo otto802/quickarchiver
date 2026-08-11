@@ -25,9 +25,65 @@ let quickarchiver = {
     },
     currentRule: null,
     currentMessage: null,
-    toolbarMenuEditRuleId: null,
-    toolbarMenuListRulesId: null,
-    toolbarMenuAboutId: null,
+    toolbarMenuEditRuleId: 'qa_edit',
+    toolbarMenuListRulesId: 'qa_list',
+    toolbarMenuAboutId: 'qa_about',
+    toolbarMenuMoveId: 'qa_move',
+
+    getMessages: function (messageList) {
+        // MV3 returns a MessageList. Keep accepting arrays for compatibility
+        // with older Thunderbird versions and existing callers.
+        return Array.isArray(messageList) ? messageList : (messageList?.messages ?? []);
+    },
+
+    getFolderId: async function (folder) {
+        // MV3 messages.move() expects a MailFolderId, not a MailFolder object.
+        if (typeof folder === "string") {
+            return folder;
+        }
+        if (folder?.id) {
+            return folder.id;
+        }
+
+        // Rules created by MV2 contain accountId/path but no folder id.
+        // Resolve those legacy rules once against the current folder tree.
+        if (folder?.accountId && folder?.path && messenger.folders?.query) {
+            let folders = await messenger.folders.query({accountId: folder.accountId});
+            return folders.find(candidate => candidate.path === folder.path)?.id ?? null;
+        }
+
+        return null;
+    },
+
+    createMenus: async function () {
+
+        // Recreate only this extension's menus. This also cleans up menus
+        // created by older MV2 versions during an update.
+        await messenger.menus.removeAll();
+
+        await messenger.menus.create({
+            id: this.toolbarMenuEditRuleId,
+            contexts: ["message_display_action", "message_list"],
+            title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
+            enabled: false,
+        });
+        await messenger.menus.create({
+            id: this.toolbarMenuListRulesId,
+            contexts: ["message_display_action", "message_list"],
+            title: browser.i18n.getMessage("toolbar.menu.title.list_rules"),
+        });
+        await messenger.menus.create({
+            id: this.toolbarMenuAboutId,
+            contexts: ["message_display_action"],
+            title: browser.i18n.getMessage("toolbar.menu.title.about"),
+        });
+        await messenger.menus.create({
+            id: this.toolbarMenuMoveId,
+            contexts: ["message_list"],
+            title: browser.i18n.getMessage("toolbar.label.rule_present"),
+            enabled: false,
+        });
+    },
 
     handleMovedMessages: async function (messages) {
 
@@ -81,13 +137,10 @@ let quickarchiver = {
 
     initRules: async function () {
 
-        if (typeof (this.rules) === "undefined" || typeof (this.rules.rules) === "undefined") {
+        if (!Array.isArray(this.rules)) {
             await this.loadRules();
         }
-
-        return new Promise((resolve) => {
-            resolve(true);
-        });
+        return true;
     },
     loadRules: async function () {
         let rules = await messenger.storage.local.get('rules');
@@ -98,9 +151,7 @@ let quickarchiver = {
             this.rules = rules.rules;
         }
 
-        return new Promise((resolve) => {
-            resolve(true);
-        });
+        return true;
     },
     saveRules: async function () {
         await messenger.storage.local.set({
@@ -110,9 +161,7 @@ let quickarchiver = {
         // reload rules after changing them
         await this.loadRules();
 
-        return new Promise((resolve) => {
-            resolve(true);
-        });
+        return true;
     },
     importRules: async function (importData) {
 
@@ -139,7 +188,11 @@ let quickarchiver = {
             return false;
         }
 
-        // add a default wildcard, as this was the default behaviour before
+        // add a default wildcard, as this was the default behavior before
+
+        if (typeof value !== "string") {
+            return false;
+        }
 
         if (value.substring(0, 1) !== "*") {
             value = '*' + value;
@@ -159,7 +212,7 @@ let quickarchiver = {
 
         if (typeof (message[type]) === "string") {
             string = message[type];
-        } else if (typeof (message[type]) !== "string") {
+        } else if (Array.isArray(message[type]) && message[type].length > 0) {
             string = message[type][0];
         }
 
@@ -182,40 +235,36 @@ let quickarchiver = {
 
         await this.initRules();
 
-        let match = false;
-
         try {
 
-            for (let i in this.rules) {
+            for (let i = 0; i < this.rules.length; i++) {
 
                 let rule = this.rules[i];
+                let match = true;
+                let hasActiveCriteria = false;
 
-                if (rule.activeFrom && typeof (message.author) === "string"
-                    && this.findMatch(this.getMessageHeaderValue(message, "author"), rule.from)) {
-                    match = true;
-                } else if (rule.activeFrom) {
-                    match = false;
+                if (rule.activeFrom) {
+                    hasActiveCriteria = true;
+                    match = typeof message.author === "string"
+                        && this.findMatch(this.getMessageHeaderValue(message, "author"), rule.from);
                 }
 
-                if (rule.activeTo && typeof (message.recipients[0]) === "string"
-                    && this.findMatch(this.getMessageHeaderValue(message, "recipients"), rule.to)) {
-                    match = true;
-                } else if (rule.activeTo) {
-                    match = false;
+                if (match && rule.activeTo) {
+                    hasActiveCriteria = true;
+                    match = Array.isArray(message.recipients)
+                        && typeof message.recipients[0] === "string"
+                        && this.findMatch(this.getMessageHeaderValue(message, "recipients"), rule.to);
                 }
 
-                if (rule.activeSubject && typeof (message.subject) === "string"
-                    && this.findMatch(this.getMessageHeaderValue(message, "subject"), rule.subject)) {
-                    match = true;
-                } else if (rule.activeSubject) {
-                    match = false;
+                if (match && rule.activeSubject) {
+                    hasActiveCriteria = true;
+                    match = typeof message.subject === "string"
+                        && this.findMatch(this.getMessageHeaderValue(message, "subject"), rule.subject);
                 }
 
-                if (match) {
+                if (hasActiveCriteria && match) {
                     rule.index = i;
-                    return new Promise((resolve) => {
-                        resolve(rule);
-                    });
+                    return rule;
                 }
             }
 
@@ -223,9 +272,7 @@ let quickarchiver = {
             console.error(e);
         }
 
-        return new Promise((resolve) => {
-            resolve(false);
-        });
+        return false;
     },
 
     /*
@@ -235,7 +282,7 @@ let quickarchiver = {
 
         await this.initRules();
 
-        let newRule = this.defaultRule;
+        let newRule = {...this.defaultRule};
 
         for (let key in newRule) {
 
@@ -248,9 +295,7 @@ let quickarchiver = {
 
         await this.saveRules();
 
-        return new Promise((resolve) => {
-            resolve(this.rules.length - 1);
-        });
+        return this.rules.length - 1;
 
     },
 
@@ -261,7 +306,7 @@ let quickarchiver = {
 
         await this.initRules();
 
-        let updateRule = this.defaultRule;
+        let updateRule = {...this.defaultRule};
 
         for (let key in updateRule) {
 
@@ -274,9 +319,7 @@ let quickarchiver = {
 
         await this.saveRules();
 
-        return new Promise((resolve) => {
-            resolve(index);
-        });
+        return index;
     },
 
     /*
@@ -286,12 +329,11 @@ let quickarchiver = {
 
         await this.initRules();
 
-        return new Promise((resolve) => {
-
-            let rule = this.rules[index];
-            rule.index = index;
-            resolve(rule);
-        });
+        let rule = this.rules[index];
+        if (!rule) {
+            return false;
+        }
+        return {...rule, index};
     },
 
     /*
@@ -310,9 +352,7 @@ let quickarchiver = {
 
         await this.saveRules();
 
-        return new Promise((resolve) => {
-            resolve(index);
-        });
+        return index;
     },
 
     openRulePopup: async function () {
@@ -377,41 +417,6 @@ let quickarchiver = {
 
             let rule = await quickarchiver.findRule(message);
 
-            let menuEditRuleProperties = {
-                contexts: ["message_display_action"],
-                title: browser.i18n.getMessage("toolbar.menu.title.edit_rule"),
-                enabled: false,
-                onclick: async function () {
-                    await quickarchiver.openRulePopup();
-                }
-            };
-
-            if (this.toolbarMenuEditRuleId) {
-
-                // if menu exists, update it (avoid a console warning)
-                await messenger.menus.update(this.toolbarMenuEditRuleId, menuEditRuleProperties);
-            } else {
-                menuEditRuleProperties['id'] = 'qa_edit';
-                this.toolbarMenuEditRuleId = await messenger.menus.create(menuEditRuleProperties);
-            }
-
-            let menuListRulesProperties = {
-                contexts: ["message_display_action"],
-                title: browser.i18n.getMessage("toolbar.menu.title.list_rules"),
-                onclick: async function () {
-                    await quickarchiver.openAllRulesTab();
-                }
-            };
-
-            if (this.toolbarMenuListRulesId) {
-
-                // if menu exists, update it (avoid a console warning)
-                await messenger.menus.update(this.toolbarMenuListRulesId, menuListRulesProperties);
-            } else {
-                menuListRulesProperties['id'] = 'qa_list';
-                this.toolbarMenuListRulesId = await messenger.menus.create(menuListRulesProperties);
-            }
-
             let color_scheme = await this.getThemeColorScheme();
 
             if (rule && rule.folder) {
@@ -440,6 +445,9 @@ let quickarchiver = {
 
                 await messenger.menus.update(this.toolbarMenuEditRuleId, {enabled: true});
 
+
+                await messenger.menus.update(this.toolbarMenuMoveId, {enabled: true});
+
             } else {
 
                 messenger.messageDisplayAction.setTitle({title: browser.i18n.getMessage("toolbar.title.rule_notfound")});
@@ -448,24 +456,8 @@ let quickarchiver = {
                 messenger.messageDisplayAction.disable();
 
                 this.currentRule = null;
-            }
-
-
-            let menuAboutProperties = {
-                contexts: ["message_display_action"],
-                title: browser.i18n.getMessage("toolbar.menu.title.about"),
-                onclick: function () {
-                    quickarchiver.openAboutTab();
-                }
-            };
-
-            if (this.toolbarMenuAboutId) {
-
-                // if menu exists, update it (avoid a console warning)
-                await messenger.menus.update(this.toolbarMenuAboutId, menuAboutProperties);
-            } else {
-                menuAboutProperties['id'] = 'qa_about';
-                this.toolbarMenuAboutId = await messenger.menus.create(menuAboutProperties);
+                await messenger.menus.update(this.toolbarMenuEditRuleId, {enabled: false});
+                await messenger.menus.update(this.toolbarMenuMoveId, {enabled: false});
             }
 
 
@@ -497,7 +489,12 @@ let quickarchiver = {
 
         if (rule && rule.folder) {
             try {
-                await messenger.messages.move([message.id], rule.folder);
+                let folderId = await this.getFolderId(rule.folder);
+                if (!folderId) {
+                    console.error("Could not resolve destination folder", rule.folder);
+                    return false;
+                }
+                await messenger.messages.move([message.id], folderId);
                 console.info("Moved message with with subject '" + message.subject + "' to folder '" + rule.folder.path + "'");
             } catch (ex) {
                 console.error(ex);
@@ -524,7 +521,12 @@ let quickarchiver = {
         } else if (rule && rule.folder) {
 
             try {
-                await messenger.messages.move([message.id], rule.folder);
+                let folderId = await this.getFolderId(rule.folder);
+                if (!folderId) {
+                    console.error("Could not resolve destination folder", rule.folder);
+                    return false;
+                }
+                await messenger.messages.move([message.id], folderId);
                 console.info("Moved message with with subject '" + message.subject + "' to folder '" + rule.folder.path + "'");
             } catch (ex) {
                 console.error(ex);
