@@ -168,6 +168,39 @@ let quickarchiver = {
         }
         return true;
     },
+    normalizeFolder: function (folder) {
+        // A stored folder only needs the stable identity and display path.
+        // The other properties are metadata from the current Thunderbird
+        // folder tree and can make the rules database unnecessarily large.
+        if (!folder || typeof folder !== "object" || Array.isArray(folder)) {
+            return folder;
+        }
+
+        let compactFolder = {};
+        for (let key of ["id", "path", "accountId"]) {
+            if (typeof folder[key] !== "undefined") {
+                compactFolder[key] = folder[key];
+            }
+        }
+
+        // Keep malformed/legacy values intact if they do not contain any of
+        // the fields understood by the current folder representation.
+        return Object.keys(compactFolder).length > 0 ? compactFolder : folder;
+    },
+    normalizeRules: function (rules) {
+        if (!Array.isArray(rules)) {
+            return rules;
+        }
+
+        return rules.map(rule => {
+            if (!rule || typeof rule !== "object" || Array.isArray(rule)) {
+                return rule;
+            }
+
+            let folder = this.normalizeFolder(rule.folder);
+            return folder === rule.folder ? rule : {...rule, folder};
+        });
+    },
     loadRules: async function () {
         let rules = await messenger.storage.local.get('rules');
 
@@ -175,6 +208,13 @@ let quickarchiver = {
             this.rules = [];
         } else {
             this.rules = rules.rules;
+        }
+
+        let normalizedRules = this.normalizeRules(this.rules);
+        if (JSON.stringify(normalizedRules) !== JSON.stringify(this.rules)) {
+            this.rules = normalizedRules;
+            await messenger.storage.local.set({rules: this.rules});
+            console.info("QuickArchiver rule database migrated: compacted stored folders.");
         }
 
         return true;
@@ -200,6 +240,8 @@ let quickarchiver = {
         return true;
     },
     saveRules: async function () {
+        // Also compact newly created and imported rules before persisting them.
+        this.rules = this.normalizeRules(this.rules);
         await messenger.storage.local.set({
             rules: this.rules
         });
