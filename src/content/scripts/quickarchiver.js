@@ -143,7 +143,9 @@ let quickarchiver = {
             let rule = await this.findRule(message);
 
             if (!rule) {
-                let index = await this.createDefaultRule(message);
+                let index = await this.createDefaultRule(message, {
+                    allowSpecialFolder: this.openRulePopupOnNewRule,
+                });
 
                 if (this.openRulePopupOnNewRule && index !== false && !popupOpened) {
                     this.currentMessage = message;
@@ -161,15 +163,17 @@ let quickarchiver = {
             || (Array.isArray(folder?.specialUse)
                 && folder.specialUse.includes(specialUse));
     },
-    createDefaultRule: async function (message) {
+    createDefaultRule: async function (message, options = {}) {
 
-        if (this.isSpecialFolder(message?.folder, "inbox", "inbox")) {
+        let allowSpecialFolder = options.allowSpecialFolder === true;
+
+        if (!allowSpecialFolder && this.isSpecialFolder(message?.folder, "inbox", "inbox")) {
 
             console.warn("Ignored the inbox folder destination!");
             return false;
         }
 
-        if (this.isSpecialFolder(message?.folder, "trash", "trash")) {
+        if (!allowSpecialFolder && this.isSpecialFolder(message?.folder, "trash", "trash")) {
 
             console.warn("Ignored the trash folder destination!");
             return false;
@@ -185,6 +189,8 @@ let quickarchiver = {
             folder: message.folder,
         })
 
+        this.refreshColumnAfterMove();
+
         return new Promise((resolve) => {
             resolve(index);
         });
@@ -196,6 +202,19 @@ let quickarchiver = {
             await this.loadRules();
         }
         return true;
+    },
+    refreshColumnAfterMove: function () {
+        // Thunderbird may still be rebuilding the moved message row when
+        // messages.onMoved fires. Refresh once more after the thread pane has
+        // had a chance to display the new row.
+        setTimeout(async () => {
+            try {
+                await this.initRules();
+                await this.initColumn();
+            } catch (error) {
+                console.error("Could not refresh QuickArchiver folder column after move", error);
+            }
+        }, 250);
     },
     normalizeFolder: function (folder) {
         // A stored folder only needs the stable identity and display path.
@@ -263,7 +282,18 @@ let quickarchiver = {
             );
             this.columnRegistered = true;
         } else {
-            await messenger.customColumns.setRules(this.columnId, this.rules);
+            let updated = await messenger.customColumns.setRules(this.columnId, this.rules);
+            if (updated === false) {
+                // The experiment may have been restarted while the MV3
+                // background context was idle. Re-register the column so it
+                // receives the current rule list and refreshes its cells.
+                await messenger.customColumns.add(
+                    this.columnId,
+                    browser.i18n.getMessage("column.quickarchiverFolder"),
+                    this.rules,
+                    browser.i18n.getMessage("column.currentFolder")
+                );
+            }
         }
 
         return true;

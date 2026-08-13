@@ -28,7 +28,8 @@ try {
 
 async function ruleSave() {
 
-    if (typeof (rule.index) !== "undefined") {
+    try {
+        if (typeof (rule.index) !== "undefined") {
 
         rule.from = document.getElementById("from").value;
         rule.to = document.getElementById("to").value;
@@ -42,12 +43,18 @@ async function ruleSave() {
             rule: rule
         });
 
-        await messenger.runtime.sendMessage({
-            command: "requestRefreshList"
-        });
+            await messenger.runtime.sendMessage({
+                command: "requestRefreshList"
+            });
 
+        }
+    } catch (error) {
+        // Saving has already happened before the optional UI refresh. Do not
+        // keep the rule dialog open just because a refresh failed.
+        console.error("Could not refresh QuickArchiver after saving rule", error);
+    } finally {
+        window.close();
     }
-    window.close();
 }
 
 async function ruleCancel() {

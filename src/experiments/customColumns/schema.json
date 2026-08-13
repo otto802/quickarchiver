@@ -21,6 +21,7 @@
         "name": "setRules",
         "type": "function",
         "async": true,
+        "returns": { "type": "boolean" },
         "parameters": [
           { "name": "id", "type": "string" },
           {

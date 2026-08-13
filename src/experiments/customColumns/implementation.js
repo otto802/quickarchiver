@@ -36,6 +36,48 @@ try {
 const registeredColumns = new Map();
 const ruleMatching = {};
 
+function decodeFolderText(value) {
+  if (typeof value !== "string") {
+    return value;
+  }
+  // IMAP folder paths may use modified UTF-7. For example, "&APY-" is the
+  // IMAP representation of "ö". Thunderbird can expose this representation
+  // for special folders even though the folder name is displayed normally in
+  // the rest of the application.
+  return value.replace(/&([^-]*)-/g, (match, encoded) => {
+    if (encoded === "") {
+      return "&";
+    }
+
+    try {
+      let base64 = encoded.replace(/,/g, "/");
+      let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+      let bits = 0;
+      let bitCount = 0;
+      let bytes = [];
+      for (let character of base64) {
+        let value = alphabet.indexOf(character);
+        if (value < 0) {
+          throw new Error("Invalid modified UTF-7 sequence");
+        }
+        bits = (bits << 6) | value;
+        bitCount += 6;
+        while (bitCount >= 8) {
+          bitCount -= 8;
+          bytes.push((bits >> bitCount) & 0xff);
+        }
+      }
+      let decoded = "";
+      for (let index = 0; index + 1 < bytes.length; index += 2) {
+        decoded += String.fromCharCode((bytes[index] << 8) | bytes[index + 1]);
+      }
+      return decoded;
+    } catch (err) {
+      return match;
+    }
+  });
+}
+
 function folderDisplayValue(rule, message, currentFolderText) {
   const folder = rule?.folder;
   if (!folder) {
@@ -134,11 +176,11 @@ function folderDisplayValue(rule, message, currentFolderText) {
   const path = typeof folder.path === "string" ? folder.path : "";
   const targetFolders = path.split("/").filter(Boolean);
   if (targetFolders.length === 0) {
-    return folder.name || "";
+    return decodeFolderText(folder.name || "");
   }
 
-  const targetName = folder.name || targetFolders.at(-1);
-  let parentFolders = targetFolders.slice(0, -1);
+  const targetName = decodeFolderText(folder.name || targetFolders.at(-1));
+  let parentFolders = targetFolders.slice(0, -1).map(decodeFolderText);
 
   // Do not repeat the folder currently shown in the message list. For example,
   // show "Invoices (Archive)" instead of "Invoices (Inbox/Archive)" when the
@@ -218,10 +260,13 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
         async setRules(id, rules) {
           const column = registeredColumns.get(id);
           if (!column) {
-            return;
+            return false;
           }
-          column.rules = rules;
+          // Replace the rule list so the column never keeps a stale array
+          // reference after a rule has been deleted or imported.
+          column.rules = Array.isArray(rules) ? [...rules] : [];
           ThreadPaneColumns.refreshCustomColumn(id);
+          return true;
         },
 
         async remove(id) {

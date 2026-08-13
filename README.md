@@ -102,6 +102,9 @@ If you prefer to review or adjust a new rule immediately, right-click the QuickA
 new rule. Disable this option to return to automatic rule creation without opening the popup. The setting is saved
 permanently.
 
+When this option is enabled, QuickArchiver also allows new rules for special destination folders such as the Trash.
+With the option disabled, these folders continue to be excluded from automatic rule creation.
+
 ### Archive emails (move)
 
 ![toolbar button: click to move email](https://github.com/otto802/quickarchiver/raw/master/src/content/tab/images/toolbar_move@2x.png)
