@@ -29,8 +29,11 @@ let quickarchiver = {
     toolbarMenuListRulesId: 'qa_list',
     toolbarMenuAboutId: 'qa_about',
     toolbarMenuMoveId: 'qa_move',
+    toolbarMenuOptionsId: 'qa_options',
+    toolbarMenuPopupOnNewRuleId: 'qa_popup_on_new_rule',
     columnId: 'quickarchiverFolder',
     columnRegistered: false,
+    openRulePopupOnNewRule: false,
 
     getMessages: function (messageList) {
         // MV3 returns a MessageList. Keep accepting arrays for compatibility
@@ -88,6 +91,9 @@ let quickarchiver = {
         // created by older MV2 versions during an update.
         await messenger.menus.removeAll();
 
+        let settings = await messenger.storage.local.get('openRulePopupOnNewRule');
+        this.openRulePopupOnNewRule = settings.openRulePopupOnNewRule === true;
+
         await messenger.menus.create({
             id: this.toolbarMenuEditRuleId,
             contexts: ["message_display_action", "message_list"],
@@ -100,6 +106,19 @@ let quickarchiver = {
             title: browser.i18n.getMessage("toolbar.menu.title.list_rules"),
         });
         await messenger.menus.create({
+            id: this.toolbarMenuOptionsId,
+            contexts: ["message_display_action", "message_list"],
+            title: browser.i18n.getMessage("toolbar.menu.title.options"),
+        });
+        await messenger.menus.create({
+            id: this.toolbarMenuPopupOnNewRuleId,
+            parentId: this.toolbarMenuOptionsId,
+            contexts: ["message_display_action", "message_list"],
+            type: "checkbox",
+            checked: this.openRulePopupOnNewRule,
+            title: browser.i18n.getMessage("toolbar.menu.title.popup_on_new_rule"),
+        });
+        await messenger.menus.create({
             id: this.toolbarMenuAboutId,
             contexts: ["message_display_action"],
             title: browser.i18n.getMessage("toolbar.menu.title.about"),
@@ -110,9 +129,12 @@ let quickarchiver = {
             title: browser.i18n.getMessage("toolbar.label.rule_present"),
             enabled: false,
         });
+
     },
 
     handleMovedMessages: async function (messages) {
+
+        let popupOpened = false;
 
         for (const message of messages) {
 
@@ -121,7 +143,14 @@ let quickarchiver = {
             let rule = await this.findRule(message);
 
             if (!rule) {
-                await this.createDefaultRule(message);
+                let index = await this.createDefaultRule(message);
+
+                if (this.openRulePopupOnNewRule && index !== false && !popupOpened) {
+                    this.currentMessage = message;
+                    this.currentRule = await this.getRule(index);
+                    popupOpened = true;
+                    await this.openRulePopup(this.currentRule);
+                }
             } else {
                 console.info("Rule for message with subject '" + message.subject + "' already exists.");
             }
@@ -380,10 +409,15 @@ let quickarchiver = {
         return index;
     },
 
-    openRulePopup: async function () {
+    openRulePopup: async function (rule = null) {
+
+        let url = "content/popup/rule.html";
+        if (rule && typeof rule.index !== "undefined") {
+            url += "?ruleIndex=" + encodeURIComponent(rule.index);
+        }
 
         await messenger.windows.create({
-            url: "content/popup/rule.html",
+            url,
             type: "popup",
             height: 570,
             width: 600,
@@ -648,9 +682,14 @@ let quickarchiver = {
 
                 case "requestRule":
 
+                    let requestedRule = this.currentRule;
+                    if (typeof broadcastMessage.ruleIndex !== "undefined") {
+                        requestedRule = await this.getRule(Number(broadcastMessage.ruleIndex));
+                    }
+
                     await messenger.runtime.sendMessage({
                         command: "transmitRule",
-                        rule: this.currentRule
+                        rule: requestedRule
                     });
                     break;
                 case "requestRuleUpdate":

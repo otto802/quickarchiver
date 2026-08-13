@@ -15,6 +15,16 @@
 window.addEventListener("load", onLoad);
 
 let rule = {};
+let requestedRuleIndex = null;
+
+try {
+    let ruleIndex = new URL(window.location.href).searchParams.get("ruleIndex");
+    if (ruleIndex !== null && /^\d+$/.test(ruleIndex)) {
+        requestedRuleIndex = Number(ruleIndex);
+    }
+} catch (e) {
+    console.warn("Could not read rule index from popup URL", e);
+}
 
 async function ruleSave() {
 
@@ -86,7 +96,7 @@ async function onLoad() {
     document.getElementById("button_delete").addEventListener("click", ruleDelete);
 
     await messenger.runtime.sendMessage({
-        command: "requestRule"
+        command: "requestRule",
+        ...(requestedRuleIndex === null ? {} : {ruleIndex: requestedRuleIndex})
     });
 }
-

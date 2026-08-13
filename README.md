@@ -19,9 +19,16 @@ then dragging and dropping the email, all it takes now is a single click (or key
 
 ## Release Notes
 
+### Version 2.4
+
+#### New features:
+
+- Added (optional) rule dialog for creating new rules 
+- Cleanup of saved rules
+
 ### Version 2.3
 
-Compatibility improvements for newer Thunderbird versions.</p>
+Compatibility improvements for newer Thunderbird versions.
 
 #### New features:
 
@@ -89,6 +96,11 @@ sender, recipient or subject.
 
 The first time you move an email (that does not yet have a matching rule) to a folder, QuickArchiver automatically
 creates a rule based on the sender of the email.
+
+If you prefer to review or adjust a new rule immediately, right-click the QuickArchiver button and enable
+`Options > Open rule popup for new rules`. The existing rule popup will then open after the first move that creates a
+new rule. Disable this option to return to automatic rule creation without opening the popup. The setting is saved
+permanently.
 
 ### Archive emails (move)
 

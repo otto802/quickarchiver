@@ -48,6 +48,12 @@
   "toolbar.menu.title.about": {
     "message": "About QuickArchiver"
   },
+  "toolbar.menu.title.options": {
+    "message": "Options"
+  },
+  "toolbar.menu.title.popup_on_new_rule": {
+    "message": "Open rule popup for new rules"
+  },
   "popup.rule.title": {
     "message": "QuickArchiver: Edit rule"
   },

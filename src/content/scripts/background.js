@@ -74,6 +74,15 @@
                 });
                 await quickarchiver.moveMails(selectedMessages);
                 break;
+            case quickarchiver.toolbarMenuPopupOnNewRuleId:
+                quickarchiver.openRulePopupOnNewRule = !quickarchiver.openRulePopupOnNewRule;
+                await messenger.storage.local.set({
+                    openRulePopupOnNewRule: quickarchiver.openRulePopupOnNewRule,
+                });
+                await messenger.menus.update(quickarchiver.toolbarMenuPopupOnNewRuleId, {
+                    checked: quickarchiver.openRulePopupOnNewRule,
+                });
+                break;
         }
     });
 
