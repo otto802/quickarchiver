@@ -34,7 +34,27 @@ try {
 }
 
 const registeredColumns = new Map();
+const pendingColumns = new Set();
 const ruleMatching = {};
+
+function registerColumnWhenReady(id, column, state, attempt = 0) {
+  if (registeredColumns.has(id)) {
+    pendingColumns.delete(id);
+    return;
+  }
+
+  let mailWindow = Services?.wm?.getMostRecentWindow("mail:3pane");
+  if (mailWindow?.document?.readyState === "complete") {
+    ThreadPaneColumns.addCustomColumn(id, column);
+    registeredColumns.set(id, state);
+    pendingColumns.delete(id);
+    return;
+  }
+
+  if (attempt < 20 && pendingColumns.has(id)) {
+    setTimeout(() => registerColumnWhenReady(id, column, state, attempt + 1), 250);
+  }
+}
 
 function decodeFolderText(value) {
   if (typeof value !== "string") {
@@ -236,7 +256,7 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
             existing.rules = rules;
             existing.currentFolderText = currentFolderText;
             ThreadPaneColumns.refreshCustomColumn(id);
-            return;
+            return true;
           }
 
           const state = { rules, currentFolderText };
@@ -253,8 +273,9 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
             ),
           };
 
-          ThreadPaneColumns.addCustomColumn(id, column);
-          registeredColumns.set(id, state);
+          pendingColumns.add(id);
+          registerColumnWhenReady(id, column, state);
+          return false;
         },
 
         async setRules(id, rules) {
@@ -269,7 +290,21 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
           return true;
         },
 
+        async reannounce(id, attempt = 0) {
+          if (!registeredColumns.has(id)) {
+            return;
+          }
+
+          let mailWindow = Services?.wm?.getMostRecentWindow("mail:3pane");
+          if (mailWindow?.document?.readyState === "complete") {
+            Services.obs.notifyObservers(null, "custom-column-added", id);
+          } else if (attempt < 20) {
+            setTimeout(() => this.reannounce(id, attempt + 1), 250);
+          }
+        },
+
         async remove(id) {
+          pendingColumns.delete(id);
           ThreadPaneColumns.removeCustomColumn(id);
           registeredColumns.delete(id);
         },

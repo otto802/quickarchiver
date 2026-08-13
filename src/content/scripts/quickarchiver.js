@@ -274,14 +274,16 @@ let quickarchiver = {
         }
 
         if (!this.columnRegistered) {
-            await messenger.customColumns.add(
+            let existingColumn = await messenger.customColumns.add(
                 this.columnId,
                 browser.i18n.getMessage("column.quickarchiverFolder"),
                 this.rules,
                 browser.i18n.getMessage("column.currentFolder")
             );
+            this.columnReconnected = existingColumn === true;
             this.columnRegistered = true;
         } else {
+            this.columnReconnected = false;
             let updated = await messenger.customColumns.setRules(this.columnId, this.rules);
             if (updated === false) {
                 // The experiment may have been restarted while the MV3

@@ -6,6 +6,7 @@
         "name": "add",
         "type": "function",
         "async": true,
+        "returns": { "type": "boolean" },
         "parameters": [
           { "name": "id", "type": "string" },
           { "name": "name", "type": "string" },
@@ -29,6 +30,14 @@
             "type": "array",
             "items": { "type": "object", "additionalProperties": true }
           }
+        ]
+      },
+      {
+        "name": "reannounce",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          { "name": "id", "type": "string" }
         ]
       },
       {
