@@ -134,6 +134,16 @@ let quickarchiver = {
 
     },
 
+    updateOpenRulePopupOnNewRule: async function (enabled) {
+        this.openRulePopupOnNewRule = enabled === true;
+        await messenger.storage.local.set({
+            openRulePopupOnNewRule: this.openRulePopupOnNewRule,
+        });
+        await messenger.menus.update(this.toolbarMenuPopupOnNewRuleId, {
+            checked: this.openRulePopupOnNewRule,
+        });
+    },
+
     handleMovedMessages: async function (messages, originalMessages = []) {
 
         let popupOpened = false;
@@ -746,8 +756,13 @@ let quickarchiver = {
                     await messenger.runtime.sendMessage({
                         command: "transmitRule",
                         rule: requestedRule,
-                        accounts: await this.getAccounts()
+                        accounts: await this.getAccounts(),
+                        openRulePopupOnNewRule: this.openRulePopupOnNewRule,
                     });
+                    break;
+                case "updateOpenRulePopupOnNewRule":
+
+                    await this.updateOpenRulePopupOnNewRule(broadcastMessage.enabled);
                     break;
                 case "requestRuleUpdate":
 

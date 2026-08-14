@@ -63,6 +63,13 @@ async function ruleCancel() {
     window.close();
 }
 
+async function updateOpenRulePopupOnNewRule(event) {
+    await messenger.runtime.sendMessage({
+        command: "updateOpenRulePopupOnNewRule",
+        enabled: event.target.checked,
+    });
+}
+
 async function ruleDelete() {
 
     if (typeof (rule.index) !== "undefined") {
@@ -108,6 +115,8 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
             accountSelect.value = rule.accountId ?? "";
             accountSelect.disabled = !document.getElementById("active-account").checked;
             document.getElementById("folder").value = rule.folder.path;
+            document.getElementById("open-rule-popup-on-new-rule").checked =
+                broadcastMessage.openRulePopupOnNewRule === true;
         }
     }
 });
@@ -117,6 +126,10 @@ async function onLoad() {
     document.getElementById("button_save").addEventListener("click", ruleSave);
     document.getElementById("button_cancel").addEventListener("click", ruleCancel);
     document.getElementById("button_delete").addEventListener("click", ruleDelete);
+    document.getElementById("open-rule-popup-on-new-rule").addEventListener(
+        "change",
+        updateOpenRulePopupOnNewRule
+    );
     document.getElementById("active-account").addEventListener("change", (event) => {
         document.getElementById("account").disabled = !event.target.checked;
     });
