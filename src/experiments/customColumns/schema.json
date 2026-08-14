@@ -33,14 +33,6 @@
         ]
       },
       {
-        "name": "reannounce",
-        "type": "function",
-        "async": true,
-        "parameters": [
-          { "name": "id", "type": "string" }
-        ]
-      },
-      {
         "name": "remove",
         "type": "function",
         "async": true,

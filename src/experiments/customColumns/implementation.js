@@ -34,25 +34,105 @@ try {
 }
 
 const registeredColumns = new Map();
-const pendingColumns = new Set();
+const pendingColumns = new Map();
 const ruleMatching = {};
 
-function registerColumnWhenReady(id, column, state, attempt = 0) {
+function announceRegisteredColumns() {
+  for (const id of registeredColumns.keys()) {
+    Services.obs.notifyObservers(null, "custom-column-added", id);
+  }
+}
+
+function registerColumnWhenReady(id, attempt = 0) {
   if (registeredColumns.has(id)) {
     pendingColumns.delete(id);
     return;
   }
 
-  let mailWindow = Services?.wm?.getMostRecentWindow("mail:3pane");
-  if (mailWindow?.document?.readyState === "complete") {
-    ThreadPaneColumns.addCustomColumn(id, column);
-    registeredColumns.set(id, state);
-    pendingColumns.delete(id);
+  const pending = pendingColumns.get(id);
+  if (!pending) {
     return;
   }
 
+  let mailWindow = Services?.wm?.getMostRecentWindow("mail:3pane");
+  if (mailWindow?.document?.readyState === "complete") {
+    try {
+      // The experiment global can be recreated while Thunderbird keeps the
+      // ThreadPaneColumns module alive. In that case the local registry is
+      // empty although Thunderbird still has the old definition. Replace it
+      // before adding the fresh callback/state instead of adding the same ID.
+      for (let duplicate = 0; duplicate < 10; duplicate++) {
+        if (!ThreadPaneColumns.getColumn(id)) {
+          break;
+        }
+        ThreadPaneColumns.removeCustomColumn(id);
+      }
+      ThreadPaneColumns.addCustomColumn(id, pending.column);
+      registeredColumns.set(id, pending.state);
+      pendingColumns.delete(id);
+    } catch (error) {
+      console.error("Could not register QuickArchiver folder column", error);
+      if (attempt < 20) {
+        setTimeout(() => registerColumnWhenReady(id, attempt + 1), 250);
+      }
+    }
+    return;
+  }
+
+  if (mailWindow && !pending.windowListenerAttached) {
+    pending.windowListenerAttached = mailWindow;
+    mailWindow.addEventListener(
+      "load",
+      () => registerColumnWhenReady(id),
+      {once: true}
+    );
+  }
+
   if (attempt < 20 && pendingColumns.has(id)) {
-    setTimeout(() => registerColumnWhenReady(id, column, state, attempt + 1), 250);
+    setTimeout(() => registerColumnWhenReady(id, attempt + 1), 250);
+  }
+}
+
+// A custom column registered before the 3-pane window exists is included in
+// the global column list, but the window's picker does not see the
+// custom-column-added notification. Re-announce once when a mail window has
+// finished loading. This is deliberately kept in the experiment process so
+// it cannot run once per short-lived MV3 background context or once per tab.
+Services.obs.addObserver(subject => {
+  let window = subject;
+  if (typeof window?.QueryInterface === "function") {
+    try {
+      window = window.QueryInterface(Ci.nsIDOMWindow);
+    } catch (error) {
+      // Some Thunderbird versions already pass the window object directly.
+    }
+  }
+  if (!window) {
+    return;
+  }
+
+  const announce = () => {
+    if (window.document?.documentElement?.getAttribute("windowtype") !== "mail:3pane") {
+      return;
+    }
+    for (const id of pendingColumns.keys()) {
+      registerColumnWhenReady(id);
+    }
+    announceRegisteredColumns();
+  };
+
+  if (window.document?.readyState === "complete") {
+    announce();
+  } else {
+    window.addEventListener("load", announce, {once: true});
+  }
+}, "domwindowopened");
+
+const mailWindows = Services.wm.getEnumerator("mail:3pane");
+while (mailWindows.hasMoreElements()) {
+  const window = mailWindows.getNext();
+  if (window.document?.readyState === "complete") {
+    announceRegisteredColumns();
   }
 }
 
@@ -259,6 +339,16 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
             return true;
           }
 
+          // Several startup paths can call add() before the first delayed
+          // registration has completed. Keep one pending registration per id;
+          // otherwise each caller would append another column definition.
+          const pending = pendingColumns.get(id);
+          if (pending) {
+            pending.state.rules = rules;
+            pending.state.currentFolderText = currentFolderText;
+            return false;
+          }
+
           const state = { rules, currentFolderText };
           const column = {
             name,
@@ -273,8 +363,8 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
             ),
           };
 
-          pendingColumns.add(id);
-          registerColumnWhenReady(id, column, state);
+          pendingColumns.set(id, {column, state});
+          registerColumnWhenReady(id);
           return false;
         },
 
@@ -288,19 +378,6 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
           column.rules = Array.isArray(rules) ? [...rules] : [];
           ThreadPaneColumns.refreshCustomColumn(id);
           return true;
-        },
-
-        async reannounce(id, attempt = 0) {
-          if (!registeredColumns.has(id)) {
-            return;
-          }
-
-          let mailWindow = Services?.wm?.getMostRecentWindow("mail:3pane");
-          if (mailWindow?.document?.readyState === "complete") {
-            Services.obs.notifyObservers(null, "custom-column-added", id);
-          } else if (attempt < 20) {
-            setTimeout(() => this.reannounce(id, attempt + 1), 250);
-          }
         },
 
         async remove(id) {

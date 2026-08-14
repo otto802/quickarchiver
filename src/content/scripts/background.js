@@ -12,34 +12,6 @@
  */
 
 (async () => {
-    let columnReannouncedTabs = new Set();
-    let shouldReannounceColumn = false;
-
-    let reannounceColumn = async () => {
-        try {
-            await messenger.customColumns.reannounce(quickarchiver.columnId);
-        } catch (error) {
-            console.error("Could not reannounce QuickArchiver folder column", error);
-        }
-    };
-
-    // Thunderbird 153 can create the 3-pane mail tab after the experiment
-    // has registered the column. Reannounce after that tab has finished
-    // loading so its column picker receives the definition.
-    messenger.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-        if (changeInfo.status === "complete"
-            && ["mail", "messageDisplay"].includes(tab?.type)
-            && shouldReannounceColumn
-            && !columnReannouncedTabs.has(tabId)) {
-            columnReannouncedTabs.add(tabId);
-            await reannounceColumn();
-        }
-    });
-
-    messenger.tabs.onRemoved.addListener((tabId) => {
-        columnReannouncedTabs.delete(tabId);
-    });
-
     // onMessagesDisplayed listener. In MV3 this also covers a single message.
     messenger.messageDisplay.onMessagesDisplayed.addListener(async (tab, messageList) => {
         let messages = quickarchiver.getMessages(messageList);
@@ -126,30 +98,23 @@
         quickarchiver.openAboutTab(info);
     });
 
+    // MV3 event pages can otherwise be woken only by a later mail event.
+    // Thunderbird must initialize the column at application startup, before
+    // the user selects a message in the thread pane.
+    messenger.runtime.onStartup.addListener(async () => {
+        try {
+            await quickarchiver.initRules();
+            await quickarchiver.initColumn();
+        } catch (error) {
+            console.error("QuickArchiver startup initialization failed", error);
+        }
+    });
+
     // MV3 event pages can be restarted at any time. Recreate the extension's
     // menus before handling the initially displayed messages below.
     await quickarchiver.createMenus();
     await quickarchiver.initRules();
     await quickarchiver.initColumn();
-    shouldReannounceColumn = quickarchiver.columnReconnected === true;
-
-    // On Thunderbird restart the experiment can retain the registered
-    // column while the newly created 3-pane view has not received its
-    // registration event. Reannounce only in that reconnect case.
-    if (quickarchiver.columnReconnected) {
-        let readyTabs = (await messenger.tabs.query({})).filter(tab =>
-            ["mail", "messageDisplay"].includes(tab.type)
-            && tab.status === "complete"
-        );
-        if (readyTabs.length > 0) {
-            for (let tab of readyTabs) {
-                if (!columnReannouncedTabs.has(tab.id)) {
-                    columnReannouncedTabs.add(tab.id);
-                    await reannounceColumn();
-                }
-            }
-        }
-    }
 
     // at the first start after install the display event may not be fired
     // therefore handle all opened messages
