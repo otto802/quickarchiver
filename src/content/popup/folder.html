@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title data-i18n="popup.folder.title"></title>
+    <script type="text/javascript" src="folder.js" defer="true"></script>
+    <script type="module" src="../scripts/translation.mjs.js"></script>
+    <link rel='stylesheet' type='text/css' href="chrome://global/skin/in-content/common.css">
+    <link rel='stylesheet' type='text/css' href="popup.css">
+</head>
+<body>
+
+<nav class="nav-main"><img src="../icons/dark/qa_move.svg"/>
+    <h1 data-i18n="main.title"></h1></nav>
+
+<section class="section-main folder-picker">
+    <main>
+        <h2 data-i18n="popup.folder.headline"></h2>
+        <label for="folder-account-filter" data-i18n="popup.folder.account.filter"></label>
+        <select id="folder-account-filter"></select>
+        <label for="folder-search" data-i18n="popup.folder.search"></label>
+        <input id="folder-search" type="search" autofocus="autofocus">
+        <select id="folder-select" size="18"></select>
+        <p id="folder-status" class="folder-status"></p>
+        <div class="folder-picker-buttons">
+            <button class="primary" id="button-select" data-i18n="popup.folder.button.select"></button>
+            <button id="button-cancel" data-i18n="popup.folder.button.cancel"></button>
+        </div>
+    </main>
+</section>
+
+</body>
+</html>

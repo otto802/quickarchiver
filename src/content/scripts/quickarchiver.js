@@ -475,6 +475,30 @@ let quickarchiver = {
         });
     },
 
+    openFolderPicker: async function (folderId = "", folderPath = "") {
+        let params = new URLSearchParams();
+        if (folderId) {
+            params.set("folderId", folderId);
+        }
+        if (folderPath) {
+            params.set("folderPath", folderPath);
+        }
+
+        let url = "content/popup/folder.html";
+        let query = params.toString();
+        if (query) {
+            url += "?" + query;
+        }
+
+        await messenger.windows.create({
+            url,
+            type: "popup",
+            height: 650,
+            width: 560,
+            allowScriptsToClose: true,
+        });
+    },
+
     openAllRulesTab: async function () {
 
         await messenger.tabs.create({
@@ -738,6 +762,28 @@ let quickarchiver = {
             return [];
         }
     },
+    getSelectableFolders: async function () {
+        if (typeof messenger.folders?.query !== "function") {
+            return [];
+        }
+
+        try {
+            let accounts = await this.getAccounts();
+            let accountNames = new Map(accounts.map(account => [account.id, account.name]));
+            let folders = await messenger.folders.query({canAddMessages: true});
+
+            return folders.map(folder => ({
+                id: folder.id,
+                path: folder.path,
+                accountId: folder.accountId,
+                name: folder.name,
+                accountName: accountNames.get(folder.accountId) ?? folder.accountId,
+            }));
+        } catch (error) {
+            console.warn("Could not load selectable folders", error);
+            return [];
+        }
+    },
     handleBroadcastMessage: async function (broadcastMessage) {
 
         if (broadcastMessage && broadcastMessage.hasOwnProperty("command")) {
@@ -824,6 +870,27 @@ let quickarchiver = {
                         this.currentRule = await this.getRule(broadcastMessage.ruleId)
                         await this.openRulePopup();
                     }
+                    break;
+                case "requestOpenFolderPicker":
+
+                    await this.openFolderPicker(
+                        broadcastMessage.folderId,
+                        broadcastMessage.folderPath
+                    );
+                    break;
+                case "requestFolderList":
+
+                    await messenger.runtime.sendMessage({
+                        command: "transmitFolderList",
+                        folders: await this.getSelectableFolders(),
+                    });
+                    break;
+                case "selectFolderForRule":
+
+                    await messenger.runtime.sendMessage({
+                        command: "transmitSelectedFolder",
+                        folder: broadcastMessage.folder,
+                    });
                     break;
                 case "requestOpenToolsTab":
 

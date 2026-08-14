@@ -102,6 +102,30 @@
   "popup.rule.folder": {
     "message": "Zielordner"
   },
+  "popup.rule.folder.button.select": {
+    "message": "Ändern..."
+  },
+  "popup.folder.title": {
+    "message": "QuickArchiver: Ordner auswählen"
+  },
+  "popup.folder.headline": {
+    "message": "Zielordner auswählen"
+  },
+  "popup.folder.account.filter": {
+    "message": "Konto"
+  },
+  "popup.folder.search": {
+    "message": "Ordner suchen"
+  },
+  "popup.folder.button.select": {
+    "message": "Auswählen"
+  },
+  "popup.folder.button.cancel": {
+    "message": "Abbrechen"
+  },
+  "popup.folder.status.empty": {
+    "message": "Keine passenden Ordner gefunden."
+  },
   "popup.rule.button.save": {
     "message": "Regel speichern"
   },

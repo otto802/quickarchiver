@@ -102,6 +102,30 @@
   "popup.rule.folder": {
     "message": "Destination folder"
   },
+  "popup.rule.folder.button.select": {
+    "message": "Change..."
+  },
+  "popup.folder.title": {
+    "message": "QuickArchiver: Select folder"
+  },
+  "popup.folder.headline": {
+    "message": "Select destination folder"
+  },
+  "popup.folder.account.filter": {
+    "message": "Account"
+  },
+  "popup.folder.search": {
+    "message": "Search folders"
+  },
+  "popup.folder.button.select": {
+    "message": "Select"
+  },
+  "popup.folder.button.cancel": {
+    "message": "Cancel"
+  },
+  "popup.folder.status.empty": {
+    "message": "No matching folders found."
+  },
   "popup.rule.button.save": {
     "message": "Save Rule"
   },

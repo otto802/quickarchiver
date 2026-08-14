@@ -70,6 +70,14 @@ async function updateOpenRulePopupOnNewRule(event) {
     });
 }
 
+async function openFolderPicker() {
+    await messenger.runtime.sendMessage({
+        command: "requestOpenFolderPicker",
+        folderId: rule.folder?.id ?? "",
+        folderPath: rule.folder?.path ?? "",
+    });
+}
+
 async function ruleDelete() {
 
     if (typeof (rule.index) !== "undefined") {
@@ -118,6 +126,11 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
             document.getElementById("open-rule-popup-on-new-rule").checked =
                 broadcastMessage.openRulePopupOnNewRule === true;
         }
+
+        if (broadcastMessage.command === "transmitSelectedFolder" && broadcastMessage.folder) {
+            rule.folder = broadcastMessage.folder;
+            document.getElementById("folder").value = broadcastMessage.folder.path ?? "";
+        }
     }
 });
 
@@ -126,6 +139,7 @@ async function onLoad() {
     document.getElementById("button_save").addEventListener("click", ruleSave);
     document.getElementById("button_cancel").addEventListener("click", ruleCancel);
     document.getElementById("button_delete").addEventListener("click", ruleDelete);
+    document.getElementById("button-select-folder").addEventListener("click", openFolderPicker);
     document.getElementById("open-rule-popup-on-new-rule").addEventListener(
         "change",
         updateOpenRulePopupOnNewRule

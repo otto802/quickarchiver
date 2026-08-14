@@ -30,6 +30,36 @@ section.section-main {
     max-width: 70%;
 }
 
+.folder-picker main {
+    max-width: 100%;
+}
+
+.folder-picker input[type=search],
+.folder-picker select {
+    box-sizing: border-box;
+    display: block;
+    margin: 8px 0 12px;
+    max-width: 100%;
+    width: 100%;
+}
+
+.folder-picker select {
+    min-height: 320px;
+}
+
+.folder-picker #folder-account-filter {
+    min-height: 0;
+}
+
+.folder-picker-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.folder-status {
+    min-height: 1.2em;
+}
+
 .rule span {
     display: block;
     opacity: 50%;
