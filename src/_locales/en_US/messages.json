@@ -63,6 +63,9 @@
   "popup.rule.intro": {
     "message": "You can use wildcards ('*'). For example, '@*example.com' matches messages from info@newsletter.example.com and support@example.com."
   },
+  "popup.rule.criteria": {
+    "message": "Message criteria"
+  },
   "popup.rule.from": {
     "message": "From"
   },
@@ -111,6 +114,9 @@
   "popup.folder.headline": {
     "message": "Select destination folder"
   },
+  "popup.folder.intro": {
+    "message": "Choose the folder where matching messages should be moved."
+  },
   "popup.folder.account.filter": {
     "message": "Account"
   },
@@ -143,6 +149,12 @@
   },
   "tab.list.table.action.edit": {
     "message": "Edit"
+  },
+  "tab.list.table.account": {
+    "message": "Account"
+  },
+  "tab.list.table.account.unrestricted": {
+    "message": "All accounts"
   },
   "tab.list.table.action.delete": {
     "message": "Delete"

@@ -23,15 +23,137 @@ section.section-main {
 }
 
 .rule input[type=text] {
-    width: 70%
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .rule select {
-    max-width: 70%;
+    box-sizing: border-box;
+    max-width: 100%;
+    width: 100%;
+}
+
+.rule-intro {
+    max-width: 760px;
+}
+
+.rule-section {
+    margin: 18px 0;
+    max-width: 760px;
+}
+
+.rule-condition {
+    border-bottom: 1px solid var(--in-content-box-border-color);
+    padding: 10px 0 12px;
+}
+
+.rule-condition:last-child {
+    border-bottom: 0;
+}
+
+.rule-condition-title {
+    align-items: center;
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.rule-condition-title input[type=checkbox] {
+    margin: 0 2px 0 0;
+}
+
+.rule-condition > input[type=text],
+.rule-condition > select {
+    margin: 0;
+}
+
+.rule-condition > span {
+    display: block;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
+.rule-destination {
+    padding-bottom: 14px;
+}
+
+.rule-destination-controls {
+    align-items: center;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.rule-destination #folder {
+    min-width: 0;
+}
+
+.rule-actions {
+    align-items: center;
+    background-color: var(--background-color-canvas, var(--in-content-page-background, Canvas));
+    border-top: 1px solid var(--border-color, var(--in-content-box-border-color, currentColor));
+    color: var(--text-color, var(--in-content-page-color, inherit));
+    display: flex;
+    justify-content: space-between;
+    margin: 24px 0 8px;
+    max-width: 760px;
+    padding: 12px 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+}
+
+.rule-actions-left,
+.rule-actions-main {
+    display: flex;
+    gap: 8px;
+}
+
+.rule-actions-left {
+    align-items: center;
+}
+
+.rule-sticky-option {
+    align-items: center;
+    display: flex;
+    gap: 6px;
+    margin-right: 8px;
+}
+
+.rule-sticky-option input[type=checkbox] {
+    margin: 0;
+}
+
+.visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
 }
 
 .folder-picker main {
     max-width: 100%;
+}
+
+.folder-intro {
+    margin-top: 0;
+}
+
+.folder-filters {
+    align-items: end;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    margin: 18px 0 12px;
+}
+
+.folder-filter label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
 }
 
 .folder-picker input[type=search],
@@ -44,11 +166,26 @@ section.section-main {
 }
 
 .folder-picker select {
-    min-height: 320px;
+    min-height: 360px;
 }
 
 .folder-picker #folder-account-filter {
     min-height: 0;
+}
+
+.folder-picker-footer {
+    align-items: center;
+    background-color: var(--background-color-canvas, var(--in-content-page-background, Canvas));
+    border-top: 1px solid var(--border-color, var(--in-content-box-border-color, currentColor));
+    color: var(--text-color, var(--in-content-page-color, inherit));
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding: 12px 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
 }
 
 .folder-picker-buttons {
@@ -57,7 +194,23 @@ section.section-main {
 }
 
 .folder-status {
+    margin: 0;
     min-height: 1.2em;
+}
+
+@media (max-width: 520px) {
+    .folder-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .folder-picker-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .folder-picker-buttons {
+        justify-content: flex-end;
+    }
 }
 
 .rule span {

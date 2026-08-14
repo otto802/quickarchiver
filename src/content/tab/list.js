@@ -15,6 +15,7 @@
 window.addEventListener("load", onLoad);
 
 let rules = {};
+let accounts = new Map();
 
 async function onLoad() {
 
@@ -44,6 +45,7 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
 
         if (broadcastMessage.command === "transmitAllRules" && broadcastMessage.rules) {
             rules = broadcastMessage.rules
+            accounts = new Map((broadcastMessage.accounts ?? []).map(account => [account.id, account]));
             await renderTable();
         }
     }
@@ -106,6 +108,25 @@ async function renderTable() {
                     return span;
                 }
 
+            },
+            {
+                field: "accountId",
+                title: browser.i18n.getMessage("tab.list.table.account"),
+                createChild: function (value) {
+                    let span = document.createElement("span");
+
+                    if (!value.activeAccount) {
+                        span.className = "text-muted";
+                        span.textContent = browser.i18n.getMessage("tab.list.table.account.unrestricted");
+                        return span;
+                    }
+
+                    let account = accounts.get(value.accountId);
+                    span.textContent = account
+                        ? (account.email ? `${account.name} (${account.email})` : account.name)
+                        : (value.accountId || "");
+                    return span;
+                }
             },
             {
                 field: "folder",

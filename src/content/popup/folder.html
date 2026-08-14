@@ -16,15 +16,26 @@
 <section class="section-main folder-picker">
     <main>
         <h2 data-i18n="popup.folder.headline"></h2>
-        <label for="folder-account-filter" data-i18n="popup.folder.account.filter"></label>
-        <select id="folder-account-filter"></select>
-        <label for="folder-search" data-i18n="popup.folder.search"></label>
-        <input id="folder-search" type="search" autofocus="autofocus">
+        <p class="folder-intro" data-i18n="popup.folder.intro"></p>
+
+        <div class="folder-filters">
+            <div class="folder-filter">
+                <label for="folder-account-filter" data-i18n="popup.folder.account.filter"></label>
+                <select id="folder-account-filter"></select>
+            </div>
+            <div class="folder-filter">
+                <label for="folder-search" data-i18n="popup.folder.search"></label>
+                <input id="folder-search" type="search" autofocus="autofocus">
+            </div>
+        </div>
+
         <select id="folder-select" size="18"></select>
-        <p id="folder-status" class="folder-status"></p>
-        <div class="folder-picker-buttons">
-            <button class="primary" id="button-select" data-i18n="popup.folder.button.select"></button>
-            <button id="button-cancel" data-i18n="popup.folder.button.cancel"></button>
+        <div class="folder-picker-footer">
+            <p id="folder-status" class="folder-status" aria-live="polite"></p>
+            <div class="folder-picker-buttons">
+                <button id="button-cancel" data-i18n="popup.folder.button.cancel"></button>
+                <button class="primary" id="button-select" data-i18n="popup.folder.button.select"></button>
+            </div>
         </div>
     </main>
 </section>

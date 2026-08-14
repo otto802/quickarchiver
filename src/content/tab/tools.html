@@ -20,21 +20,26 @@
 
         <h2 data-i18n="tab.tools.backup.headline"></h2>
 
-        <span data-i18n="tab.tools.backup.warning"></span>
+        <p class="tools-warning" data-i18n="tab.tools.backup.warning"></p>
 
-        <h3 data-i18n="tab.tools.backup.export.headline"></h3>
-        <div class="action-buttons">
+        <section class="tools-section">
+            <h3 data-i18n="tab.tools.backup.export.headline"></h3>
             <p data-i18n="tab.tools.backup.export.hint"></p>
-            <button id="button-export" data-i18n="tab.tools.backup.button.export"></button>
-        </div>
+            <div class="tools-section-actions">
+                <button id="button-export" data-i18n="tab.tools.backup.button.export"></button>
+            </div>
+        </section>
 
-        <h3 data-i18n="tab.tools.backup.import.headline"></h3>
-        <div>
+        <section class="tools-section">
+            <h3 data-i18n="tab.tools.backup.import.headline"></h3>
             <p data-i18n="tab.tools.backup.import.hint"></p>
             <input id="import-file" type="file" style="display:none">
-            <button id="button-import" data-i18n="tab.tools.backup.button.import"></button>
-        </div>
-        <div class="action-buttons">
+            <div class="tools-section-actions">
+                <button id="button-import" data-i18n="tab.tools.backup.button.import"></button>
+            </div>
+        </section>
+
+        <div class="tools-actions">
             <button id="button-cancel" data-i18n="tab.tools.button.cancel"></button>
         </div>
     </main>

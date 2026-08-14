@@ -826,7 +826,8 @@ let quickarchiver = {
                         // trigger reload of the rule table (if any)
                         await messenger.runtime.sendMessage({
                             command: "transmitAllRules",
-                            rules: await this.getAllRules()
+                            rules: await this.getAllRules(),
+                            accounts: await this.getAccounts(),
                         });
                     }
                     break;
@@ -835,7 +836,8 @@ let quickarchiver = {
 
                     await messenger.runtime.sendMessage({
                         command: "transmitAllRules",
-                        rules: await this.getAllRules()
+                        rules: await this.getAllRules(),
+                        accounts: await this.getAccounts(),
                     });
                     break;
                 case "requestToolsImportRules":
@@ -852,7 +854,8 @@ let quickarchiver = {
                             // trigger reload of the rule table
                             await messenger.runtime.sendMessage({
                                 command: "transmitAllRules",
-                                rules: await this.getAllRules()
+                                rules: await this.getAllRules(),
+                                accounts: await this.getAccounts(),
                             });
                         } else {
 

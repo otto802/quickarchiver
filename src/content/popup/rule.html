@@ -17,48 +17,73 @@
     <main class="rule">
 
         <h2 data-i18n="popup.rule.headline"></h2>
-        <p data-i18n="popup.rule.intro"></p>
-        <fieldset>
-            <legend data-i18n="popup.rule.from"></legend>
-            <label for="active-from" data-i18n="popup.rule.from.checkbox.hint"></label>
-            <input id="active-from" type="checkbox"> <input id="from" type="text" value="">
-            <span data-i18n="popup.rule.from.help"></span>
+        <p class="rule-intro" data-i18n="popup.rule.intro"></p>
+
+        <fieldset class="rule-section rule-criteria">
+            <legend data-i18n="popup.rule.criteria"></legend>
+
+            <div class="rule-condition">
+                <div class="rule-condition-title">
+                    <input id="active-from" type="checkbox">
+                    <label for="active-from" data-i18n="popup.rule.from"></label>
+                </div>
+                <label class="visually-hidden" for="from" data-i18n="popup.rule.from"></label>
+                <input id="from" type="text" value="">
+                <span data-i18n="popup.rule.from.help"></span>
+            </div>
+
+            <div class="rule-condition">
+                <div class="rule-condition-title">
+                    <input id="active-to" type="checkbox">
+                    <label for="active-to" data-i18n="popup.rule.to"></label>
+                </div>
+                <label class="visually-hidden" for="to" data-i18n="popup.rule.to"></label>
+                <input id="to" type="text" value="">
+                <span data-i18n="popup.rule.to.help"></span>
+            </div>
+
+            <div class="rule-condition">
+                <div class="rule-condition-title">
+                    <input id="active-subject" type="checkbox">
+                    <label for="active-subject" data-i18n="popup.rule.subject"></label>
+                </div>
+                <label class="visually-hidden" for="subject" data-i18n="popup.rule.subject"></label>
+                <input id="subject" type="text" value="">
+                <span data-i18n="popup.rule.subject.help"></span>
+            </div>
+
+            <div class="rule-condition">
+                <div class="rule-condition-title">
+                    <input id="active-account" type="checkbox">
+                    <label for="active-account" data-i18n="popup.rule.account"></label>
+                </div>
+                <label class="visually-hidden" for="account" data-i18n="popup.rule.account"></label>
+                <select id="account" disabled="disabled"></select>
+                <span data-i18n="popup.rule.account.help"></span>
+            </div>
         </fieldset>
-        <fieldset>
-            <legend data-i18n="popup.rule.to"></legend>
-            <label for="active-to" data-i18n="popup.rule.to.checkbox.hint"></label>
-            <input id="active-to" type="checkbox"> <input id="to" type="text" value="">
-            <span data-i18n="popup.rule.to.help"></span>
-        </fieldset>
-        <fieldset>
-            <legend data-i18n="popup.rule.subject"></legend>
-            <label for="active-subject" data-i18n="popup.rule.subject.checkbox.hint"></label>
-            <input id="active-subject" type="checkbox"> <input id="subject" type="text"
-                                                               value="">
-            <span data-i18n="popup.rule.subject.help"></span>
-        </fieldset>
-        <fieldset>
-            <legend data-i18n="popup.rule.account"></legend>
-            <label for="active-account" data-i18n="popup.rule.account.checkbox.hint"></label>
-            <input id="active-account" type="checkbox">
-            <select id="account" disabled="disabled"></select>
-            <span data-i18n="popup.rule.account.help"></span>
-        </fieldset>
-        <fieldset>
+
+        <fieldset class="rule-section rule-destination">
             <legend data-i18n="popup.rule.folder"></legend>
-            <input id="folder" type="text" value="" readonly="readonly">
-            <button id="button-select-folder" data-i18n="popup.rule.folder.button.select"></button>
+            <div class="rule-destination-controls">
+                <input id="folder" type="text" value="" readonly="readonly">
+                <button id="button-select-folder" data-i18n="popup.rule.folder.button.select"></button>
+            </div>
         </fieldset>
 
-        <fieldset>
-            <label for="open-rule-popup-on-new-rule" data-i18n="toolbar.menu.title.popup_on_new_rule"></label>
-            <input id="open-rule-popup-on-new-rule" type="checkbox">
-        </fieldset>
-
-
-        <button class="primary" id="button_save" data-i18n="popup.rule.button.save"></button>
-        <button class="danger" id="button_delete" data-i18n="popup.rule.button.delete"></button>
-        <button id="button_cancel" data-i18n="popup.rule.button.cancel"></button>
+        <div class="rule-actions">
+            <div class="rule-actions-left">
+                <label class="rule-sticky-option" for="open-rule-popup-on-new-rule">
+                    <input id="open-rule-popup-on-new-rule" type="checkbox">
+                    <span data-i18n="toolbar.menu.title.popup_on_new_rule"></span>
+                </label>
+                <button class="danger" id="button_delete" data-i18n="popup.rule.button.delete"></button>
+            </div>
+            <div class="rule-actions-main">
+                <button id="button_cancel" data-i18n="popup.rule.button.cancel"></button>
+                <button class="primary" id="button_save" data-i18n="popup.rule.button.save"></button>
+            </div>
+        </div>
 
     </main>
 </section>

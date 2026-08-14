@@ -63,6 +63,9 @@
   "popup.rule.intro": {
     "message": "Du kannst Platzhalter ('*') verwenden. Der Ausdruck '@*example.com' findet zum Beispiel E-Mails von info@newsletter.example.com und support@example.com."
   },
+  "popup.rule.criteria": {
+    "message": "Nachrichtenkriterien"
+  },
   "popup.rule.from": {
     "message": "Von"
   },
@@ -111,6 +114,9 @@
   "popup.folder.headline": {
     "message": "Zielordner auswählen"
   },
+  "popup.folder.intro": {
+    "message": "Wähle den Ordner aus, in den passende Nachrichten verschoben werden sollen."
+  },
   "popup.folder.account.filter": {
     "message": "Konto"
   },
@@ -143,6 +149,12 @@
   },
   "tab.list.table.action.edit": {
     "message": "Bearbeiten"
+  },
+  "tab.list.table.account": {
+    "message": "Konto"
+  },
+  "tab.list.table.account.unrestricted": {
+    "message": "Alle Konten"
   },
   "tab.list.table.action.delete": {
     "message": "Löschen"

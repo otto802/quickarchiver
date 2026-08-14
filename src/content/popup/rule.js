@@ -70,6 +70,11 @@ async function updateOpenRulePopupOnNewRule(event) {
     });
 }
 
+function updateConditionInputState(checkboxId, inputId) {
+    let checkbox = document.getElementById(checkboxId);
+    document.getElementById(inputId).disabled = !checkbox.checked;
+}
+
 async function openFolderPicker() {
     await messenger.runtime.sendMessage({
         command: "requestOpenFolderPicker",
@@ -119,6 +124,9 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
             document.getElementById("active-from").checked = rule.activeFrom;
             document.getElementById("active-to").checked = rule.activeTo;
             document.getElementById("active-subject").checked = rule.activeSubject;
+            updateConditionInputState("active-from", "from");
+            updateConditionInputState("active-to", "to");
+            updateConditionInputState("active-subject", "subject");
             document.getElementById("active-account").checked = rule.activeAccount === true;
             accountSelect.value = rule.accountId ?? "";
             accountSelect.disabled = !document.getElementById("active-account").checked;
@@ -140,6 +148,16 @@ async function onLoad() {
     document.getElementById("button_cancel").addEventListener("click", ruleCancel);
     document.getElementById("button_delete").addEventListener("click", ruleDelete);
     document.getElementById("button-select-folder").addEventListener("click", openFolderPicker);
+    for (let [checkboxId, inputId] of [
+        ["active-from", "from"],
+        ["active-to", "to"],
+        ["active-subject", "subject"],
+    ]) {
+        document.getElementById(checkboxId).addEventListener("change", () => {
+            updateConditionInputState(checkboxId, inputId);
+        });
+        updateConditionInputState(checkboxId, inputId);
+    }
     document.getElementById("open-rule-popup-on-new-rule").addEventListener(
         "change",
         updateOpenRulePopupOnNewRule

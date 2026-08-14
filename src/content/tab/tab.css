@@ -1,9 +1,11 @@
 
 body {
+    background-color: var(--background-color-canvas, var(--in-content-page-background, Canvas));
+    color: var(--text-color, var(--in-content-page-color, inherit));
 }
 
 nav.nav-main {
-    background-color: var(--in-content-categories-background);
+    background-color: var(--background-color-box, var(--in-content-categories-background));
     display: block;
     height: 40px;
     padding: 15px;
@@ -22,6 +24,56 @@ section.section-main {
     padding: 15px;
 }
 
+.rule-list {
+    margin: 0 auto;
+    max-width: 1400px;
+    width: 100%;
+}
+
+.rule-list h2 {
+    margin-top: 0;
+}
+
+.tools {
+    margin: 0 auto;
+    max-width: 900px;
+    width: 100%;
+}
+
+.tools h2 {
+    margin-top: 0;
+}
+
+.tools-warning {
+    background-color: var(--background-color-box-warning, var(--in-content-box-info-background));
+    border: 1px solid var(--border-color, var(--in-content-box-border-color));
+    border-radius: var(--border-radius-medium, 4px);
+    padding: 12px;
+}
+
+.tools-section {
+    background-color: var(--background-color-box, var(--in-content-table-background));
+    border: 1px solid var(--border-color, var(--in-content-table-border-color));
+    border-radius: var(--border-radius-medium, 4px);
+    margin: 18px 0;
+    padding: 16px;
+}
+
+.tools-section h3 {
+    margin-top: 0;
+}
+
+.tools-section-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+#rule-list-table {
+    margin-bottom: 72px;
+    overflow-x: auto;
+}
+
 .rule input[type=text] {
     width: 70%
 }
@@ -37,25 +89,25 @@ section.section-main {
     width: 100%;
     max-width: 100%;
     margin-bottom: 20px;
-    background-color: var(--in-content-table-background);
-    border: 1px solid var(--in-content-table-border-color);
+    background-color: var(--background-color-box, var(--in-content-table-background));
+    border: 1px solid var(--border-color, var(--in-content-table-border-color));
 }
 
 .qa-table th {
     text-align: left;
-    background-color: var(--in-content-table-header-background);
-    color: var(--in-content-table-header-color);
+    background-color: var(--background-color-box-info, var(--in-content-table-header-background));
+    color: var(--text-color, var(--in-content-table-header-color));
 }
 
 .qa-table td, .qa-table th {
     padding: 8px;
     line-height: 1.42857143;
     vertical-align: top;
-    border-top: 1px solid var(--in-content-table-border-color);
+    border-top: 1px solid var(--border-color, var(--in-content-table-border-color));
 }
 
 .qa-table tr.highlight td {
-    background-color: var(--in-content-box-info-background);
+    background-color: color-mix(in srgb, currentColor 5%, transparent);
 }
 
 
@@ -96,7 +148,30 @@ h2 {
 }
 
 .action-buttons {
+    align-items: center;
+    background-color: var(--background-color-canvas, var(--in-content-page-background, Canvas));
+    border-top: 1px solid var(--border-color, var(--in-content-box-border-color, currentColor));
+    bottom: 0;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
     margin-top: 20px;
+    padding: 12px 0;
+    position: sticky;
+    z-index: 2;
+}
+
+.tools-actions {
+    align-items: center;
+    background-color: var(--background-color-canvas, var(--in-content-page-background, Canvas));
+    border-top: 1px solid var(--border-color, var(--in-content-box-border-color, currentColor));
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding: 12px 0;
+    position: sticky;
+    z-index: 2;
 }
 
 .tools textarea {
