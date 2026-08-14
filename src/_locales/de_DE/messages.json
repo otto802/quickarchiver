@@ -90,6 +90,15 @@
   "popup.rule.subject.help": {
     "message": "Der Betreff enthält die angegebene Zeichenfolge."
   },
+  "popup.rule.account": {
+    "message": "Konto der Quell-E-Mail"
+  },
+  "popup.rule.account.checkbox.hint": {
+    "message": "Einschränken"
+  },
+  "popup.rule.account.help": {
+    "message": "Die Regel gilt nur für E-Mails aus dem ausgewählten Konto."
+  },
   "popup.rule.folder": {
     "message": "Zielordner"
   },

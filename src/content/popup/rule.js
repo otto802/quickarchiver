@@ -37,6 +37,8 @@ async function ruleSave() {
         rule.activeFrom = document.getElementById("active-from").checked;
         rule.activeTo = document.getElementById("active-to").checked;
         rule.activeSubject = document.getElementById("active-subject").checked;
+        rule.activeAccount = document.getElementById("active-account").checked;
+        rule.accountId = document.getElementById("account").value;
 
         await messenger.runtime.sendMessage({
             command: "requestRuleUpdate",
@@ -85,12 +87,26 @@ messenger.runtime.onMessage.addListener(async (broadcastMessage) => {
 
             rule = broadcastMessage.rule;
 
+            let accountSelect = document.getElementById("account");
+            accountSelect.replaceChildren();
+            for (let account of broadcastMessage.accounts ?? []) {
+                let option = document.createElement("option");
+                option.value = account.id;
+                option.textContent = account.email
+                    ? `${account.name} (${account.email})`
+                    : account.name;
+                accountSelect.appendChild(option);
+            }
+
             document.getElementById("from").value = rule.from;
             document.getElementById("to").value = rule.to;
             document.getElementById("subject").value = rule.subject;
             document.getElementById("active-from").checked = rule.activeFrom;
             document.getElementById("active-to").checked = rule.activeTo;
             document.getElementById("active-subject").checked = rule.activeSubject;
+            document.getElementById("active-account").checked = rule.activeAccount === true;
+            accountSelect.value = rule.accountId ?? "";
+            accountSelect.disabled = !document.getElementById("active-account").checked;
             document.getElementById("folder").value = rule.folder.path;
         }
     }
@@ -101,6 +117,9 @@ async function onLoad() {
     document.getElementById("button_save").addEventListener("click", ruleSave);
     document.getElementById("button_cancel").addEventListener("click", ruleCancel);
     document.getElementById("button_delete").addEventListener("click", ruleDelete);
+    document.getElementById("active-account").addEventListener("change", (event) => {
+        document.getElementById("account").disabled = !event.target.checked;
+    });
 
     await messenger.runtime.sendMessage({
         command: "requestRule",

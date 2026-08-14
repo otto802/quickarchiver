@@ -21,6 +21,8 @@ let quickarchiver = {
         activeFrom: false,
         activeTo: false,
         activeSubject: false,
+        activeAccount: false,
+        accountId: '',
         folder: {},
     },
     currentRule: null,
@@ -132,19 +134,25 @@ let quickarchiver = {
 
     },
 
-    handleMovedMessages: async function (messages) {
+    handleMovedMessages: async function (messages, originalMessages = []) {
 
         let popupOpened = false;
 
-        for (const message of messages) {
+        for (let index = 0; index < messages.length; index++) {
+            const message = messages[index];
+            const originalMessage = originalMessages[index] ?? message;
 
             console.info("Check moved message with subject '" + message.subject + "'");
 
-            let rule = await this.findRule(message);
+            // The moved message points to the destination folder. Account
+            // restrictions refer to the source account, so rule lookup must
+            // use the original message from the onMoved event.
+            let rule = await this.findRule(originalMessage);
 
             if (!rule) {
                 let index = await this.createDefaultRule(message, {
                     allowSpecialFolder: this.openRulePopupOnNewRule,
+                    sourceMessage: originalMessage,
                 });
 
                 if (this.openRulePopupOnNewRule && index !== false && !popupOpened) {
@@ -166,6 +174,7 @@ let quickarchiver = {
     createDefaultRule: async function (message, options = {}) {
 
         let allowSpecialFolder = options.allowSpecialFolder === true;
+        let sourceMessage = options.sourceMessage ?? message;
 
         if (!allowSpecialFolder && this.isSpecialFolder(message?.folder, "inbox", "inbox")) {
 
@@ -183,9 +192,10 @@ let quickarchiver = {
 
         let index = await this.createRule({
             activeFrom: true,
-            from: this.getMessageHeaderValue(message, "author"),
-            to: this.getMessageHeaderValue(message, "recipients"),
-            subject: this.getMessageHeaderValue(message, "subject"),
+            from: this.getMessageHeaderValue(sourceMessage, "author"),
+            to: this.getMessageHeaderValue(sourceMessage, "recipients"),
+            subject: this.getMessageHeaderValue(sourceMessage, "subject"),
+            accountId: sourceMessage?.folder?.accountId ?? '',
             folder: message.folder,
         })
 
@@ -449,7 +459,7 @@ let quickarchiver = {
         await messenger.windows.create({
             url,
             type: "popup",
-            height: 570,
+            height: 640,
             width: 600,
             allowScriptsToClose: true
         });
@@ -702,6 +712,22 @@ let quickarchiver = {
         await this.initRules();
         return this.rules;
     },
+    getAccounts: async function () {
+        if (typeof messenger.accounts?.list !== "function") {
+            return [];
+        }
+
+        try {
+            return (await messenger.accounts.list()).map(account => ({
+                id: account.id,
+                name: account.name || account.id,
+                email: account.identities?.[0]?.email || ''
+            }));
+        } catch (error) {
+            console.warn("Could not load Thunderbird accounts", error);
+            return [];
+        }
+    },
     handleBroadcastMessage: async function (broadcastMessage) {
 
         if (broadcastMessage && broadcastMessage.hasOwnProperty("command")) {
@@ -719,7 +745,8 @@ let quickarchiver = {
 
                     await messenger.runtime.sendMessage({
                         command: "transmitRule",
-                        rule: requestedRule
+                        rule: requestedRule,
+                        accounts: await this.getAccounts()
                     });
                     break;
                 case "requestRuleUpdate":

@@ -44,7 +44,10 @@
 
     // onMoved listener. fired when message is moved to a folder.
     messenger.messages.onMoved.addListener(async (originalMessages, movedMessages) => {
-        await quickarchiver.handleMovedMessages(movedMessages.messages);
+        await quickarchiver.handleMovedMessages(
+            movedMessages.messages,
+            originalMessages.messages
+        );
     });
 
     // onMessage listener. fired when an internal message is sent via the internal message bus.

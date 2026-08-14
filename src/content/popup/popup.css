@@ -26,6 +26,10 @@ section.section-main {
     width: 70%
 }
 
+.rule select {
+    max-width: 70%;
+}
+
 .rule span {
     display: block;
     opacity: 50%;
@@ -38,4 +42,3 @@ section.section-main {
 .qa-table tr.highlight td {
     background-color: #444;
 }
-

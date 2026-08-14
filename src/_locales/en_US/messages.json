@@ -90,6 +90,15 @@
   "popup.rule.subject.help": {
     "message": "The subject contains the specified value."
   },
+  "popup.rule.account": {
+    "message": "Source email account"
+  },
+  "popup.rule.account.checkbox.hint": {
+    "message": "Restrict"
+  },
+  "popup.rule.account.help": {
+    "message": "The rule only applies to messages from the selected account."
+  },
   "popup.rule.folder": {
     "message": "Destination folder"
   },

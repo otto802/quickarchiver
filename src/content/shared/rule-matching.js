@@ -35,6 +35,17 @@ var QuickArchiverRuleMatching = (() => {
     return first ?? "";
   }
 
+  function getMessageAccountId(message) {
+    const folder = message?.folder;
+    return message?.accountKey
+      ?? folder?.accountId
+      ?? folder?.server?.accountKey
+      // Older/native folder objects may expose only the incoming-server key.
+      // accountKey above is the authoritative nsIMsgDBHdr value.
+      ?? folder?.server?.key
+      ?? "";
+  }
+
   function findMatch(string, value) {
     if (typeof string !== "string" || typeof value !== "string") {
       return false;
@@ -55,7 +66,19 @@ var QuickArchiverRuleMatching = (() => {
     return new RegExp("^" + escaped + "$", "i").test(string);
   }
 
-  function findRule(message, rules) {
+  function isSameFolder(left, right) {
+    if (!left || !right) {
+      return false;
+    }
+    if (left.id && right.id) {
+      return left.id === right.id;
+    }
+    return left.path === right.path
+      && (!left.accountId || !right.accountId
+        || left.accountId === right.accountId);
+  }
+
+  function findRule(message, rules, options = {}) {
     for (const rule of rules ?? []) {
       let match = true;
       let hasActiveCriteria = false;
@@ -72,13 +95,44 @@ var QuickArchiverRuleMatching = (() => {
         hasActiveCriteria = true;
         match = findMatch(getMessageHeaderValue(message, "subject"), rule.subject);
       }
+      if (match && rule.activeAccount) {
+        hasActiveCriteria = true;
+        match = typeof rule.accountId === "string"
+          && rule.accountId.length > 0
+          && (options.accountId ?? getMessageAccountId(message)) === rule.accountId;
+      }
 
       if (hasActiveCriteria && match) {
         return rule;
       }
     }
+
+    if (options.allowDestinationFolderFallback) {
+      for (const rule of rules ?? []) {
+        if (!rule?.activeAccount || !rule.folder) {
+          continue;
+        }
+
+        // After a cross-account move, the original source account is no
+        // longer available to the column callback. Keep this fallback opt-in
+        // for display only and only use it when the message is already in the
+        // rule's destination.
+        const criteriaWithoutAccount = {...rule, activeAccount: false};
+        if (findRule(message, [criteriaWithoutAccount])
+          && isSameFolder(rule.folder, message?.folder)) {
+          return rule;
+        }
+      }
+    }
+
     return null;
   }
 
-  return { parseEmail, getMessageHeaderValue, findMatch, findRule };
+  return {
+    parseEmail,
+    getMessageHeaderValue,
+    getMessageAccountId,
+    findMatch,
+    findRule
+  };
 })();

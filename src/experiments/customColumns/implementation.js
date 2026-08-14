@@ -178,6 +178,18 @@ function decodeFolderText(value) {
   });
 }
 
+function getColumnAccountKey(message) {
+  if (message?.accountKey || message?.folder?.accountId) {
+    return message.accountKey || message.folder.accountId;
+  }
+
+  try {
+    return MailServices.accounts.findAccountForServer(message?.folder?.server)?.key || "";
+  } catch (error) {
+    return "";
+  }
+}
+
 function folderDisplayValue(rule, message, currentFolderText) {
   const folder = rule?.folder;
   if (!folder) {
@@ -356,11 +368,20 @@ var customColumns = class extends ExtensionCommon.ExtensionAPI {
             icon: false,
             resizable: true,
             sortable: true,
-            textCallback: message => folderDisplayValue(
-              ruleMatching.QuickArchiverRuleMatching.findRule(message, state.rules),
-              message,
-              state.currentFolderText
-            ),
+            textCallback: message => {
+              return folderDisplayValue(
+                ruleMatching.QuickArchiverRuleMatching.findRule(
+                  message,
+                  state.rules,
+                  {
+                    allowDestinationFolderFallback: true,
+                    accountId: getColumnAccountKey(message),
+                  }
+                ),
+                message,
+                state.currentFolderText
+              );
+            },
           };
 
           pendingColumns.set(id, {column, state});
