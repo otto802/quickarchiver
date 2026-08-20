@@ -573,7 +573,11 @@ let quickarchiver = {
                             rule.folder.path
                         ])
                     });
-                    messenger.messageDisplayAction.setLabel({label: browser.i18n.getMessage("toolbar.label.rule_present")});
+                    messenger.messageDisplayAction.setLabel({
+                        label: browser.i18n.getMessage("toolbar.label.rule_present", [
+                            rule.folder.name
+                        ])
+                    });
                 }
 
                 await messenger.menus.update(this.toolbarMenuEditRuleId, {enabled: true});

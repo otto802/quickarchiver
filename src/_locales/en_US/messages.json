@@ -15,7 +15,13 @@
     "message": "QuickArchiver"
   },
   "toolbar.label.rule_present": {
-    "message": "QuickArchiver: Move"
+    "message": "QuickArchiver: Move to \"$folder$\"",
+    "placeholders": {
+      "folder": {
+        "content": "$1",
+        "example": "Blah"
+      }
+    }
   },
   "toolbar.title.rule_present": {
     "message": "Move \"$message$\" to \"$folder$\" (Alt+A)",
